@@ -422,7 +422,7 @@ onBeforeUnmount(() => {
               <draggable
                 :list="dimensionData"
                 item-key="id"
-                :group="{name: 'drag', pull: 'clone' }"
+                :group="{ name: 'ds-native', pull: false }"
                 :sort="false"
               >
               <template #item="{ element }">
@@ -430,10 +430,13 @@ onBeforeUnmount(() => {
                   :key="element.id"
                   class="field-item dimension-item"
                   :class="{ 'field-item-dark': themes === 'dark' }"
+                  :draggable="true"
                   @click.ctrl="setActiveCtrl(element)"
                   @click.meta="setActiveCtrl(element)"
                   @click.exact="setActive(element)"
                   @click.shift="setActiveShift(element)"
+                  @dragstart="(e) => singleDragStartD(e, element, 'dimension')"
+                  @dragend="singleDragEnd"
                 >
                   <el-tooltip placement="right" :offset="10" :hide-after="0" :enterable="false">
                     <template #content>
@@ -476,7 +479,7 @@ onBeforeUnmount(() => {
               <draggable
                 :list="quotaData"
                 item-key="id"
-                :group="{name: 'drag', pull: 'clone' }"
+                :group="{ name: 'ds-native', pull: false }"
                 :sort="false"
                 @remove="onRemove"
               >
@@ -485,10 +488,13 @@ onBeforeUnmount(() => {
                     :key="element.id"
                     class="field-item metric-item"
                     :class="{ 'field-item-dark': themes === 'dark' }"
+                    :draggable="true"
                     @click.ctrl="setActiveCtrl(element, 'quota')"
                     @click.meta="setActiveCtrl(element, 'quota')"
                     @click.exact="setActive(element, 'quota')"
                     @click.shift="setActiveShift(element, 'quota')"
+                    @dragstart="(e) => singleDragStart(e, element, 'quota')"
+                    @dragend="singleDragEnd"
                   >
                     <div
                       class="drag-item items flex-align-center"

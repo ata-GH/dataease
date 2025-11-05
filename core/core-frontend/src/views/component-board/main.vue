@@ -289,32 +289,47 @@ const dimensionItemRemove = item => {
   }
 }
 
-const drop = (ev: MouseEvent, type = 'xAxis') => {
+const drop = (ev: DragEvent, type = 'xAxis') => {
   ev.preventDefault()
-  const arr = activeDimension.value.length ? activeDimension.value : activeQuota.value
-  for (let i = 0; i < arr.length; i++) {
-    const obj = cloneDeep(arr[i])
+  let payload: Axis[] = []
+  // 优先解析原生 dataTransfer（支持多选批量）
+  const dim = ev.dataTransfer?.getData('dimension')
+  const quo = ev.dataTransfer?.getData('quota')
+  if (dim) {
+    try {
+      payload = JSON.parse(dim)
+    } catch (_) {
+      payload = []
+    }
+  } else if (quo) {
+    try {
+      payload = JSON.parse(quo)
+    } catch (_) {
+      payload = []
+    }
+  }
+  // 兜底：如果没有原生拖拽数据，则使用本地 active 选中项（单项场景）
+  if (!payload.length) {
+    const arr = activeDimension.value.length ? activeDimension.value : activeQuota.value
+    payload = arr.map(item => cloneDeep(item))
+  }
+  if (!payload.length) return
+  view.value[type] ??= []
+  payload.forEach(obj => {
     state.moveId = obj.id as unknown as number
-    view.value[type] ??= []
     view.value[type].push(obj)
     const e = { newDraggableIndex: view.value[type].length - 1 }
-
-    console.log(e, 'eeee')
-    if ('drillFields' === type) {
+    if (type === 'drillFields') {
       addDrill(e)
     } else {
       addAxis(e, type as AxisType)
     }
-  }
+  })
 }
 const dragEnter = (ev: MouseEvent) => {
   ev.preventDefault()
 }
 const dragOver = (ev: MouseEvent) => {
-  nextTick(()=>{
-    console.log('dragOver')
-    console.log(view.value.yAxis, 'ev')
-  })
   ev.preventDefault()
 }
 const dragCheckMapType = list => {
@@ -368,6 +383,16 @@ const dragMoveDuplicate = (list, e, mode) => {
     if (dup && dup.length > 1) {
       list.splice(e.newDraggableIndex, 1)
       return dup
+    }
+  }
+}
+const dragRemoveAggField = (list, e) => {
+  const dup = list.filter(function (m) {
+    return m.id === state.moveId
+  })
+  if (dup && dup.length > 0) {
+    if (dup[0].summary === '') {
+      list.splice(e.newDraggableIndex, 1)
     }
   }
 }
@@ -526,9 +551,7 @@ const addAxis = (e, axis: AxisType) => {
     }
   }
 }
-const addXaxis = e => {
-  addAxis(e, 'xAxis')
-}
+
 
 const showRename = val => {
   recordSnapshotInfo('render')
@@ -556,19 +579,32 @@ const onExtCustomRightSort = item => {
   customSort()
 }
 
+const addXaxis = e => {
+  addAxis(e, 'xAxis')
+}
+
+const addXaxisExt = e => {
+  addAxis(e, 'xAxisExt')
+}
+
+const addExtStack = e => {
+  addAxis(e, 'extStack')
+}
+
 const addYaxis = e => {
   addAxis(e, 'yAxis')
 }
 const onAxisChange = (e, axis: AxisType) => {
-  console.log(e, axis, 'onAxisChange')
+  // 处理通过 vuedraggable 的新增/移动/移除事件，保持与 addAxis/removeAxis 同步
+  if (e.added) {
+    addAxis({ newDraggableIndex: e.added.newIndex }, axis)
+  }
+  if (e.moved) {
+    addAxis({ newDraggableIndex: e.moved.newIndex }, axis)
+  }
   if (e.removed) {
     const { element } = e.removed
     emitter.emit('removeAxis', { axisType: axis, axis: [element], editType: 'remove' })
-  }
-  if (e.added) {
-    const { element } = e.added
-    addAxis(element, 'yAxis')
-    // emitter.emit('addAxis', { axisType: axis, axis: [element], editType: 'add' })
   }
 }
 const addDrill = e => {
@@ -668,6 +704,26 @@ const onCustomSort = item => {
   // customSort()
 }
 
+const drillItemChange = () => {
+  recordSnapshotInfo('calcData')
+  // temp do nothing
+}
+const drillItemRemove = item => {
+  recordSnapshotInfo('calcData')
+  view.value.drillFields.splice(item.index, 1)
+}
+const onDrillCustomSort = item => {
+  recordSnapshotInfo('render')
+  state.customSortField = view.value.drillFields[item.index]
+  customSortAxis.value = 'drillFields'
+  customSort()
+}
+const editSortPriority = () => {
+  state.showSortPriority = true
+}
+
+
+
 // 生命周期钩子
 onMounted(() => {
   calculateElAreaHeight()
@@ -721,7 +777,12 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.xAxis.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div
+          class="drag-data-area"
+          @drop="$event => drop($event)"
+          @dragenter="dragEnter"
+          @dragover="$event => dragOver($event)"
+        >
           <draggable
             :list="view.xAxis"
             :move="onMove"
@@ -730,7 +791,7 @@ watch(() => componentData.value, () => {
             animation="300"
             class="drag-block-style"
             :class="{ dark: themes === 'dark' }"
-            @change="e => onAxisChange(e, 'xAxis')"
+            @add="addXaxis"
           >
             <template #item="{ element, index }">
               <dimension-item
@@ -763,7 +824,12 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.xAxisExt.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div
+          class="drag-data-area"
+          @drop="$event => drop($event, 'xAxisExt')"
+          @dragenter="dragEnter"
+          @dragover="$event => dragOver($event)"
+        >
           <draggable
             :list="view.xAxisExt"
             :move="onMove"
@@ -772,7 +838,7 @@ watch(() => componentData.value, () => {
             animation="300"
             class="drag-block-style"
             :class="{ dark: themes === 'dark' }"
-            @change="e => onAxisChange(e, 'xAxisExt')"
+            @add="addXaxisExt"
           >
             <template #item="{ element, index }">
               <dimension-item
@@ -803,7 +869,7 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.flowMapStartName.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div class="drag-data-area" @drop="ev => drop(ev, 'flowMapStartName')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
           <draggable
             :list="view.flowMapStartName"
             :move="onMove"
@@ -844,7 +910,7 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.flowMapEndName.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div class="drag-data-area" @drop="ev => drop(ev, 'flowMapEndName')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
           <draggable
             :list="view.flowMapEndName"
             :move="onMove"
@@ -885,7 +951,7 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.extStack.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div class="drag-data-area" @drop="ev => drop(ev, 'extStack')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
           <draggable
             :list="view.extStack"
             :move="onMove"
@@ -925,7 +991,7 @@ watch(() => componentData.value, () => {
             <span>{{ chartViewInstance.axisConfig.extColor.name }}</span>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div class="drag-data-area" @drop="ev => drop(ev, 'extColor')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
           <draggable
             :list="view.extColor"
             :move="onMove"
@@ -987,7 +1053,7 @@ watch(() => componentData.value, () => {
               </span>
             </span>
           </div>
-          <div class="drag-data-area">
+          <div class="drag-data-area" @drop="ev => drop(ev, 'yAxis')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
             <draggable
               :list="view.yAxis"
               :move="onMove"
@@ -1032,7 +1098,7 @@ watch(() => componentData.value, () => {
               <i v-if="!chartViewInstance.axisConfig.extBubble?.allowEmpty" class="required"></i>
             </span>
           </div>
-          <div class="drag-data-area">
+          <div class="drag-data-area" @drop="ev => drop(ev, 'extBubble')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
             <draggable
               :list="view.extBubble"
               :move="onMove"
@@ -1071,7 +1137,7 @@ watch(() => componentData.value, () => {
               <i v-if="!chartViewInstance.axisConfig.yAxisExt?.allowEmpty" class="required"></i>
             </span>
           </div>
-          <div class="drag-data-area">
+          <div class="drag-data-area" @drop="ev => drop(ev, 'yAxisExt')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
             <draggable
               :list="view.yAxisExt"
               :move="onMove"
@@ -1115,7 +1181,7 @@ watch(() => componentData.value, () => {
             </span>
 
           </div>
-          <div class="drag-data-area">
+          <div class="drag-data-area" @drop="ev => drop(ev, 'yAxis')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
             <draggable
               :list="view.yAxis"
               :move="onMove"
@@ -1173,7 +1239,7 @@ watch(() => componentData.value, () => {
             </span>
 
           </div>
-          <div class="drag-data-area">
+          <div class="drag-data-area" @drop="ev => drop(ev, 'yAxisExt')" @dragenter.prevent="dragEnter" @dragover.prevent="dragOver">
             <draggable
               :list="view.yAxisExt"
               :move="onMove"
@@ -1287,7 +1353,7 @@ watch(() => componentData.value, () => {
       <el-row v-if="showAxis('drill')" class="line-style drag-data">
         <div class="form-draggable-title">
           <span class="data-area-label">
-            <span style="margin-right: 4px">{{ t('chart.drill') }} / {{ t('chart.dimension') }}</span>
+            <span style="margin-right: 4px">{{ t('chart.drill') }} / {{ t('chart.dimension') + 'abc' }}</span>
             <el-tooltip class="item" :effect="toolTip" placement="top">
               <template #content>
                 <span> {{ t('chart.drill_dimension_tip') }}</span>
@@ -1301,7 +1367,12 @@ watch(() => componentData.value, () => {
             </el-tooltip>
           </span>
         </div>
-        <div class="drag-data-area">
+        <div
+          class="drag-data-area"
+          @drop="$event => drop($event, 'drillFields')"
+          @dragenter="dragEnter"
+          @dragover="$event => dragOver($event)"
+        >
           <draggable
             :list="view.drillFields"
             :move="onMove"
@@ -1310,7 +1381,7 @@ watch(() => componentData.value, () => {
             animation="300"
             class="drag-block-style"
             :class="{ dark: themes === 'dark' }"
-            @change="e => onAxisChange(e, 'drillFields')"
+            @add="addDrill"
           >
             <template #item="{ element, index }">
               <drill-item
