@@ -33,25 +33,25 @@ import { ElMessage, ElTreeSelect } from 'element-plus-secondary'
 import draggable from 'vuedraggable'
 import DimensionItem from './drag-item/DimensionItem.vue'
 import { fieldType } from '@/utils/attr'
-import QuotaItem from '@/views/chart/components/editor/drag-item/QuotaItem.vue'
-import DragPlaceholder from '@/views/chart/components/editor/drag-item/DragPlaceholder.vue'
+import QuotaItem from '@/views/chart/components/editor-new/drag-item/QuotaItem.vue'
+import DragPlaceholder from '@/views/chart/components/editor-new/drag-item/DragPlaceholder.vue'
 import FilterTree from './filter/FilterTree.vue'
-import ChartStyle from '@/views/chart/components/editor/editor-style/ChartStyle.vue'
-import VQueryChartStyle from '@/views/chart/components/editor/editor-style/VQueryChartStyle.vue'
-import Senior from '@/views/chart/components/editor/editor-senior/Senior.vue'
-import QuotaFilterEditor from '@/views/chart/components/editor/filter/QuotaFilterEditor.vue'
-import ResultFilterEditor from '@/views/chart/components/editor/filter/ResultFilterEditor.vue'
+import ChartStyle from '@/views/chart/components/editor-new/editor-style/ChartStyle.vue'
+import VQueryChartStyle from '@/views/chart/components/editor-new/editor-style/VQueryChartStyle.vue'
+import Senior from '@/views/chart/components/editor-new/editor-senior/Senior.vue'
+import QuotaFilterEditor from '@/views/chart/components/editor-new/filter/QuotaFilterEditor.vue'
+import ResultFilterEditor from '@/views/chart/components/editor-new/filter/ResultFilterEditor.vue'
 import { ElIcon } from 'element-plus-secondary'
-import DrillItem from '@/views/chart/components/editor/drag-item/DrillItem.vue'
+import DrillItem from '@/views/chart/components/editor-new/drag-item/DrillItem.vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
-import { BASE_VIEW_CONFIG, getViewConfig } from '@/views/chart/components/editor/util/chart'
-import ChartType from '@/views/chart/components/editor/chart-type/ChartType.vue'
+import { BASE_VIEW_CONFIG, getViewConfig } from '@/views/chart/components/editor-new/util/chart'
+import ChartType from '@/views/chart/components/editor-new/chart-type/ChartType.vue'
 import { useRouter, useRoute } from 'vue-router_2'
-import CompareEdit from '@/views/chart/components/editor/drag-item/components/CompareEdit.vue'
-import ValueFormatterEdit from '@/views/chart/components/editor/drag-item/components/ValueFormatterEdit.vue'
-import CustomSortEdit from '@/views/chart/components/editor/drag-item/components/CustomSortEdit.vue'
-import SortPriorityEdit from '@/views/chart/components/editor/drag-item/components/SortPriorityEdit.vue'
+import CompareEdit from '@/views/chart/components/editor-new/drag-item/components/CompareEdit.vue'
+import ValueFormatterEdit from '@/views/chart/components/editor-new/drag-item/components/ValueFormatterEdit.vue'
+import CustomSortEdit from '@/views/chart/components/editor-new/drag-item/components/CustomSortEdit.vue'
+import SortPriorityEdit from '@/views/chart/components/editor-new/drag-item/components/SortPriorityEdit.vue'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'
 import CalcFieldEdit from '@/views/visualized/data/dataset/form/CalcFieldEdit.vue'
 import { getFieldName, guid } from '@/views/visualized/data/dataset/form/util'
@@ -95,7 +95,7 @@ let componentNameInput = ref(null)
 
 const { t } = useI18n()
 const loading = ref(false)
-const tabActive = ref('data')
+const tabActive = ref('style')
 const datasetSelector = ref(null)
 const curDatasetWeight = ref(0)
 const renameForm = ref<FormInstance>()
@@ -2480,7 +2480,7 @@ const deleteChartFieldItem = id => {
             </el-row>
 
             <el-row :style="elRowStyle">
-              <el-scrollbar v-if="view.type === 'VQuery' && curComponent">
+              <!-- <el-scrollbar v-if="view.type === 'VQuery' && curComponent">
                 <div class="query-style-tab">
                   <div style="padding-top: 1px">
                     <VQueryChartStyle
@@ -2491,14 +2491,20 @@ const deleteChartFieldItem = id => {
                     />
                   </div>
                 </div>
-              </el-scrollbar>
+              </el-scrollbar> -->
+              <div class="chart-select-box">
+                <chart-type
+                  :themes="themes"
+                  :type="view.type"
+                  @on-type-change="onTypeChange"
+                />
+              </div>
               <el-tabs
-                v-else
                 v-model="tabActive"
                 class="tab-header"
                 :class="{ dark: themes === 'dark' }"
               >
-                <el-tab-pane name="data" :label="t('chart.chart_data')" class="padding-tab">
+                <!-- <el-tab-pane name="data" :label="t('chart.chart_data')" class="padding-tab">
                   <el-container direction="vertical">
                     <el-scrollbar class="has-footer drag_main_area attr-style theme-border-class">
                       <el-row
@@ -2548,1056 +2554,10 @@ const deleteChartFieldItem = id => {
                             </el-select>
                           </template>
                           <template #default>
-                            <chart-type
-                              :themes="themes"
-                              :type="view.type"
-                              @on-type-change="onTypeChange"
-                            />
+
                           </template>
                         </el-popover>
                       </el-row>
-                      <template v-if="view.plugin?.isPlugin">
-                        <plugin-component
-                          :jsname="view.plugin.staticMap['editor-data']"
-                          :view="view"
-                          :dimension="state.dimension"
-                          :quota="state.quota"
-                          :themes="themes"
-                          :emitter="emitter"
-                          @onDimensionItemChange="dimensionItemChange"
-                          @onDimensionItemRemove="dimensionItemRemove"
-                          @onNameEdit="showRename"
-                          @onCustomSort="onCustomSort"
-                          @valueFormatter="valueFormatter"
-                        />
-                      </template>
-                      <template v-else>
-                        <!--area-->
-                        <el-row v-if="showAxis('area')" class="padding-lr drag-data">
-                          <span class="data-area-label">
-                            {{ t('chart.area') }}
-                            <i class="required"></i>
-                          </span>
-                          <div class="area-tree-select">
-                            <el-tree-select
-                              ref="areaSelect"
-                              v-model="state.areaId"
-                              :effect="themes"
-                              :data="state.worldTree"
-                              :props="treeProps"
-                              :filterNodeMethod="filterNode"
-                              :current-node-key="state.areaId"
-                              :teleported="false"
-                              :default-expanded-keys="expandKeys"
-                              empty-text="请选择区域"
-                              node-key="id"
-                              check-strictly
-                              filterable
-                              @node-click="onAreaChange"
-                            />
-                          </div>
-                        </el-row>
-                        <!--xAxis-->
-                        <el-row v-if="showAxis('xAxis')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.xAxis.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.xAxis?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('xAxis')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            class="qw"
-                            @drop="$event => drop($event)"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.xAxis"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addXaxis"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="dimension"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onCustomSort"
-                                  @valueFormatter="valueFormatter"
-                                  @onToggleHide="onToggleHide"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :themes="themes" :drag-list="view.xAxis" />
-                          </div>
-                        </el-row>
-
-                        <!--xAxisExt-->
-                        <el-row v-if="showAxis('xAxisExt')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.xAxisExt.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.xAxisExt?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('xAxisExt')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            @drop="$event => drop($event, 'xAxisExt')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.xAxisExt"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addXaxisExt"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="dimensionExt"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onExtCustomSort"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :drag-list="view.xAxisExt" />
-                          </div>
-                        </el-row>
-
-                        <!--flowMapStartName-->
-                        <el-row v-if="showAxis('flowMapStartName')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.flowMapStartName.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.flowMapStartName?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('flowMapStartName')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            class="qw"
-                            @drop="$event => drop($event, 'flowMapStartName')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.flowMapStartName"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addFlowMapStartName"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="flowMapStartName"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onCustomFlowMapStartNameSort"
-                                  @valueFormatter="valueFormatter"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :themes="themes" :drag-list="view.flowMapStartName" />
-                          </div>
-                        </el-row>
-
-                        <!--flowMapEndName-->
-                        <el-row v-if="showAxis('flowMapEndName')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.flowMapEndName.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.flowMapEndName?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('flowMapEndName')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            class="qw"
-                            @drop="$event => drop($event, 'flowMapEndName')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.flowMapEndName"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addFlowMapEndName"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="flowMapEndName"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onCustomFlowMapEndNameSort"
-                                  @valueFormatter="valueFormatter"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :themes="themes" :drag-list="view.flowMapEndName" />
-                          </div>
-                        </el-row>
-
-                        <!--extStack-->
-                        <el-row v-if="showAxis('extStack')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.extStack.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.extStack?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('extStack')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            @drop="$event => drop($event, 'extStack')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.extStack"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addExtStack"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="dimensionStack"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onStackCustomSort"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :drag-list="view.extStack" />
-                          </div>
-                        </el-row>
-
-                        <el-row v-if="showAxis('extColor')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ chartViewInstance.axisConfig.extColor.name }}
-                              <i
-                                v-if="!chartViewInstance.axisConfig.extColor?.allowEmpty"
-                                class="required"
-                              ></i>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('extColor')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            class="qw"
-                            @drop="$event => drop($event, 'extColor')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.extColor"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addExtColor"
-                              @change="e => onAxisChange(e, 'extColor')"
-                            >
-                              <template #item="{ element, index }">
-                                <dimension-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  :themes="props.themes"
-                                  type="extColor"
-                                  @onDimensionItemChange="dimensionItemChange"
-                                  @onDimensionItemRemove="dimensionItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onCustomExtColorSort"
-                                  @valueFormatter="valueFormatter"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :themes="themes" :drag-list="view.extColor" />
-                          </div>
-                        </el-row>
-
-                        <template v-if="view.type !== 'bar-range'">
-                          <!--yAxis-->
-                          <el-row v-if="showAxis('yAxis')" class="padding-lr drag-data">
-                            <div class="form-draggable-title">
-                              <span class="data-area-label">
-                                <span style="margin-right: 4px">
-                                  {{ chartViewInstance.axisConfig.yAxis.name }}
-                                  <i
-                                    v-if="!chartViewInstance.axisConfig.yAxis?.allowEmpty"
-                                    class="required"
-                                  ></i>
-                                </span>
-                                <el-tooltip
-                                  v-if="chartViewInstance.axisConfig.yAxis.tooltip"
-                                  class="item"
-                                  :effect="toolTip"
-                                  placement="top"
-                                >
-                                  <template #content>
-                                    <span> {{ chartViewInstance.axisConfig.yAxis.tooltip }}</span>
-                                  </template>
-                                  <el-icon
-                                    class="hint-icon"
-                                    :class="{ 'hint-icon--dark': themes === 'dark' }"
-                                  >
-                                    <Icon name="icon_info_outlined"
-                                      ><icon_info_outlined class="svg-icon"
-                                    /></Icon>
-                                  </el-icon>
-                                </el-tooltip>
-                              </span>
-                              <el-tooltip
-                                :effect="toolTip"
-                                placement="top"
-                                :content="t('common.delete')"
-                              >
-                                <el-icon
-                                  class="remove-icon"
-                                  :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                  size="14px"
-                                  @click="removeItems('yAxis')"
-                                >
-                                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </div>
-                            <div
-                              @drop="$event => drop($event, 'yAxis')"
-                              @dragenter="dragEnter"
-                              @dragover="$event => dragOver($event)"
-                            >
-                              <draggable
-                                :list="view.yAxis"
-                                :move="onMove"
-                                item-key="id"
-                                group="drag"
-                                animation="300"
-                                class="drag-block-style"
-                                :class="{ dark: themes === 'dark' }"
-                                @add="addYaxis"
-                                @change="e => onAxisChange(e, 'yAxis')"
-                              >
-                                <template #item="{ element, index }">
-                                  <quota-item
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    type="quota"
-                                    :themes="props.themes"
-                                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxis')"
-                                    @onQuotaItemRemove="quotaItemRemove"
-                                    @onNameEdit="showRename"
-                                    @editItemFilter="showQuotaEditFilter"
-                                    @editItemCompare="showQuotaEditCompare"
-                                    @valueFormatter="valueFormatter"
-                                    @onToggleHide="onToggleHide"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                </template>
-                              </draggable>
-                              <drag-placeholder
-                                :margin-top="view.type === 'stock-line' ? '9px' : '0'"
-                                :drag-list="view.yAxis"
-                              />
-                            </div>
-                          </el-row>
-                          <!-- xAxisExtRight -->
-                          <el-row v-if="showAxis('xAxisExtRight')" class="padding-lr drag-data">
-                            <div class="form-draggable-title">
-                              <span>
-                                {{ chartViewInstance.axisConfig.extBubble.name }}
-                                <i
-                                  v-if="!chartViewInstance.axisConfig.extBubble?.allowEmpty"
-                                  class="required"
-                                ></i>
-                              </span>
-                              <el-tooltip
-                                :effect="toolTip"
-                                placement="top"
-                                :content="t('common.delete')"
-                              >
-                                <el-icon
-                                  class="remove-icon"
-                                  :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                  size="14px"
-                                  @click="removeItems('extBubble')"
-                                >
-                                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </div>
-                            <div
-                              @drop="$event => drop($event, 'extBubble')"
-                              @dragenter="dragEnter"
-                              @dragover="$event => dragOver($event)"
-                            >
-                              <draggable
-                                :list="view.extBubble"
-                                :move="onMove"
-                                item-key="id"
-                                group="drag"
-                                animation="300"
-                                class="drag-block-style"
-                                :class="{ dark: themes === 'dark' }"
-                                @add="addExtBubble"
-                                @change="e => onAxisChange(e, 'extBubble')"
-                              >
-                                <template #item="{ element, index }">
-                                  <dimension-item
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    :themes="props.themes"
-                                    type="xAxisExtRight"
-                                    @onDimensionItemChange="dimensionItemChange"
-                                    @onDimensionItemRemove="dimensionItemRemove"
-                                    @onNameEdit="showRename"
-                                    @onCustomSort="onExtCustomRightSort"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                </template>
-                              </draggable>
-                              <drag-placeholder :drag-list="view.extBubble" />
-                            </div>
-                          </el-row>
-                          <!--yAxisExt-->
-                          <el-row v-if="showAxis('yAxisExt')" class="padding-lr drag-data">
-                            <div class="form-draggable-title">
-                              <span>
-                                {{ chartViewInstance.axisConfig.yAxisExt.name }}
-                                <i
-                                  v-if="!chartViewInstance.axisConfig.yAxisExt?.allowEmpty"
-                                  class="required"
-                                ></i>
-                              </span>
-                              <el-tooltip
-                                :effect="toolTip"
-                                placement="top"
-                                :content="t('common.delete')"
-                              >
-                                <el-icon
-                                  class="remove-icon"
-                                  :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                  size="14px"
-                                  @click="removeItems('yAxisExt')"
-                                >
-                                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </div>
-                            <div
-                              @drop="$event => drop($event, 'yAxisExt')"
-                              @dragenter="dragEnter"
-                              @dragover="$event => dragOver($event)"
-                            >
-                              <draggable
-                                :list="view.yAxisExt"
-                                :move="onMove"
-                                item-key="id"
-                                group="drag"
-                                animation="300"
-                                class="drag-block-style"
-                                :class="{ dark: themes === 'dark' }"
-                                @add="addYaxisExt"
-                                @change="e => onAxisChange(e, 'yAxisExt')"
-                              >
-                                <template #item="{ element, index }">
-                                  <quota-item
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    type="quotaExt"
-                                    :themes="props.themes"
-                                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxisExt')"
-                                    @onQuotaItemRemove="quotaItemRemove"
-                                    @onNameEdit="showRename"
-                                    @editItemFilter="showQuotaEditFilter"
-                                    @editItemCompare="showQuotaEditCompare"
-                                    @valueFormatter="valueFormatter"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                </template>
-                              </draggable>
-                              <drag-placeholder :drag-list="view.yAxisExt" />
-                            </div>
-                          </el-row>
-                        </template>
-                        <template v-else-if="view.type === 'bar-range'">
-                          <!--yAxis-->
-                          <el-row v-if="showAxis('yAxis')" class="padding-lr drag-data">
-                            <div class="form-draggable-title">
-                              <span>
-                                {{ chartViewInstance.axisConfig.yAxis.name }}
-                                <i
-                                  v-if="!chartViewInstance.axisConfig.yAxis?.allowEmpty"
-                                  class="required"
-                                ></i>
-                              </span>
-                              <el-tooltip
-                                :effect="toolTip"
-                                placement="top"
-                                :content="t('common.delete')"
-                              >
-                                <el-icon
-                                  class="remove-icon"
-                                  :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                  size="14px"
-                                  @click="removeItems('yAxis')"
-                                >
-                                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </div>
-                            <div
-                              @drop="$event => drop($event, 'yAxis')"
-                              @dragenter="dragEnter"
-                              @dragover="$event => dragOver($event)"
-                            >
-                              <draggable
-                                :list="view.yAxis"
-                                :move="onMove"
-                                item-key="id"
-                                group="drag"
-                                animation="300"
-                                class="drag-block-style"
-                                :class="{ dark: themes === 'dark' }"
-                                @add="addYaxis"
-                                @change="e => onAxisChange(e, 'yAxis')"
-                              >
-                                <template #item="{ element, index }">
-                                  <dimension-item
-                                    v-if="element.groupType === 'd'"
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    :themes="props.themes"
-                                    type="quota"
-                                    @onDimensionItemChange="dimensionItemChange"
-                                    @onDimensionItemRemove="dimensionItemRemove"
-                                    @onNameEdit="showRename"
-                                    @onCustomSort="onExtCustomSort"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                  <quota-item
-                                    v-else-if="element.groupType === 'q'"
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    type="quota"
-                                    :themes="props.themes"
-                                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxis')"
-                                    @onQuotaItemRemove="quotaItemRemove"
-                                    @onNameEdit="showRename"
-                                    @editItemFilter="showQuotaEditFilter"
-                                    @editItemCompare="showQuotaEditCompare"
-                                    @valueFormatter="valueFormatter"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                </template>
-                              </draggable>
-                              <drag-placeholder :drag-list="view.yAxis" />
-                            </div>
-                          </el-row>
-                          <!--yAxisExt-->
-                          <el-row v-if="showAxis('yAxisExt')" class="padding-lr drag-data">
-                            <div class="form-draggable-title">
-                              <span>
-                                {{ chartViewInstance.axisConfig.yAxisExt.name }}
-                                <i
-                                  v-if="!chartViewInstance.axisConfig.yAxisExt?.allowEmpty"
-                                  class="required"
-                                ></i>
-                              </span>
-                              <el-tooltip
-                                :effect="toolTip"
-                                placement="top"
-                                :content="t('common.delete')"
-                              >
-                                <el-icon
-                                  class="remove-icon"
-                                  :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                  size="14px"
-                                  @click="removeItems('yAxisExt')"
-                                >
-                                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </div>
-                            <div
-                              @drop="$event => drop($event, 'yAxisExt')"
-                              @dragenter="dragEnter"
-                              @dragover="$event => dragOver($event)"
-                            >
-                              <draggable
-                                :list="view.yAxisExt"
-                                :move="onMove"
-                                item-key="id"
-                                group="drag"
-                                animation="300"
-                                class="drag-block-style"
-                                :class="{ dark: themes === 'dark' }"
-                                @add="addYaxisExt"
-                                @change="e => onAxisChange(e, 'yAxisExt')"
-                              >
-                                <template #item="{ element, index }">
-                                  <dimension-item
-                                    v-if="element.groupType === 'd'"
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    :themes="props.themes"
-                                    type="quotaExt"
-                                    @onDimensionItemChange="dimensionItemChange"
-                                    @onDimensionItemRemove="dimensionItemRemove"
-                                    @onNameEdit="showRename"
-                                    @onCustomSort="onExtCustomSort"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                  <quota-item
-                                    v-else-if="element.groupType === 'q'"
-                                    :dimension-data="state.dimension"
-                                    :quota-data="state.quota"
-                                    :chart="view"
-                                    :item="element"
-                                    :index="index"
-                                    type="quotaExt"
-                                    :themes="props.themes"
-                                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxisExt')"
-                                    @onQuotaItemRemove="quotaItemRemove"
-                                    @onNameEdit="showRename"
-                                    @editItemFilter="showQuotaEditFilter"
-                                    @editItemCompare="showQuotaEditCompare"
-                                    @valueFormatter="valueFormatter"
-                                    @editSortPriority="editSortPriority"
-                                  />
-                                </template>
-                              </draggable>
-                              <drag-placeholder :drag-list="view.yAxisExt" />
-                            </div>
-                          </el-row>
-                        </template>
-                        <!-- extBubble -->
-                        <el-row v-if="showAxis('extBubble')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span class="data-area-label">
-                              <span style="margin-right: 4px">
-                                {{ chartViewInstance.axisConfig.extBubble.name }}
-                                <i
-                                  v-if="!chartViewInstance.axisConfig.extBubble?.allowEmpty"
-                                  class="required"
-                                ></i>
-                              </span>
-                              <el-tooltip
-                                v-if="chartViewInstance.axisConfig.extBubble.tooltip"
-                                class="item"
-                                :effect="toolTip"
-                                placement="top"
-                              >
-                                <template #content>
-                                  <span> {{ chartViewInstance.axisConfig.extBubble.tooltip }}</span>
-                                </template>
-                                <el-icon
-                                  class="hint-icon"
-                                  :class="{ 'hint-icon--dark': themes === 'dark' }"
-                                >
-                                  <Icon name="icon_info_outlined"
-                                    ><icon_info_outlined class="svg-icon"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('extBubble')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            @drop="$event => drop($event, 'extBubble')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.extBubble"
-                              :move="onMove"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addExtBubble"
-                              @change="e => onAxisChange(e, 'extBubble')"
-                            >
-                              <template #item="{ element, index }">
-                                <quota-item
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :chart="view"
-                                  :item="element"
-                                  :index="index"
-                                  type="extBubble"
-                                  :themes="props.themes"
-                                  @onQuotaItemChange="item => quotaItemChange(item, 'extBubble')"
-                                  @onQuotaItemRemove="quotaItemRemove"
-                                  @onNameEdit="showRename"
-                                  @editItemFilter="showQuotaEditFilter"
-                                  @editItemCompare="showQuotaEditCompare"
-                                  @valueFormatter="valueFormatter"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :drag-list="view.extBubble" />
-                          </div>
-                        </el-row>
-
-                        <!--drill-->
-                        <el-row v-if="showAxis('drill')" class="padding-lr drag-data">
-                          <div class="form-draggable-title">
-                            <span class="data-area-label">
-                              <span style="margin-right: 4px">
-                                {{ t('chart.drill') }} / {{ t('chart.dimension') }}
-                              </span>
-                              <el-tooltip class="item" :effect="toolTip" placement="top">
-                                <template #content>
-                                  <span> {{ t('chart.drill_dimension_tip') }}</span>
-                                </template>
-                                <el-icon
-                                  class="hint-icon"
-                                  :class="{ 'hint-icon--dark': themes === 'dark' }"
-                                >
-                                  <Icon name="icon_info_outlined"
-                                    ><icon_info_outlined class="svg-icon"
-                                  /></Icon>
-                                </el-icon>
-                              </el-tooltip>
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('drillFields')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-                          <div
-                            @drop="$event => drop($event, 'drillFields')"
-                            @dragenter="dragEnter"
-                            @dragover="$event => dragOver($event)"
-                          >
-                            <draggable
-                              :list="view.drillFields"
-                              item-key="id"
-                              group="drag"
-                              animation="300"
-                              :move="onMove"
-                              class="drag-block-style"
-                              :class="{ dark: themes === 'dark' }"
-                              @add="addDrill"
-                            >
-                              <template #item="{ element, index }">
-                                <drill-item
-                                  :key="element.id"
-                                  :index="index"
-                                  :chart="view"
-                                  :item="element"
-                                  :dimension-data="state.dimension"
-                                  :quota-data="state.quota"
-                                  :themes="props.themes"
-                                  @onDimensionItemChange="drillItemChange"
-                                  @onDimensionItemRemove="drillItemRemove"
-                                  @onNameEdit="showRename"
-                                  @onCustomSort="onDrillCustomSort"
-                                  @editSortPriority="editSortPriority"
-                                />
-                              </template>
-                            </draggable>
-                            <drag-placeholder :drag-list="view.drillFields" />
-                          </div>
-                        </el-row>
-
-                        <!--filter-->
-                        <el-row class="padding-lr drag-data no-top-border no-top-padding">
-                          <div class="form-draggable-title">
-                            <span>
-                              {{ t('chart.result_filter') }}
-                            </span>
-                            <el-tooltip
-                              :effect="toolTip"
-                              placement="top"
-                              :content="t('common.delete')"
-                            >
-                              <el-icon
-                                class="remove-icon"
-                                :class="{ 'remove-icon--dark': themes === 'dark' }"
-                                size="14px"
-                                @click="removeItems('customFilter')"
-                              >
-                                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
-                                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
-                                /></Icon>
-                              </el-icon>
-                            </el-tooltip>
-                          </div>
-
-                          <div
-                            class="tree-btn"
-                            v-if="isFilterActive || themes === 'dark'"
-                            :class="{
-                              'tree-btn--dark': themes === 'dark',
-                              active: isFilterActive,
-                              invalid: isFilterInvalid
-                            }"
-                            @click="openTreeFilter"
-                          >
-                            <el-icon style="margin-right: 2px; font-size: 12px">
-                              <Icon class="svg-background" name="icon-filter"
-                                ><iconFilter class="svg-icon svg-background"
-                              /></Icon>
-                            </el-icon>
-
-                            <span>{{ $t('chart.filter') }}</span>
-                          </div>
-                          <el-button
-                            v-else
-                            class="tree-btn_secondary"
-                            secondary
-                            @click="openTreeFilter"
-                          >
-                            <template #icon>
-                              <Icon><iconFilter class="svg-icon svg-background" /></Icon>
-                            </template>
-                            <span>{{ $t('chart.filter') }}</span>
-                          </el-button>
-                        </el-row>
-
-                        <el-row v-if="showAggregate" class="refresh-area">
-                          <el-form-item
-                            class="form-item no-margin-bottom"
-                            :class="'form-item-' + themes"
-                          >
-                            <el-checkbox
-                              v-model="view.aggregate"
-                              :effect="themes"
-                              size="small"
-                              @change="aggregateChange"
-                            >
-                              {{ t('chart.aggregate_time') }}
-                            </el-checkbox>
-                          </el-form-item>
-                        </el-row>
-                      </template>
                     </el-scrollbar>
                     <el-footer :class="{ 'refresh-active-footer': view.refreshViewEnable }">
                       <el-row class="refresh-area">
@@ -3707,7 +2667,7 @@ const deleteChartFieldItem = id => {
                       </el-row>
                     </el-footer>
                   </el-container>
-                </el-tab-pane>
+                </el-tab-pane> -->
 
                 <el-tab-pane
                   name="style"
@@ -3814,6 +2774,1050 @@ const deleteChartFieldItem = id => {
         </div>
       </el-row>
     </template>
+    <div class="right-top-area">
+      <template v-if="view.plugin?.isPlugin">
+        <plugin-component
+          :jsname="view.plugin.staticMap['editor-data']"
+          :view="view"
+          :dimension="state.dimension"
+          :quota="state.quota"
+          :themes="themes"
+          :emitter="emitter"
+          @onDimensionItemChange="dimensionItemChange"
+          @onDimensionItemRemove="dimensionItemRemove"
+          @onNameEdit="showRename"
+          @onCustomSort="onCustomSort"
+          @valueFormatter="valueFormatter"
+        />
+      </template>
+      <template v-else>
+        <!--area-->
+        <el-row v-if="showAxis('area')" class="padding-lr drag-data">
+          <span class="data-area-label">
+            {{ t('chart.area') }}
+            <i class="required"></i>
+          </span>
+          <div class="area-tree-select">
+            <el-tree-select
+              ref="areaSelect"
+              v-model="state.areaId"
+              :effect="themes"
+              :data="state.worldTree"
+              :props="treeProps"
+              :filterNodeMethod="filterNode"
+              :current-node-key="state.areaId"
+              :teleported="false"
+              :default-expanded-keys="expandKeys"
+              empty-text="请选择区域"
+              node-key="id"
+              check-strictly
+              filterable
+              @node-click="onAreaChange"
+            />
+          </div>
+        </el-row>
+        <!--xAxis-->
+        <el-row v-if="showAxis('xAxis')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.xAxis.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.xAxis?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('xAxis')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            class="qw"
+            @drop="$event => drop($event)"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.xAxis"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addXaxis"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="dimension"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onCustomSort"
+                  @valueFormatter="valueFormatter"
+                  @onToggleHide="onToggleHide"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :themes="themes" :drag-list="view.xAxis" />
+          </div>
+        </el-row>
+
+        <!--xAxisExt-->
+        <el-row v-if="showAxis('xAxisExt')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.xAxisExt.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.xAxisExt?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('xAxisExt')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            @drop="$event => drop($event, 'xAxisExt')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.xAxisExt"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addXaxisExt"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="dimensionExt"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onExtCustomSort"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :drag-list="view.xAxisExt" />
+          </div>
+        </el-row>
+
+        <!--flowMapStartName-->
+        <el-row v-if="showAxis('flowMapStartName')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.flowMapStartName.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.flowMapStartName?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('flowMapStartName')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            class="qw"
+            @drop="$event => drop($event, 'flowMapStartName')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.flowMapStartName"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addFlowMapStartName"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="flowMapStartName"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onCustomFlowMapStartNameSort"
+                  @valueFormatter="valueFormatter"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :themes="themes" :drag-list="view.flowMapStartName" />
+          </div>
+        </el-row>
+
+        <!--flowMapEndName-->
+        <el-row v-if="showAxis('flowMapEndName')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.flowMapEndName.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.flowMapEndName?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('flowMapEndName')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            class="qw"
+            @drop="$event => drop($event, 'flowMapEndName')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.flowMapEndName"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addFlowMapEndName"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="flowMapEndName"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onCustomFlowMapEndNameSort"
+                  @valueFormatter="valueFormatter"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :themes="themes" :drag-list="view.flowMapEndName" />
+          </div>
+        </el-row>
+
+        <!--extStack-->
+        <el-row v-if="showAxis('extStack')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.extStack.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.extStack?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('extStack')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            @drop="$event => drop($event, 'extStack')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.extStack"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addExtStack"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="dimensionStack"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onStackCustomSort"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :drag-list="view.extStack" />
+          </div>
+        </el-row>
+
+        <el-row v-if="showAxis('extColor')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span>
+              {{ chartViewInstance.axisConfig.extColor.name }}
+              <i
+                v-if="!chartViewInstance.axisConfig.extColor?.allowEmpty"
+                class="required"
+              ></i>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('extColor')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            class="qw"
+            @drop="$event => drop($event, 'extColor')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.extColor"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addExtColor"
+              @change="e => onAxisChange(e, 'extColor')"
+            >
+              <template #item="{ element, index }">
+                <dimension-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  :themes="props.themes"
+                  type="extColor"
+                  @onDimensionItemChange="dimensionItemChange"
+                  @onDimensionItemRemove="dimensionItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onCustomExtColorSort"
+                  @valueFormatter="valueFormatter"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :themes="themes" :drag-list="view.extColor" />
+          </div>
+        </el-row>
+
+        <template v-if="view.type !== 'bar-range'">
+          <!--yAxis-->
+          <el-row v-if="showAxis('yAxis')" class="padding-lr drag-data">
+            <div class="form-draggable-title">
+              <span class="data-area-label">
+                <span style="margin-right: 4px">
+                  {{ chartViewInstance.axisConfig.yAxis.name }}
+                  <i
+                    v-if="!chartViewInstance.axisConfig.yAxis?.allowEmpty"
+                    class="required"
+                  ></i>
+                </span>
+                <el-tooltip
+                  v-if="chartViewInstance.axisConfig.yAxis.tooltip"
+                  class="item"
+                  :effect="toolTip"
+                  placement="top"
+                >
+                  <template #content>
+                    <span> {{ chartViewInstance.axisConfig.yAxis.tooltip }}</span>
+                  </template>
+                  <el-icon
+                    class="hint-icon"
+                    :class="{ 'hint-icon--dark': themes === 'dark' }"
+                  >
+                    <Icon name="icon_info_outlined"
+                      ><icon_info_outlined class="svg-icon"
+                    /></Icon>
+                  </el-icon>
+                </el-tooltip>
+              </span>
+              <el-tooltip
+                :effect="toolTip"
+                placement="top"
+                :content="t('common.delete')"
+              >
+                <el-icon
+                  class="remove-icon"
+                  :class="{ 'remove-icon--dark': themes === 'dark' }"
+                  size="14px"
+                  @click="removeItems('yAxis')"
+                >
+                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </div>
+            <div
+              @drop="$event => drop($event, 'yAxis')"
+              @dragenter="dragEnter"
+              @dragover="$event => dragOver($event)"
+            >
+              <draggable
+                :list="view.yAxis"
+                :move="onMove"
+                item-key="id"
+                group="drag"
+                animation="300"
+                class="drag-block-style"
+                :class="{ dark: themes === 'dark' }"
+                @add="addYaxis"
+                @change="e => onAxisChange(e, 'yAxis')"
+              >
+                <template #item="{ element, index }">
+                  <quota-item
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    type="quota"
+                    :themes="props.themes"
+                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxis')"
+                    @onQuotaItemRemove="quotaItemRemove"
+                    @onNameEdit="showRename"
+                    @editItemFilter="showQuotaEditFilter"
+                    @editItemCompare="showQuotaEditCompare"
+                    @valueFormatter="valueFormatter"
+                    @onToggleHide="onToggleHide"
+                    @editSortPriority="editSortPriority"
+                  />
+                </template>
+              </draggable>
+              <drag-placeholder
+                :margin-top="view.type === 'stock-line' ? '9px' : '0'"
+                :drag-list="view.yAxis"
+              />
+            </div>
+          </el-row>
+          <!-- xAxisExtRight -->
+          <el-row v-if="showAxis('xAxisExtRight')" class="padding-lr drag-data">
+            <div class="form-draggable-title">
+              <span>
+                {{ chartViewInstance.axisConfig.extBubble.name }}
+                <i
+                  v-if="!chartViewInstance.axisConfig.extBubble?.allowEmpty"
+                  class="required"
+                ></i>
+              </span>
+              <el-tooltip
+                :effect="toolTip"
+                placement="top"
+                :content="t('common.delete')"
+              >
+                <el-icon
+                  class="remove-icon"
+                  :class="{ 'remove-icon--dark': themes === 'dark' }"
+                  size="14px"
+                  @click="removeItems('extBubble')"
+                >
+                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </div>
+            <div
+              @drop="$event => drop($event, 'extBubble')"
+              @dragenter="dragEnter"
+              @dragover="$event => dragOver($event)"
+            >
+              <draggable
+                :list="view.extBubble"
+                :move="onMove"
+                item-key="id"
+                group="drag"
+                animation="300"
+                class="drag-block-style"
+                :class="{ dark: themes === 'dark' }"
+                @add="addExtBubble"
+                @change="e => onAxisChange(e, 'extBubble')"
+              >
+                <template #item="{ element, index }">
+                  <dimension-item
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    :themes="props.themes"
+                    type="xAxisExtRight"
+                    @onDimensionItemChange="dimensionItemChange"
+                    @onDimensionItemRemove="dimensionItemRemove"
+                    @onNameEdit="showRename"
+                    @onCustomSort="onExtCustomRightSort"
+                    @editSortPriority="editSortPriority"
+                  />
+                </template>
+              </draggable>
+              <drag-placeholder :drag-list="view.extBubble" />
+            </div>
+          </el-row>
+          <!--yAxisExt-->
+          <el-row v-if="showAxis('yAxisExt')" class="padding-lr drag-data">
+            <div class="form-draggable-title">
+              <span>
+                {{ chartViewInstance.axisConfig.yAxisExt.name }}
+                <i
+                  v-if="!chartViewInstance.axisConfig.yAxisExt?.allowEmpty"
+                  class="required"
+                ></i>
+              </span>
+              <el-tooltip
+                :effect="toolTip"
+                placement="top"
+                :content="t('common.delete')"
+              >
+                <el-icon
+                  class="remove-icon"
+                  :class="{ 'remove-icon--dark': themes === 'dark' }"
+                  size="14px"
+                  @click="removeItems('yAxisExt')"
+                >
+                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </div>
+            <div
+              @drop="$event => drop($event, 'yAxisExt')"
+              @dragenter="dragEnter"
+              @dragover="$event => dragOver($event)"
+            >
+              <draggable
+                :list="view.yAxisExt"
+                :move="onMove"
+                item-key="id"
+                group="drag"
+                animation="300"
+                class="drag-block-style"
+                :class="{ dark: themes === 'dark' }"
+                @add="addYaxisExt"
+                @change="e => onAxisChange(e, 'yAxisExt')"
+              >
+                <template #item="{ element, index }">
+                  <quota-item
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    type="quotaExt"
+                    :themes="props.themes"
+                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxisExt')"
+                    @onQuotaItemRemove="quotaItemRemove"
+                    @onNameEdit="showRename"
+                    @editItemFilter="showQuotaEditFilter"
+                    @editItemCompare="showQuotaEditCompare"
+                    @valueFormatter="valueFormatter"
+                    @editSortPriority="editSortPriority"
+                  />
+                </template>
+              </draggable>
+              <drag-placeholder :drag-list="view.yAxisExt" />
+            </div>
+          </el-row>
+        </template>
+        <template v-else-if="view.type === 'bar-range'">
+          <!--yAxis-->
+          <el-row v-if="showAxis('yAxis')" class="padding-lr drag-data">
+            <div class="form-draggable-title">
+              <span>
+                {{ chartViewInstance.axisConfig.yAxis.name }}
+                <i
+                  v-if="!chartViewInstance.axisConfig.yAxis?.allowEmpty"
+                  class="required"
+                ></i>
+              </span>
+              <el-tooltip
+                :effect="toolTip"
+                placement="top"
+                :content="t('common.delete')"
+              >
+                <el-icon
+                  class="remove-icon"
+                  :class="{ 'remove-icon--dark': themes === 'dark' }"
+                  size="14px"
+                  @click="removeItems('yAxis')"
+                >
+                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </div>
+            <div
+              @drop="$event => drop($event, 'yAxis')"
+              @dragenter="dragEnter"
+              @dragover="$event => dragOver($event)"
+            >
+              <draggable
+                :list="view.yAxis"
+                :move="onMove"
+                item-key="id"
+                group="drag"
+                animation="300"
+                class="drag-block-style"
+                :class="{ dark: themes === 'dark' }"
+                @add="addYaxis"
+                @change="e => onAxisChange(e, 'yAxis')"
+              >
+                <template #item="{ element, index }">
+                  <dimension-item
+                    v-if="element.groupType === 'd'"
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    :themes="props.themes"
+                    type="quota"
+                    @onDimensionItemChange="dimensionItemChange"
+                    @onDimensionItemRemove="dimensionItemRemove"
+                    @onNameEdit="showRename"
+                    @onCustomSort="onExtCustomSort"
+                    @editSortPriority="editSortPriority"
+                  />
+                  <quota-item
+                    v-else-if="element.groupType === 'q'"
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    type="quota"
+                    :themes="props.themes"
+                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxis')"
+                    @onQuotaItemRemove="quotaItemRemove"
+                    @onNameEdit="showRename"
+                    @editItemFilter="showQuotaEditFilter"
+                    @editItemCompare="showQuotaEditCompare"
+                    @valueFormatter="valueFormatter"
+                    @editSortPriority="editSortPriority"
+                  />
+                </template>
+              </draggable>
+              <drag-placeholder :drag-list="view.yAxis" />
+            </div>
+          </el-row>
+          <!--yAxisExt-->
+          <el-row v-if="showAxis('yAxisExt')" class="padding-lr drag-data">
+            <div class="form-draggable-title">
+              <span>
+                {{ chartViewInstance.axisConfig.yAxisExt.name }}
+                <i
+                  v-if="!chartViewInstance.axisConfig.yAxisExt?.allowEmpty"
+                  class="required"
+                ></i>
+              </span>
+              <el-tooltip
+                :effect="toolTip"
+                placement="top"
+                :content="t('common.delete')"
+              >
+                <el-icon
+                  class="remove-icon"
+                  :class="{ 'remove-icon--dark': themes === 'dark' }"
+                  size="14px"
+                  @click="removeItems('yAxisExt')"
+                >
+                  <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                    ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </div>
+            <div
+              @drop="$event => drop($event, 'yAxisExt')"
+              @dragenter="dragEnter"
+              @dragover="$event => dragOver($event)"
+            >
+              <draggable
+                :list="view.yAxisExt"
+                :move="onMove"
+                item-key="id"
+                group="drag"
+                animation="300"
+                class="drag-block-style"
+                :class="{ dark: themes === 'dark' }"
+                @add="addYaxisExt"
+                @change="e => onAxisChange(e, 'yAxisExt')"
+              >
+                <template #item="{ element, index }">
+                  <dimension-item
+                    v-if="element.groupType === 'd'"
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    :themes="props.themes"
+                    type="quotaExt"
+                    @onDimensionItemChange="dimensionItemChange"
+                    @onDimensionItemRemove="dimensionItemRemove"
+                    @onNameEdit="showRename"
+                    @onCustomSort="onExtCustomSort"
+                    @editSortPriority="editSortPriority"
+                  />
+                  <quota-item
+                    v-else-if="element.groupType === 'q'"
+                    :dimension-data="state.dimension"
+                    :quota-data="state.quota"
+                    :chart="view"
+                    :item="element"
+                    :index="index"
+                    type="quotaExt"
+                    :themes="props.themes"
+                    @onQuotaItemChange="item => quotaItemChange(item, 'yAxisExt')"
+                    @onQuotaItemRemove="quotaItemRemove"
+                    @onNameEdit="showRename"
+                    @editItemFilter="showQuotaEditFilter"
+                    @editItemCompare="showQuotaEditCompare"
+                    @valueFormatter="valueFormatter"
+                    @editSortPriority="editSortPriority"
+                  />
+                </template>
+              </draggable>
+              <drag-placeholder :drag-list="view.yAxisExt" />
+            </div>
+          </el-row>
+        </template>
+        <!-- extBubble -->
+        <el-row v-if="showAxis('extBubble')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span class="data-area-label">
+              <span style="margin-right: 4px">
+                {{ chartViewInstance.axisConfig.extBubble.name }}
+                <i
+                  v-if="!chartViewInstance.axisConfig.extBubble?.allowEmpty"
+                  class="required"
+                ></i>
+              </span>
+              <el-tooltip
+                v-if="chartViewInstance.axisConfig.extBubble.tooltip"
+                class="item"
+                :effect="toolTip"
+                placement="top"
+              >
+                <template #content>
+                  <span> {{ chartViewInstance.axisConfig.extBubble.tooltip }}</span>
+                </template>
+                <el-icon
+                  class="hint-icon"
+                  :class="{ 'hint-icon--dark': themes === 'dark' }"
+                >
+                  <Icon name="icon_info_outlined"
+                    ><icon_info_outlined class="svg-icon"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('extBubble')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            @drop="$event => drop($event, 'extBubble')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.extBubble"
+              :move="onMove"
+              item-key="id"
+              group="drag"
+              animation="300"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addExtBubble"
+              @change="e => onAxisChange(e, 'extBubble')"
+            >
+              <template #item="{ element, index }">
+                <quota-item
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :chart="view"
+                  :item="element"
+                  :index="index"
+                  type="extBubble"
+                  :themes="props.themes"
+                  @onQuotaItemChange="item => quotaItemChange(item, 'extBubble')"
+                  @onQuotaItemRemove="quotaItemRemove"
+                  @onNameEdit="showRename"
+                  @editItemFilter="showQuotaEditFilter"
+                  @editItemCompare="showQuotaEditCompare"
+                  @valueFormatter="valueFormatter"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :drag-list="view.extBubble" />
+          </div>
+        </el-row>
+
+        <!--drill-->
+        <el-row v-if="showAxis('drill')" class="padding-lr drag-data">
+          <div class="form-draggable-title">
+            <span class="data-area-label">
+              <span style="margin-right: 4px">
+                {{ t('chart.drill') }} / {{ t('chart.dimension') }}
+              </span>
+              <el-tooltip class="item" :effect="toolTip" placement="top">
+                <template #content>
+                  <span> {{ t('chart.drill_dimension_tip') }}</span>
+                </template>
+                <el-icon
+                  class="hint-icon"
+                  :class="{ 'hint-icon--dark': themes === 'dark' }"
+                >
+                  <Icon name="icon_info_outlined"
+                    ><icon_info_outlined class="svg-icon"
+                  /></Icon>
+                </el-icon>
+              </el-tooltip>
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('drillFields')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+          <div
+            @drop="$event => drop($event, 'drillFields')"
+            @dragenter="dragEnter"
+            @dragover="$event => dragOver($event)"
+          >
+            <draggable
+              :list="view.drillFields"
+              item-key="id"
+              group="drag"
+              animation="300"
+              :move="onMove"
+              class="drag-block-style"
+              :class="{ dark: themes === 'dark' }"
+              @add="addDrill"
+            >
+              <template #item="{ element, index }">
+                <drill-item
+                  :key="element.id"
+                  :index="index"
+                  :chart="view"
+                  :item="element"
+                  :dimension-data="state.dimension"
+                  :quota-data="state.quota"
+                  :themes="props.themes"
+                  @onDimensionItemChange="drillItemChange"
+                  @onDimensionItemRemove="drillItemRemove"
+                  @onNameEdit="showRename"
+                  @onCustomSort="onDrillCustomSort"
+                  @editSortPriority="editSortPriority"
+                />
+              </template>
+            </draggable>
+            <drag-placeholder :drag-list="view.drillFields" />
+          </div>
+        </el-row>
+
+        <!--filter-->
+        <el-row class="padding-lr drag-data no-top-border no-top-padding">
+          <div class="form-draggable-title">
+            <span>
+              {{ t('chart.result_filter') }}
+            </span>
+            <el-tooltip
+              :effect="toolTip"
+              placement="top"
+              :content="t('common.delete')"
+            >
+              <el-icon
+                class="remove-icon"
+                :class="{ 'remove-icon--dark': themes === 'dark' }"
+                size="14px"
+                @click="removeItems('customFilter')"
+              >
+                <Icon class-name="inner-class" name="icon_delete-trash_outlined"
+                  ><icon_deleteTrash_outlined class="svg-icon inner-class"
+                /></Icon>
+              </el-icon>
+            </el-tooltip>
+          </div>
+
+          <div
+            class="tree-btn"
+            v-if="isFilterActive || themes === 'dark'"
+            :class="{
+              'tree-btn--dark': themes === 'dark',
+              active: isFilterActive,
+              invalid: isFilterInvalid
+            }"
+            @click="openTreeFilter"
+          >
+            <el-icon style="margin-right: 2px; font-size: 12px">
+              <Icon class="svg-background" name="icon-filter"
+                ><iconFilter class="svg-icon svg-background"
+              /></Icon>
+            </el-icon>
+
+            <span>{{ $t('chart.filter') }}</span>
+          </div>
+          <el-button
+            v-else
+            class="tree-btn_secondary"
+            secondary
+            @click="openTreeFilter"
+          >
+            <template #icon>
+              <Icon><iconFilter class="svg-icon svg-background" /></Icon>
+            </template>
+            <span>{{ $t('chart.filter') }}</span>
+          </el-button>
+        </el-row>
+
+        <el-row v-if="showAggregate" class="refresh-area">
+          <el-form-item
+            class="form-item no-margin-bottom"
+            :class="'form-item-' + themes"
+          >
+            <el-checkbox
+              v-model="view.aggregate"
+              :effect="themes"
+              size="small"
+              @change="aggregateChange"
+            >
+              {{ t('chart.aggregate_time') }}
+            </el-checkbox>
+          </el-form-item>
+        </el-row>
+      </template>
+    </div>
     <chart-template-info v-if="templateStatusShow" :themes="themes"></chart-template-info>
     <!--显示名修改-->
     <el-dialog
@@ -4296,8 +4300,7 @@ span {
   }
 
   .view-panel-row {
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     height: 100%;
 
     :deep(.ed-collapse-item__content) {
@@ -4840,7 +4843,7 @@ span {
 .drag_main_area {
   border-top: 1px solid @side-outline-border-color;
   overflow: auto;
-  height: calc(100% - 1px);
+  height: calc(100% - 260px);
   :deep(.is-horizontal) {
     display: none !important;
   }
@@ -5224,6 +5227,191 @@ span {
     border-radius: 4px;
     padding: 0 4px;
     height: 100%;
+  }
+}
+
+.right-top-area {
+  position: absolute;
+  top: 0;
+  left: 420px;
+  width: calc(100vw - 420px);
+  height: 250px;
+  z-index: 10;
+  padding: 5px 10px;
+  .form-draggable-title {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    span {
+      cursor: default;
+    }
+
+    :deep(.required::after) {
+      content: '*';
+      color: var(--ed-color-danger);
+      margin-left: 2px;
+      font-family: var(--de-custom_font, 'PingFang');
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    .remove-icon {
+      color: #646a73;
+      cursor: pointer;
+      margin-top: 2px;
+      margin-right: 2px;
+
+      &.remove-icon--dark {
+        color: #a6a6a6;
+      }
+
+      .inner-class {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .drag-block-style {
+    padding: 2px 0 0 0;
+    width: 100%;
+    min-height: 32px;
+    border-radius: 4px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: block;
+    align-items: center;
+    border: 1px dashed #bbbfc4;
+    background-color: rgba(31, 35, 41, 0.05);
+    margin-top: 8px;
+    font-size: 0;
+    &.dark {
+      border: 1px dashed #5f5f5f;
+      background-color: rgba(235, 235, 235, 0.05);
+    }
+
+    &:has(span) {
+      background-color: transparent !important;
+    }
+    .item-style {
+      width: auto;
+      display: inline-block;
+      margin-left: 5px;
+      .item-axis {
+        padding: 1px 30px;
+        margin: 5px 0;
+      }
+    }
+  }
+
+  .draggable-group {
+    display: block;
+    width: 100%;
+    height: calc(100% - 6px);
+  }
+
+  .ed-input-refresh-time {
+    width: calc(50% - 4px) !important;
+  }
+
+  .ed-input-refresh-unit {
+    margin-left: 8px;
+    width: calc(50% - 4px) !important;
+  }
+
+  .ed-input-refresh-loading {
+    margin-left: 4px;
+    font-size: 12px !important;
+  }
+
+  .drag-data {
+    padding-top: 8px;
+    padding-bottom: 16px;
+
+    .tree-btn {
+      width: 100%;
+      margin-top: 8px;
+      background: #fff;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid #dcdfe6;
+      display: flex;
+      color: #cccccc;
+      align-items: center;
+      cursor: pointer;
+      justify-content: center;
+      font-size: 12px;
+      &.tree-btn--dark {
+        background: rgba(235, 235, 235, 0.05);
+        border-color: #5f5f5f;
+      }
+
+      &.active {
+        color: #3370ff;
+        border-color: #3370ff;
+      }
+
+      &.invalid {
+        color: red !important;
+        border-color: red !important;
+      }
+    }
+
+    :deep(.tree-btn_secondary) {
+      width: 100%;
+      margin-top: 8px;
+      line-height: 28px;
+      height: 28px;
+      font-size: 12px;
+
+      & > [class*='ed-icon'] + span {
+        margin-left: 2px !important;
+      }
+    }
+
+    &.no-top-border {
+      border-top: none !important;
+    }
+    &.no-top-padding {
+      padding-top: 0 !important;
+    }
+    &:nth-child(n + 2) {
+      border-top: 1px solid @side-outline-border-color;
+    }
+    &:first-child {
+      border-top: none !important;
+    }
+  }
+
+  .editor-title {
+    color: @dv-canvas-main-font-color;
+    font-weight: 500;
+    height: @component-toolbar-height;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    line-height: 22px;
+
+    span {
+      width: calc(100% - 24px);
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      white-space: nowrap;
+    }
+  }
+
+  .ed-tabs {
+    --el-tabs-header-height: 38px !important;
+  }
+
+  .switch-chart {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: space-between;
   }
 }
 </style>

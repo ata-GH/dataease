@@ -61,7 +61,7 @@ const groupActiveChange = category => {
 
 <template>
   <el-row class="group" :class="'chart-' + themes">
-    <div class="group-left">
+    <!-- <div class="group-left">
       <ul class="ul-custom">
         <li
           class="li-custom"
@@ -74,8 +74,8 @@ const groupActiveChange = category => {
           {{ chartGroupInfo.title }}
         </li>
       </ul>
-    </div>
-    <el-scrollbar ref="userViewGroup" class="group-right" height="392px">
+    </div> -->
+    <el-scrollbar ref="userViewGroup" class="group-right" height="250px">
       <el-row
         :id="chartGroupInfo.category + '-edit'"
         v-for="chartGroupInfo in state.chartGroupList"
@@ -146,7 +146,7 @@ const groupActiveChange = category => {
   display: flex !important;
   max-height: 400px;
   height: 100%;
-  width: 410px;
+  width: 100%;
   .group-left {
     width: 100px;
     height: 100%;
@@ -183,12 +183,12 @@ const groupActiveChange = category => {
   .group-right {
     border-left: 1px solid @side-outline-border-color;
     flex: 1;
-    padding: 4px 0 4px 12px;
+    padding: 4px 0 4px 0;
   }
 }
 .custom_img {
-  width: 100px;
-  height: 70px;
+  width: 50px;
+  height: 35px;
   cursor: pointer;
 }
 
@@ -207,8 +207,8 @@ const groupActiveChange = category => {
   justify-content: center;
   align-items: center;
   .item-top {
-    width: 88px;
-    height: 64px;
+    width: 44px;
+    height: 32px;
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
@@ -219,8 +219,8 @@ const groupActiveChange = category => {
       border: 1px solid var(--ed-color-primary);
     }
     .item-top-icon {
-      width: 80px;
-      height: 56px;
+      width: 40px;
+      height: 28px;
       color: @canvas-main-font-color;
     }
   }
@@ -236,7 +236,7 @@ const groupActiveChange = category => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 88px;
+    width: 70px;
   }
 }
 

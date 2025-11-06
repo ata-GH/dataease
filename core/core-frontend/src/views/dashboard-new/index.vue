@@ -463,6 +463,7 @@ onUnmounted(() => {
       .content {
         flex: 1;
         width: 100%;
+        margin-top: 250px;
         .db-canvas {
           padding: 2px;
           background-size: 100% 100% !important;

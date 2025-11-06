@@ -195,7 +195,7 @@ onMounted(() => {
         </el-icon>
         <el-icon
           class="child"
-          style="position: absolute; top: 7px; right: 10px; color: #a6a6a6; cursor: pointer"
+          style="position: absolute; top: 7px; left: 10px; color: #a6a6a6; cursor: pointer"
         >
           <Icon name="icon_down_outlined-1"><icon_down_outlined1 class="svg-icon" /></Icon>
         </el-icon>
@@ -475,7 +475,7 @@ span {
 .remove-icon {
   position: absolute;
   top: 7px;
-  right: 24px;
+  right: 10px;
   cursor: pointer;
   .inner-class {
     font-size: 14px;
