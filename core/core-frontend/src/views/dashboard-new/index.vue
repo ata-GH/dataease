@@ -21,6 +21,7 @@ import DeCanvas from '@/views/canvas/DeCanvas.vue'
 import MobileConfigPanel from './MobileConfigPanel.vue'
 import CanvasCacheDialog from '@/components/visualization/CanvasCacheDialog.vue'
 import { XpackComponent } from '@/components/plugin'
+import { ElMessage, ElTreeSelect } from 'element-plus-secondary'
 
 // API和工具函数
 import { getDatasetTree } from '@/api/dataset'
@@ -31,9 +32,15 @@ import { useCache } from '@/hooks/web/useCache'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { findComponentAttr } from '../../utils/components'
 import { deepCopy } from '@/utils/utils'
+import findComponent from '@/utils/components'
+import { findNewComponentFromList } from '@/custom-component/component-list' // 左侧列表数据
+
+import { syncShapeItemStyle, getStyle} from '@/utils/style'
+import { adaptCurThemeCommonStyle } from '@/utils/canvasStyle'
+import { guid } from '@/views/visualized/data/dataset/form/util.js'
 
 // 第三方库
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, concat } from 'lodash-es'
 import { Base64 } from 'js-base64'
 
 // 类型导入
@@ -69,7 +76,9 @@ const {
   batchOptStatus,
   hiddenListStatus,
   lastHiddenComponent,
-  dvInfo
+  dvInfo,
+  mobileInPc,
+  curOriginThemes
 } = storeToRefs(dvMainStore)
 
 // 本地状态
@@ -84,11 +93,27 @@ let p = null
 // 共享状态
 const state = reactive({
   datasetTree: [],
+  dimensionData: [],
+  quotaData: [],
   sourcePid: null,
   canvasId: 'canvas-main',
   opt: null,
   resourceId: null
 })
+
+const commonFilterAttrs = ['width', 'height', 'top', 'left', 'rotate']
+const commonFilterAttrsFilterBorder = [
+  'width',
+  'height',
+  'top',
+  'left',
+  'rotate',
+  'borderActive',
+  'borderWidth',
+  'borderRadius',
+  'borderStyle',
+  'borderColor'
+]
 
 // 计算属性
 const isDataEaseBi = computed(() => appStore.getIsDataEaseBi)
@@ -203,6 +228,64 @@ const initLocalCanvasData = callBack => {
     }
   )
 }
+
+const allFields = computed(() => {
+  return concat(state.quotaData, state.dimensionData)
+})
+const getComponentStyle = style => {
+  return getStyle(style, style.borderActive ? commonFilterAttrs : commonFilterAttrsFilterBorder)
+}
+const calcData = (view, resetDrill = false, updateQuery = '') => {
+  console.log(view, 'view')
+  if (
+    view.refreshTime === '' ||
+    parseFloat(view.refreshTime).toString() === 'NaN' ||
+    parseFloat(view.refreshTime) < 1
+  ) {
+    ElMessage.error(t('chart.only_input_number'))
+    return
+  }
+  if (resetDrill) {
+    useEmitt().emitter.emit('resetDrill-' + view.id, 0)
+  } else {
+    if (mobileInPc.value) {
+      //移动端设计
+      useEmitt().emitter.emit('onMobileStatusChange', {
+        type: 'componentStyleChange',
+        value: { type: 'calcData', component: JSON.parse(JSON.stringify(view)) }
+      })
+    } else {
+      useEmitt().emitter.emit('calcData-' + view.id, view)
+      snapshotStore.recordSnapshotCache('renderChart', view.id)
+    }
+  }
+  snapshotStore.recordSnapshotCache('calcData', view.id)
+  // if (updateQuery === 'updateQuery') {
+  //   queryList.value.forEach(ele => {
+  //     useEmitt().emitter.emit(`updateQueryCriteria${ele.id}`)
+  //   })
+  // }
+}
+const updateChartData = view => {
+  curComponent.value['state'] = 'ready'
+  useEmitt().emitter.emit('checkShowEmpty', { allFields: allFields.value, view: view })
+  calcData(view, true, 'updateQuery')
+}
+// 通过实时监听的方式直接添加组件
+const handleNewFromCanvasMain = newComponentInfo => {
+  const { componentName, innerType, staticMap } = newComponentInfo
+  if (componentName) {
+    const component = findNewComponentFromList(componentName, innerType, curOriginThemes, staticMap)
+    syncShapeItemStyle(component, 300, 300)
+    component.id = guid()
+    dvMainStore.addComponent({
+      component: component,
+      index: undefined
+    })
+    adaptCurThemeCommonStyle(component)
+    snapshotStore.recordSnapshotCacheWithPositionChange('renderChart', component.id)
+  }
+}
 onMounted(async () => {
   document.body.style.overflow = 'hidden'
   dvMainStore.setCurComponent({ component: null, index: null })
@@ -281,8 +364,12 @@ onMounted(async () => {
         if (dvMainStore.getAppDataInfo()) {
           eventBus.emit('save')
         }
+      } else {
+        // 新建组件
+        handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
       }
       dataInitState.value = true
+      dvMainStore.setEditMode('edit')
       // preOpt
       canvasStyleData.value.component.chartTitle.color = '#000000'
     })
@@ -416,9 +503,9 @@ onUnmounted(() => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main class="center" :class="{ 'de-screen-full': fullscreenFlag }">
-        <de-canvas
-          style="overflow-x: hidden"
+      <main class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 250px;">
+        <!-- <de-canvas
+          style="display: none;"
           v-if="dataInitState"
           ref="deCanvasRef"
           :canvas-id="state.canvasId"
@@ -426,7 +513,29 @@ onUnmounted(() => {
           :canvas-style-data="canvasStyleData"
           :canvas-view-info="canvasViewInfo"
           :font-family="canvasStyleData.fontFamily"
-        ></de-canvas>
+        ></de-canvas> -->
+
+          <div class="button-area" ref="buttonAreaRef">
+            <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button>
+            <el-button size="small" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">查询</el-button>
+          </div>
+          <div>
+            <div v-for="item in componentData" :key="item.id" style="height: 100%">
+              <component
+                :is="findComponent(item.component)"
+                class="component"
+                :id="'component' + item.id"
+                :dv-type="dvInfo.type"
+                :style="getComponentStyle(item.style)"
+                :prop-value="item.propValue"
+                :view="canvasViewInfo[item.id]"
+                :element="item"
+                :request="item.request"
+                :dv-info="dvInfo"
+                :font-family="'inherit'"
+                />
+            </div>
+          </div>
       </main>
     </el-container>
   </div>

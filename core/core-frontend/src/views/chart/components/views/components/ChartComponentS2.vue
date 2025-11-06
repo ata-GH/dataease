@@ -697,7 +697,6 @@ const tablePageClass = computed(() => {
 </script>
 
 <template>
-  <div class="canvas-area">
     <view-track-bar
       ref="viewTrack"
       :track-menu="trackMenu"
