@@ -519,7 +519,7 @@ onUnmounted(() => {
             <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button>
             <el-button size="small" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">查询</el-button>
           </div>
-          <div>
+          <div class="show-area">
             <div v-for="item in componentData" :key="item.id" style="height: 100%">
               <component
                 :is="findComponent(item.component)"
@@ -569,6 +569,13 @@ onUnmounted(() => {
       flex: 1;
       position: relative;
       overflow: auto;
+      .button-area {
+        padding: 10px;
+      }
+      .show-area {
+        padding: 0 10px;
+        height: calc(100vh - 365px);
+      }
       .content {
         flex: 1;
         width: 100%;

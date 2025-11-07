@@ -4101,7 +4101,7 @@ const deleteChartFieldItem = id => {
 }
 
 .editor-light {
-  border-left: solid 1px @side-outline-border-color-light !important;
+  border-right: solid 1px @side-outline-border-color-light !important;
   color: @canvas-main-font-color-light!important;
   background-color: @side-area-background-light!important;
   :deep(.ed-tabs__header) {
@@ -4120,7 +4120,7 @@ const deleteChartFieldItem = id => {
     border-top: 1px solid @side-outline-border-color-light !important;
   }
   :deep(.dataset-main) {
-    border-left: 1px solid @side-outline-border-color-light !important;
+    border-right: 1px solid @side-outline-border-color-light !important;
   }
   :deep(input) {
     font-size: 12px;
@@ -4285,7 +4285,7 @@ span {
       padding-top: 0 !important;
 
       :deep(.drag-placeholder-style) {
-        top: calc(50% - 8px);
+        top: calc(50% - 2px);
       }
     }
   }
@@ -5238,6 +5238,8 @@ span {
   height: 250px;
   z-index: 10;
   padding: 5px 10px;
+  overflow-y: auto;
+  border-bottom: solid 1px @side-outline-border-color-light !important;
   .form-draggable-title {
     display: flex;
     flex-direction: row;
@@ -5262,6 +5264,7 @@ span {
       cursor: pointer;
       margin-top: 2px;
       margin-right: 2px;
+      top: 5px;
 
       &.remove-icon--dark {
         color: #a6a6a6;
@@ -5299,8 +5302,16 @@ span {
       display: inline-block;
       margin-left: 5px;
       .item-axis {
-        padding: 1px 30px;
+        padding: 0px 25px;
         margin: 5px 0;
+        position: relative;
+        i.remove-icon {
+          top: 6px;
+          right: 4px;
+        }
+        i.arrow_down-icon {
+          top: 5px!important;
+        }
       }
     }
   }

@@ -127,7 +127,7 @@ const groupActiveChange = category => {
 .chart-light {
   color: #646a73 !important;
   :deep(.group-right) {
-    border-left: 1px solid @side-outline-border-color-light!important;
+    border-left: none!important;
   }
   :deep(.item-top) {
     background-color: #f5f6f7 !important;
