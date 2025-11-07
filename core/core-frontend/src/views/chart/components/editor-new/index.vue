@@ -177,6 +177,17 @@ const toolTip = computed(() => {
   return props.themes || 'dark'
 })
 
+// 根据左侧两个折叠按钮动态计算右上数据区块的偏移与宽度
+const rightTopAreaStyle = computed(() => {
+  const datasetWidth = canvasCollapse.value.datasetAreaCollapse ? 35 : 179
+  const chartWidth = canvasCollapse.value.chartAreaCollapse ? 35 : 240
+  const leftPx = datasetWidth + chartWidth
+  return {
+    left: `${leftPx}px`,
+    width: `calc(100vw - ${leftPx}px)`
+  }
+})
+
 const templateStatusShow = computed(() => {
   return (
     view.value['dataFrom'] === 'template' &&
@@ -2774,7 +2785,7 @@ const deleteChartFieldItem = id => {
         </div>
       </el-row>
     </template>
-    <div class="right-top-area">
+    <div class="right-top-area" :style="rightTopAreaStyle">
       <template v-if="view.plugin?.isPlugin">
         <plugin-component
           :jsname="view.plugin.staticMap['editor-data']"
@@ -4256,7 +4267,6 @@ const deleteChartFieldItem = id => {
 
 .chart-edit {
   position: relative;
-  transition: 0.5s;
   height: 100%;
   color: white;
   background-color: @side-area-background;
@@ -4274,7 +4284,6 @@ span {
   overflow-y: hidden;
   width: 100%;
   display: flex;
-  transition: 0.5s;
   .padding-lr {
     padding: 0 16px;
 
@@ -4996,7 +5005,6 @@ span {
 .content-area {
   height: 100%;
   position: relative;
-  transition: 0.5s;
   overflow-x: hidden;
 }
 
