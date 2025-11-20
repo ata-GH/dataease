@@ -1523,9 +1523,9 @@ defineExpose({
           </el-form-item>
           <el-form-item :label="t('deDataset.parameter_type')" prop="deType">
             <el-radio-group v-model="paramsObj.deType">
-              <el-radio :value="0" :value="t('data_source.text')"></el-radio>
-              <el-radio :value="2" :value="t('data_source.numerical_value')"></el-radio>
-              <el-radio :value="3" :value="t('data_source.numeric_value_decimal')"></el-radio>
+              <el-radio :value="0">{{ t('data_source.text') }}</el-radio>
+              <el-radio :value="2">{{ t('data_source.numerical_value') }}</el-radio>
+              <el-radio :value="3">{{ t('data_source.numeric_value_decimal') }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
