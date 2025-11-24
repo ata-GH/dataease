@@ -45,5 +45,16 @@ const { viewIcon, themes } = toRefs(props)
   width: 50%;
   height: 50%;
   opacity: 0.3;
+  color: var(--ed-color-primary);
+}
+
+/* 统一图标着色为当前颜色（主色浅蓝）*/
+:deep(.item-icon svg),
+:deep(.item-icon path),
+:deep(.item-icon circle),
+:deep(.item-icon rect),
+:deep(.item-icon polygon) {
+  fill: currentColor !important;
+  stroke: currentColor !important;
 }
 </style>

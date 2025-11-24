@@ -2881,16 +2881,17 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
 
   --ed-border-color-lighter: #1f232926 !important;
   .top {
-    height: 56px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    background: #050e21;
-    box-shadow: 0px 2px 4px 0px rgba(31, 35, 41, 0.12);
+    background: #fff;
+    border-bottom: 1px solid var(--ed-border-color-lighter, #1f232926);
+    box-shadow: none;
 
     .name {
-      color: #fff;
+      color: #1f2329;
       font-family: var(--de-custom_font, 'PingFang');
       font-size: 16px;
       font-weight: 400;
@@ -2913,12 +2914,12 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
         line-height: 24px;
         height: 24px;
         :deep(.ed-input__wrapper) {
-          background-color: #050e21;
-          box-shadow: 0 0 0 1px var(--ed-color-primary);
+          background-color: #fff;
+          box-shadow: 0 0 0 1px var(--ed-border-color-lighter, #1f232926);
           padding: 0 4px;
         }
         :deep(.ed-input__inner) {
-          color: #fff;
+          color: #1f2329;
           font-size: 16px;
         }
       }
@@ -2930,11 +2931,11 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
 
   .container {
     width: 100%;
-    height: calc(100vh - 56px);
+    height: calc(100vh - 48px);
     position: relative;
     .drag-left {
       position: absolute;
-      height: calc(100vh - 56px);
+      height: calc(100vh - 48px);
       width: 4px;
       top: 0;
       z-index: 2;

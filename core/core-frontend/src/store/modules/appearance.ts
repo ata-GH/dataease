@@ -255,6 +255,31 @@ export const useAppearanceStore = defineStore('appearanceStore', {
           document.title = 'DataEase'
           setLinkIcon()
         }
+        // 无后端外观配置时，设置默认主色为 #33BDFC
+        const defaultColor = '#33BDFC'
+        document.documentElement.style.setProperty('--ed-color-primary', defaultColor)
+        document.documentElement.style.setProperty('--van-blue', defaultColor)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-5',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 40 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-3',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty('--ed-color-primary-1a', `${defaultColor}1a`)
+        document.documentElement.style.setProperty('--ed-color-primary-33', `${defaultColor}33`)
+        document.documentElement.style.setProperty('--ed-color-primary-99', `${defaultColor}99`)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-dark-2',
+          colorFunctions
+            .mix(new colorTree('000000'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
         return
       }
       const data: AppearanceState = { loaded: false, community: true }
@@ -272,6 +297,31 @@ export const useAppearanceStore = defineStore('appearanceStore', {
         this.demoTipsContent = data.demoTipsContent
         this.loaded = true
         setLinkIcon()
+        // 社区模式下也注入默认主色为 #33BDFC
+        const defaultColor = '#33BDFC'
+        document.documentElement.style.setProperty('--ed-color-primary', defaultColor)
+        document.documentElement.style.setProperty('--van-blue', defaultColor)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-5',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 40 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-3',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty('--ed-color-primary-1a', `${defaultColor}1a`)
+        document.documentElement.style.setProperty('--ed-color-primary-33', `${defaultColor}33`)
+        document.documentElement.style.setProperty('--ed-color-primary-99', `${defaultColor}99`)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-dark-2',
+          colorFunctions
+            .mix(new colorTree('000000'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
         return
       }
       this.navigate = data.navigate
@@ -309,14 +359,32 @@ export const useAppearanceStore = defineStore('appearanceStore', {
             .mix(new colorTree('000000'), new colorTree(this.customColor.substr(1)), { value: 15 })
             .toRGB()
         )
-      } else if (document.documentElement.style.getPropertyValue('--ed-color-primary')) {
-        document.documentElement.style.setProperty('--ed-color-primary', '#3370FF')
-        document.documentElement.style.removeProperty('--ed-color-primary-light-3')
-        document.documentElement.style.removeProperty('--ed-color-primary-light-5')
-        document.documentElement.style.removeProperty('--ed-color-primary-1a')
-        document.documentElement.style.removeProperty('--ed-color-primary-33')
-        document.documentElement.style.removeProperty('--ed-color-primary-99')
-        document.documentElement.style.removeProperty('--ed-color-primary-dark-2')
+      } else {
+        // 默认主色改为浅蓝色 #33BDFC，并同步设置衍生色变量
+        const defaultColor = '#33BDFC'
+        document.documentElement.style.setProperty('--ed-color-primary', defaultColor)
+        document.documentElement.style.setProperty('--van-blue', defaultColor)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-5',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 40 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-light-3',
+          colorFunctions
+            .mix(new colorTree('ffffff'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
+        document.documentElement.style.setProperty('--ed-color-primary-1a', `${defaultColor}1a`)
+        document.documentElement.style.setProperty('--ed-color-primary-33', `${defaultColor}33`)
+        document.documentElement.style.setProperty('--ed-color-primary-99', `${defaultColor}99`)
+        document.documentElement.style.setProperty(
+          '--ed-color-primary-dark-2',
+          colorFunctions
+            .mix(new colorTree('000000'), new colorTree('33BDFC'), { value: 15 })
+            .toRGB()
+        )
       }
       this.bg = data.bg
       this.login = data.login

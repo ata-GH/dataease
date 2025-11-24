@@ -139,7 +139,7 @@ const groupActiveChange = category => {
     color: @chart-change-font-color-light!important;
   }
   :deep(.item-top-icon) {
-    color: @chart-change-font-color-light!important;
+    color: var(--ed-color-primary) !important;
   }
 }
 .group {
@@ -221,7 +221,7 @@ const groupActiveChange = category => {
     .item-top-icon {
       width: 40px;
       height: 28px;
-      color: @canvas-main-font-color;
+      color: var(--ed-color-primary);
     }
   }
   .item-active {
@@ -238,6 +238,16 @@ const groupActiveChange = category => {
     text-overflow: ellipsis;
     width: 70px;
   }
+}
+
+/* 强制将图标的 SVG 使用当前颜色，确保统一为主色浅蓝 */
+:deep(.item-top-icon svg),
+:deep(.item-top-icon path),
+:deep(.item-top-icon circle),
+:deep(.item-top-icon rect),
+:deep(.item-top-icon polygon) {
+  fill: currentColor !important;
+  stroke: currentColor !important;
 }
 
 .group-title {

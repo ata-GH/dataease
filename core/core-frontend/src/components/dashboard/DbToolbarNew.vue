@@ -830,50 +830,57 @@ const initOpenHandler = newWindow => {
   margin: 0;
 }
 .toolbar {
-  height: @top-bar-height;
+  height: 48px;
   white-space: nowrap;
   overflow-x: auto;
-  background: #050e21;
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--ed-color-text-primary, #1F2329);
+  border-bottom: 1px solid @side-outline-border-color-light;
   display: flex;
+  align-items: center;
   transition: 0.5s;
   width: 100%;
   .back-icon {
-    margin-left: 20px;
-    margin-top: 22px;
+    margin-left: 16px;
+    margin-top: 0;
     font-size: 20px;
   }
   .left-area {
-    margin-top: 8px;
-    margin-left: 14px;
-    width: 300px;
+    margin-top: 0;
+    margin-left: 12px;
+    width: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     .name-area {
       position: relative;
       line-height: 24px;
       height: 24px;
       font-size: 16px;
-      width: 300px;
+      width: auto;
+      max-width: 300px;
       overflow: hidden;
       cursor: pointer;
       input {
         position: absolute;
         left: 0;
         width: 100%;
-        color: #fff;
-        background-color: #050e21;
+        color: var(--ed-color-text-primary, #1F2329);
+        background-color: #ffffff;
         outline: none;
-        border: 1px solid #295acc;
+        border: 1px solid @side-outline-border-color-light;
         border-radius: 4px;
         padding: 0 4px;
         height: 100%;
       }
     }
     .opt-area {
-      width: 300px;
+      width: auto;
+      margin-left: 16px;
+      display: flex;
+      align-items: center;
       text-align: left;
-      color: #a6a6a6;
+      color: var(--ed-color-text-secondary, #646A73);
 
       .opt-icon-redo {
         margin-left: 12px;
@@ -893,7 +900,7 @@ const initOpenHandler = newWindow => {
     justify-content: right;
 
     .divider {
-      background: #ffffff4d;
+      background: rgba(31, 35, 41, 0.15);
       width: 1px;
       height: 18px;
       margin: 0 10px;
@@ -901,7 +908,7 @@ const initOpenHandler = newWindow => {
   }
   .custom-el-icon {
     margin-left: 15px;
-    color: #ffffff;
+    color: var(--ed-color-text-primary, #1F2329);
     cursor: pointer;
     vertical-align: -0.2em;
   }
@@ -912,31 +919,21 @@ const initOpenHandler = newWindow => {
 }
 
 .preview-button {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  background-color: #050e21;
-  &:hover,
-  &:focus {
-    background-color: #121a2c;
-    border-color: #595f6b;
-  }
-
-  &:active {
-    border-color: #616774;
-    background-color: #1e2637;
-  }
+  background-color: #ffffff;
+  color: var(--ed-color-primary, #3370FF);
+  border-color: var(--ed-color-primary, #3370FF);
 }
 .custom-normal-button {
   background-color: transparent;
-  border-color: #a6a6a6 !important;
-  color: #ffffff !important;
+  border-color: rgba(31, 35, 41, 0.15) !important;
+  color: var(--ed-color-text-primary, #1F2329) !important;
   &:hover {
-    color: #ffffff;
-    background-color: #ffffff1a !important;
+    color: var(--ed-color-text-primary, #1F2329);
+    background-color: rgba(31, 35, 41, 0.06) !important;
   }
   &:active {
-    color: #ffffff;
-    background-color: #ffffff33 !important;
+    color: var(--ed-color-text-primary, #1F2329);
+    background-color: rgba(31, 35, 41, 0.12) !important;
   }
   &.is-disabled {
     color: var(--ed-button-disabled-text-color) !important;
@@ -944,7 +941,7 @@ const initOpenHandler = newWindow => {
 }
 
 .adapt-count {
-  color: #ffffff;
+  color: var(--ed-color-text-primary, #1F2329);
   margin-left: 10px;
   font-size: 14px;
   font-weight: 400;
