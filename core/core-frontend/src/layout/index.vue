@@ -25,7 +25,7 @@ const { t } = useI18n()
 
 <template>
   <div class="common-layout">
-    <HeaderSystem
+    <!-- <HeaderSystem
       v-if="settingMenu || marketMenu || toolboxMenu || msgFillMenu"
       :title="
         toolboxMenu
@@ -37,7 +37,7 @@ const { t } = useI18n()
           : ''
       "
     />
-    <Header v-else></Header>
+    <Header v-else></Header> -->
     <el-container class="layout-container">
       <template v-if="systemMenu || settingMenu || toolboxMenu || msgFillMenu">
         <Sidebar v-if="!isCollapse" class="layout-sidebar">

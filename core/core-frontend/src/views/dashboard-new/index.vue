@@ -13,11 +13,11 @@ import { useEmbedded } from '@/store/modules/embedded'
 
 // UI组件
 import DvSidebar from '../../components/visualization/DvSidebar.vue'
-import DbToolbar from '@/components/dashboard/DbToolbar.vue'
+import DbToolbar from '@/components/dashboard/DbToolbarNew.vue'
 import ViewEditor from '@/views/chart/components/editor-new/index.vue'
 import DbCanvasAttr from '@/components/dashboard/DbCanvasAttr.vue'
 import ChartStyleBatchSet from '@/views/chart/components/editor/editor-style/ChartStyleBatchSet.vue'
-import DeCanvas from '@/views/canvas/DeCanvas.vue'
+// import DeCanvas from '@/views/canvas/DeCanvas.vue'
 import MobileConfigPanel from './MobileConfigPanel.vue'
 import CanvasCacheDialog from '@/components/visualization/CanvasCacheDialog.vue'
 import { XpackComponent } from '@/components/plugin'
@@ -579,7 +579,7 @@ onUnmounted(() => {
       .content {
         flex: 1;
         width: 100%;
-        margin-top: 250px;
+        // margin-top: 250px;
         .db-canvas {
           padding: 2px;
           background-size: 100% 100% !important;

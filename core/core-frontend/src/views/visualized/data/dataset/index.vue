@@ -990,7 +990,7 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
               ></dataset-detail>
             </el-popover>
             <div class="right-btn">
-              <el-button secondary @click="createPanel('dashboard')" v-permission="['panel']">
+              <!-- <el-button secondary @click="createPanel('dashboard')" v-permission="['panel']">
                 <template #icon>
                   <Icon name="icon_dashboard_outlined"
                     ><icon_dashboard_outlined class="svg-icon"
@@ -1012,7 +1012,7 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
                   /></Icon>
                 </template>
                 {{ t('data_set.dataset_export') }}
-              </el-button>
+              </el-button> -->
               <el-button type="primary" @click="editorDataset" v-if="nodeInfo.weight >= 7">
                 <template #icon>
                   <Icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></Icon>
@@ -1301,7 +1301,8 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
 
   .dataset-height,
   .dataset-content {
-    height: calc(100vh - 56px);
+    // height: calc(100vh - 56px);
+    height: 100vh;
     overflow: auto;
     position: relative;
   }
