@@ -55,7 +55,7 @@
                   }})</span
                 >
                 <span v-show="state.templateFilterText">
-                  <span style="color: #3370ff">{{ state.templateFilterText }}&nbsp;&nbsp;</span>
+                  <span style="color: #33BDFC">{{ state.templateFilterText }}&nbsp;&nbsp;</span>
                   <span
                     >{{ t('template_manage.search_result') }}&nbsp;{{
                       currentTemplateShowListComputed.length

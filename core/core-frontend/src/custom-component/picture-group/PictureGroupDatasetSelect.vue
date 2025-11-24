@@ -240,8 +240,8 @@ const initOpenHandler = newWindow => {
     }
 
     &.active {
-      color: #3370ff;
-      border-color: #3370ff;
+      color: #33BDFC;
+      border-color: #33BDFC;
     }
   }
 

@@ -804,7 +804,7 @@ onMounted(() => {
     margin-right: 4px;
   }
   .done-finish {
-    color: var(--ed-color-primary, #3370ff);
+    color: var(--ed-color-primary, #33BDFC);
     &:hover {
       background-color: var(--ed-color-primary-1a, #3370ff1a) !important;
     }

@@ -689,7 +689,7 @@ onMounted(() => {
   }
 
   &:hover {
-    color: var(--ed-color-primary, #3370ff);
+    color: var(--ed-color-primary, #33BDFC);
     &::after {
       background: var(--ed-color-primary-1a, #3370ff1a);
       display: block;

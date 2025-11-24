@@ -1283,7 +1283,7 @@ defineExpose({
 }
 
 .item-dimension:hover {
-  border: 1px solid var(--ed-color-primary, #3370ff);
+  border: 1px solid var(--ed-color-primary, #33BDFC);
   background: var(--ed-color-primary-1a, rgba(51, 112, 255, 0.1));
 }
 

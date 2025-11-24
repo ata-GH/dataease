@@ -110,7 +110,7 @@ onBeforeMount(() => {
   .van-tabbar-item--active {
     .van-tabbar-item__icon {
       .ed-icon {
-        color: var(--ed-color-primary, #3370ff);
+        color: var(--ed-color-primary, #33BDFC);
       }
     }
   }

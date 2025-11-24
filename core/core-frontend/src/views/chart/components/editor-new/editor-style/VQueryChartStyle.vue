@@ -256,7 +256,7 @@ const initParams = () => {
       nameboxSpacing: 8,
       queryConditionSpacing: 16,
       labelColorBtn: '#ffffff',
-      btnColor: '#3370ff'
+      btnColor: '#33BDFC'
     }
   }
 

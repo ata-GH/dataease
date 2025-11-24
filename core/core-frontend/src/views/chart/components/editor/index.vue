@@ -4115,7 +4115,7 @@ const deleteChartFieldItem = id => {
         font-size: 14px;
       }
       &.active {
-        border-color: var(--ed-color-primary, #3370ff);
+        border-color: var(--ed-color-primary, #33BDFC);
       }
     }
 
@@ -4132,7 +4132,7 @@ const deleteChartFieldItem = id => {
       min-height: 100%;
       z-index: 5;
       .items {
-        border-color: var(--ed-color-primary, #3370ff);
+        border-color: var(--ed-color-primary, #33BDFC);
         & + .items {
           margin-top: 2px;
         }
@@ -4222,7 +4222,7 @@ const deleteChartFieldItem = id => {
       .ed-tabs__item {
         height: 35px;
         line-height: 35px;
-        color: var(--ed-color-primary, #3370ff);
+        color: var(--ed-color-primary, #33BDFC);
         font-family: var(--de-custom_font, 'PingFang');
         font-size: 12px;
         font-style: normal;
@@ -4251,7 +4251,7 @@ const deleteChartFieldItem = id => {
       .ed-tabs__item {
         height: 35px;
         line-height: 35px;
-        color: var(--ed-color-primary, #3370ff);
+        color: var(--ed-color-primary, #33BDFC);
         font-family: var(--de-custom_font, 'PingFang');
         font-size: 12px;
         font-style: normal;
@@ -4279,7 +4279,7 @@ const deleteChartFieldItem = id => {
       box-shadow: 0 0 0 1px hsla(0, 0%, 100%, 0.15) inset !important;
     }
     :deep(.ed-input__wrapper:hover) {
-      box-shadow: 0 0 0 1px var(--ed-color-primary, #3370ff) inset !important;
+      box-shadow: 0 0 0 1px var(--ed-color-primary, #33BDFC) inset !important;
     }
   }
   .query-style-tab {
@@ -4303,7 +4303,7 @@ const deleteChartFieldItem = id => {
       .ed-tabs__item {
         height: 35px;
         line-height: 35px;
-        color: var(--ed-color-primary, #3370ff);
+        color: var(--ed-color-primary, #33BDFC);
         font-family: var(--de-custom_font, 'PingFang');
         font-size: 12px;
         font-style: normal;
@@ -4445,7 +4445,7 @@ span {
         position: absolute;
         left: 16px;
         top: 0;
-        background: var(--ed-color-primary, #3370ff);
+        background: var(--ed-color-primary, #33BDFC);
       }
     }
 
@@ -4504,7 +4504,7 @@ span {
     }
 
     &.sortable-chosen {
-      border: 1px solid var(--ed-color-primary, #3370ff);
+      border: 1px solid var(--ed-color-primary, #33BDFC);
       background: #fff;
 
       &:hover {
@@ -4692,8 +4692,8 @@ span {
       }
 
       &.active {
-        color: #3370ff;
-        border-color: #3370ff;
+        color: #33BDFC;
+        border-color: #33BDFC;
       }
 
       &.invalid {
@@ -4772,7 +4772,7 @@ span {
   .result-style-dark {
     :deep(.ed-button) {
       color: #ffffff;
-      background-color: var(--ed-color-primary, #3370ff);
+      background-color: var(--ed-color-primary, #33BDFC);
       border: none;
       border-radius: 0;
     }
@@ -4818,7 +4818,7 @@ span {
       border-radius: 2px;
     }
     :deep(.ed-button:hover) {
-      border: 1px solid var(--ed-color-primary, #3370ff);
+      border: 1px solid var(--ed-color-primary, #33BDFC);
     }
   }
 

@@ -1222,7 +1222,7 @@ onMounted(() => {
 }
 
 .shape-selected {
-  outline: 1px solid #3370ff;
+  outline: 1px solid #33BDFC;
 }
 
 .shape-edit {

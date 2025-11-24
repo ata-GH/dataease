@@ -2978,7 +2978,7 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
         padding-left: 4px;
         width: 24px;
         .ed-icon {
-          color: var(--ed-color-primary, #3370ff);
+          color: var(--ed-color-primary, #33BDFC);
         }
       }
     }
@@ -3031,7 +3031,7 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
           z-index: 10;
           &:hover {
             .ed-icon {
-              color: var(--ed-color-primary, #3370ff) !important;
+              color: var(--ed-color-primary, #33BDFC) !important;
             }
           }
         }

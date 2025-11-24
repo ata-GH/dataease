@@ -45,7 +45,7 @@ const quickCreationList = shallowRef([
   {
     icon: icon_dashboard_outlined,
     name: 'panel',
-    color: '#3370ff'
+    color: '#33BDFC'
   },
   {
     icon: icon_operationAnalysis_outlined,

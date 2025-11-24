@@ -10,7 +10,7 @@ import { iconFieldMap } from '@/components/icon-group/field-list'
 
 const state = reactive({
   formatterItem: formatterItem,
-  tagColor: '#3370ff'
+  tagColor: '#33BDFC'
 })
 
 const props = defineProps({

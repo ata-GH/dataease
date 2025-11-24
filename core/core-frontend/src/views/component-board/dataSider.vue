@@ -716,7 +716,7 @@ onBeforeUnmount(() => {
         font-size: 14px;
       }
       &.active {
-        border-color: var(--ed-color-primary, #3370ff);
+        border-color: var(--ed-color-primary, #33BDFC);
       }
     }
 }

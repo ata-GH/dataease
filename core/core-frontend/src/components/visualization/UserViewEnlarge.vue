@@ -577,7 +577,7 @@ defineExpose({
   }
   :deep(.is-active) {
     font-weight: 500;
-    color: var(--ed-color-primary, #3370ff);
+    color: var(--ed-color-primary, #33BDFC);
   }
 
   :deep(.ed-tabs__nav-scroll) {

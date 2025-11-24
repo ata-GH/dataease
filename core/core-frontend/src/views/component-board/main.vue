@@ -1594,7 +1594,7 @@ watch(() => componentData.value, () => {
 }
 
 .fullscreen-btn:hover,.fullscreen-btn:active,.data-view-btn:hover,.data-view-btn:active {
-  border-color: #3370ff;
+  border-color: #33BDFC;
   background-color: #f2f5ff;
 }
 

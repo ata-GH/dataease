@@ -331,7 +331,7 @@ defineExpose({
       top: 10.6px;
       left: 16px;
       font-size: 14px;
-      color: var(--ed-color-primary, #3370ff);
+      color: var(--ed-color-primary, #33BDFC);
     }
 
     margin-bottom: 16px;

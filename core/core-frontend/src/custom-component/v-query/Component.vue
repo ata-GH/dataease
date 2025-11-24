@@ -93,7 +93,7 @@ const defaultStyle = {
   nameboxSpacing: 8,
   queryConditionSpacing: 16,
   queryConditionHeight: 32,
-  btnColor: '#3370ff',
+  btnColor: '#33BDFC',
   labelColorBtn: '#ffffff'
 }
 const customStyle = reactive({ ...defaultStyle })
@@ -147,7 +147,7 @@ const btnHoverStyle = computed(() => {
   }
 
   return {
-    rawColor: customStyle.btnColor ?? '#3370ff',
+    rawColor: customStyle.btnColor ?? '#33BDFC',
     hoverColor: customStyle.btnColor
       ? colorFunctions
           .mix(new colorTree('ffffff'), new colorTree(btnColor), {
@@ -272,7 +272,7 @@ const setCustomStyle = val => {
   customStyle.queryConditionHeight = queryConditionHeight ?? 32
   customStyle.labelColorBtn = labelColorBtn || '#ffffff'
   customStyle.labelShow = labelShow ?? true
-  customStyle.btnColor = btnColor || '#3370ff'
+  customStyle.btnColor = btnColor || '#33BDFC'
   snapshotStore.recordSnapshotCache('setCustomStyle')
 }
 

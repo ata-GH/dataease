@@ -534,7 +534,7 @@ initFunction()
 }
 
 .item-dimension:hover {
-  border-color: var(--ed-color-primary, #3370ff);
+  border-color: var(--ed-color-primary, #33BDFC);
   background: var(--ed-color-primary-1a, rgba(51, 112, 255, 0.1));
   cursor: pointer;
 }
@@ -566,7 +566,7 @@ initFunction()
 }
 
 .function-style:hover {
-  border-color: var(--ed-color-primary, #3370ff);
+  border-color: var(--ed-color-primary, #33BDFC);
   cursor: pointer;
 }
 .function-height {
