@@ -675,8 +675,7 @@ const initOpenHandler = newWindow => {
         <template v-if="editMode === 'edit' || editMode === 'preview'">
           <el-button
             v-if="editMode === 'edit' || editMode === 'preview'"
-            :disabled="styleChangeTimes < 1"
-            @click="saveCanvasWithCheck()"
+            @click="saveCanvasWithCheck(true, 1)"
             style="float: right; margin-right: 12px"
             type="primary"
           >
