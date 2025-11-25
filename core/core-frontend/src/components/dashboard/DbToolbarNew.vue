@@ -602,7 +602,7 @@ const copySql = async () => {
                 class="toolbar-hover-icon opt-icon-redo"
                 @click="showSql()"
               >
-                <img src="/svg/ic_sql_search.svg" class="svg-icon" alt="SQL" />
+                <img src="/svg/ic_sql_search.svg" class="svg-icon" alt="SQL" style="margin-top: 4px;" />
               </el-icon>
             </el-tooltip>
           </div>
