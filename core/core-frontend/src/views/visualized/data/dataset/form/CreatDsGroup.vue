@@ -13,6 +13,7 @@ import {
   createDatasetTree,
   renameDatasetTree
 } from '@/api/dataset'
+import { queryUserApi, queryRoleApi } from '@/api/auth'
 import type { DatasetOrFolder } from '@/api/dataset'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { BusiTreeRequest } from '@/models/tree/TreeNode'
@@ -54,6 +55,45 @@ const datasetForm = reactive({
   name: ''
 })
 const searchEmpty = ref(false)
+
+// 权限与描述相关状态（仅在 nodeType === 'dataset' 时生效）
+const manageUsers = ref<string[]>([])
+const manageRoles = ref<string[]>([])
+const viewUsers = ref<string[]>([])
+const viewRoles = ref<string[]>([])
+const datasetDesc = ref('')
+const userOptions = ref<any[]>([
+  { id: 'u1', name: '张三' },
+  { id: 'u2', name: '李四' },
+  { id: 'u3', name: '王五' },
+  { id: 'u4', name: '赵六' }
+])
+const roleOptions = ref<any[]>([
+  { id: 'r1', name: '运营组' },
+  { id: 'r2', name: '研发组' },
+  { id: 'r3', name: '市场组' }
+])
+const loadingUsers = ref(false)
+const loadingRoles = ref(false)
+
+const fetchUsers = async (keyword: string) => {
+  loadingUsers.value = true
+  try {
+    const res = await queryUserApi({ keyword })
+    userOptions.value = Array.isArray(res?.data) ? res.data : res || []
+  } finally {
+    loadingUsers.value = false
+  }
+}
+const fetchRoles = async (keyword: string) => {
+  loadingRoles.value = true
+  try {
+    const res = await queryRoleApi({ keyword })
+    roleOptions.value = Array.isArray(res?.data) ? res.data : res || []
+  } finally {
+    loadingRoles.value = false
+  }
+}
 
 const filterNode = (value: string, data: Tree) => {
   nextTick(() => {
@@ -124,6 +164,12 @@ const createDataset = ref(false)
 const filterMethod = (value, data) => data.name.includes(value)
 const resetForm = () => {
   createDataset.value = false
+  // 清空新加字段
+  manageUsers.value = []
+  manageRoles.value = []
+  viewUsers.value = []
+  viewRoles.value = []
+  datasetDesc.value = ''
 }
 
 const dfs = (arr: Tree[]) => {
@@ -219,6 +265,9 @@ const createInit = (type, data: Tree, exec, name: string) => {
   setTimeout(() => {
     dataset.value.clearValidate()
   }, 50)
+  // 初始化一次选项列表
+  fetchUsers('')
+  fetchRoles('')
 }
 
 const editeInit = (param: Tree) => {
@@ -268,6 +317,12 @@ const saveDataset = () => {
         params.union = union
         params.allFields = allfields
         params.isCross = isCross
+        // 额外：权限与描述
+        params.manageUserIds = manageUsers.value
+        params.manageRoleIds = manageRoles.value
+        params.viewUserIds = viewUsers.value
+        params.viewRoleIds = viewRoles.value
+        params.description = datasetDesc.value
       }
       if (cmd.value === 'move' && !checkPid(params.pid)) {
         return
@@ -313,7 +368,7 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
     :title="dialogTitle"
     v-model="createDataset"
     class="create-dialog"
-    :width="cmd === 'move' ? '600px' : '420px'"
+    :width="cmd === 'move' ? '600px' : '600px'"
     :before-close="resetForm"
   >
     <el-form
@@ -327,6 +382,7 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
       <el-form-item v-if="showName" :label="labelName" prop="name">
         <el-input :placeholder="placeholder" v-model="datasetForm.name" />
       </el-form-item>
+
       <el-form-item v-if="showPid" :label="t('deDataset.folder')" prop="pid">
         <el-tree-select
           v-model="datasetForm.pid"
@@ -347,6 +403,100 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
           </template>
         </el-tree-select>
       </el-form-item>
+
+      <!-- 管理权限（用户/群组 多选） 仅在新建/重命名时展示，不在移动时展示 -->
+      <el-row class="ed-form-item" v-if="showName && nodeType === 'dataset'" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="管理权限（用户）">
+            <el-select
+              v-model="manageUsers"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchUsers"
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="管理权限（群组）">
+            <el-select
+              v-model="manageRoles"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchRoles"
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 查看权限（用户/群组 多选） -->
+      <el-row class="ed-form-item" v-if="showName && nodeType === 'dataset'" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="查看权限（用户）">
+            <el-select
+              v-model="viewUsers"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchUsers"
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="查看权限（群组）">
+            <el-select
+              v-model="viewRoles"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchRoles"
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 数据集描述 -->
+      <el-form-item v-if="showName && nodeType === 'dataset'" label="数据集描述">
+        <el-input type="textarea" :rows="3" v-model="datasetDesc" placeholder="请输入" />
+      </el-form-item>
+
       <div v-if="cmd === 'move'">
         <el-input style="margin-bottom: 12px" v-model="filterText" clearable>
           <template #prefix>

@@ -2976,6 +2976,7 @@ export default {
     new_folder: '新建文件夹',
     new_screen: '新建数据大屏',
     new_dashboard: '新建仪表板',
+    new_single_chart: '新建图表',
     new_from_template: '从模板新建',
     folder: '文件夹',
     copy: '复制',
