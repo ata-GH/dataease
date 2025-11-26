@@ -6,6 +6,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useCache } from '@/hooks/web/useCache'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { BusiTreeNode } from '@/models/tree/TreeNode'
+import { queryUserApi, queryRoleApi } from '@/api/auth'
 import {
   copyResource,
   dvNameCheck,
@@ -60,6 +61,46 @@ const methodMap = {
 }
 const searchEmpty = ref(false)
 
+// 权限与描述相关状态
+const manageUsers = ref<string[]>([])
+const manageRoles = ref<string[]>([])
+const viewUsers = ref<string[]>([])
+const viewRoles = ref<string[]>([])
+const chartDesc = ref('')
+const userOptions = ref<any[]>([
+  { id: 'u1', name: '张三' },
+  { id: 'u2', name: '李四' },
+  { id: 'u3', name: '王五' },
+  { id: 'u4', name: '赵六' }
+])
+const roleOptions = ref<any[]>([
+  { id: 'r1', name: '运营组' },
+  { id: 'r2', name: '研发组' },
+  { id: 'r3', name: '市场组' }
+])
+const loadingUsers = ref(false)
+const loadingRoles = ref(false)
+// 获取权限用户列表
+const fetchUsers = async (keyword: string) => {
+  loadingUsers.value = true
+  try {
+    const res = await queryUserApi({ keyword })
+    userOptions.value = Array.isArray(res?.data) ? res.data : res || []
+  } finally {
+    loadingUsers.value = false
+  }
+}
+// 获取权限群组列表
+const fetchRoles = async (keyword: string) => {
+  loadingRoles.value = true
+  try {
+    const res = await queryRoleApi({ keyword })
+    roleOptions.value = Array.isArray(res?.data) ? res.data : res || []
+  } finally {
+    loadingRoles.value = false
+  }
+}
+
 const filterNode = (value: string, data: BusiTreeNode) => {
   nextTick(() => {
     searchEmpty.value = treeRef.value.isEmpty
@@ -110,6 +151,12 @@ const resetForm = () => {
   resourceForm.name = t('visualization.new')
   resourceForm.pid = ''
   resourceDialogShow.value = false
+  // 清空权限与描述
+  manageUsers.value = []
+  manageRoles.value = []
+  viewUsers.value = []
+  viewRoles.value = []
+  chartDesc.value = ''
 }
 
 const dfs = (arr: BusiTreeNode[]) => {
@@ -215,6 +262,9 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
   setTimeout(() => {
     resource.value.clearValidate()
   }, 50)
+  // 初始化一次选项列表
+  fetchUsers('')
+  fetchRoles('')
 }
 
 const editeInit = (param: BusiTreeNode) => {
@@ -259,7 +309,13 @@ const saveResource = () => {
         name: resourceForm.name,
         type: curCanvasType.value,
         mobileLayout: state.targetInfo?.extraFlag,
-        status: state.targetInfo?.extraFlag1
+        status: state.targetInfo?.extraFlag1,
+        // 额外字段：权限与描述（后端若不识别会被忽略）
+        manageUserIds: manageUsers.value,
+        manageRoleIds: manageRoles.value,
+        viewUserIds: viewUsers.value,
+        viewRoleIds: viewRoles.value,
+        description: chartDesc.value
       }
 
       switch (cmd.value) {
@@ -328,7 +384,7 @@ const emits = defineEmits(['finish'])
     class="create-dialog"
     :title="dialogTitle"
     v-model="resourceDialogShow"
-    :width="cmd === 'move' ? '600px' : '420px'"
+    :width="cmd === 'move' ? '600px' : '600px'"
     :before-close="resetForm"
     @submit.prevent
   >
@@ -370,6 +426,104 @@ const emits = defineEmits(['finish'])
             </span>
           </template>
         </el-tree-select>
+      </el-form-item>
+
+      <!-- 管理权限（用户/群组 多选） -->
+      <el-row class="ed-form-item" v-if="showName" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="管理权限（用户）">
+            <el-select
+              v-model="manageUsers"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchUsers"
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="管理权限（群组）">
+            <el-select
+              v-model="manageRoles"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchRoles"
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 查看权限（用户/群组 多选） -->
+      <el-row class="ed-form-item" v-if="showName" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="查看权限（用户）">
+            <el-select
+              v-model="viewUsers"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchUsers"
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="查看权限（群组）">
+            <el-select
+              v-model="viewRoles"
+              multiple
+              filterable
+              remote
+              :remote-method="fetchRoles"
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 图表描述 -->
+      <el-form-item v-if="showName" label="图表描述">
+        <el-input
+          type="textarea"
+          :rows="3"
+          v-model="chartDesc"
+          placeholder="请输入"
+        />
       </el-form-item>
       <div v-if="cmd === 'move'">
         <el-input style="margin-bottom: 12px" v-model="filterText" clearable>
