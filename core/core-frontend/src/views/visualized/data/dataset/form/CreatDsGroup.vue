@@ -13,7 +13,7 @@ import {
   createDatasetTree,
   renameDatasetTree
 } from '@/api/dataset'
-import { queryUserApi, queryRoleApi } from '@/api/auth'
+import { fetchOperatorListApi, fetchGroupListApi } from '@/api/auth'
 import type { DatasetOrFolder } from '@/api/dataset'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { BusiTreeRequest } from '@/models/tree/TreeNode'
@@ -73,14 +73,27 @@ const roleOptions = ref<any[]>([
   { id: 'r2', name: '研发组' },
   { id: 'r3', name: '市场组' }
 ])
+// 缓存完整列表用于本地筛选
+const allUsers = ref<any[]>([])
+const allRoles = ref<any[]>([])
 const loadingUsers = ref(false)
 const loadingRoles = ref(false)
 
 const fetchUsers = async (keyword: string) => {
   loadingUsers.value = true
   try {
-    const res = await queryUserApi({ keyword })
-    userOptions.value = Array.isArray(res?.data) ? res.data : res || []
+    if (!allUsers.value.length) {
+      const res = await fetchOperatorListApi({ numberPerPage: 999999, currentPage: 1 })
+      const data = res?.data
+      allUsers.value = Array.isArray(data) ? data : data?.list || data || []
+    }
+    const kw = (keyword || '').trim().toLowerCase()
+    userOptions.value = !kw
+      ? allUsers.value
+      : allUsers.value.filter(u => {
+          const name = (u.name || u.username || u.nickName || '').toLowerCase()
+          return name.includes(kw)
+        })
   } finally {
     loadingUsers.value = false
   }
@@ -88,8 +101,18 @@ const fetchUsers = async (keyword: string) => {
 const fetchRoles = async (keyword: string) => {
   loadingRoles.value = true
   try {
-    const res = await queryRoleApi({ keyword })
-    roleOptions.value = Array.isArray(res?.data) ? res.data : res || []
+    if (!allRoles.value.length) {
+      const res = await fetchGroupListApi({ state: 1, numberPerPage: 999999, currentPage: 1 })
+      const data = res?.data
+      allRoles.value = Array.isArray(data) ? data : data?.list || data || []
+    }
+    const kw = (keyword || '').trim().toLowerCase()
+    roleOptions.value = !kw
+      ? allRoles.value
+      : allRoles.value.filter(r => {
+          const name = (r.name || '').toLowerCase()
+          return name.includes(kw)
+        })
   } finally {
     loadingRoles.value = false
   }
@@ -412,8 +435,6 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
               v-model="manageUsers"
               multiple
               filterable
-              remote
-              :remote-method="fetchUsers"
               :loading="loadingUsers"
               placeholder="请选择用户管理权限"
             >
@@ -432,8 +453,6 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
               v-model="manageRoles"
               multiple
               filterable
-              remote
-              :remote-method="fetchRoles"
               :loading="loadingRoles"
               placeholder="请选择群组管理权限"
             >
@@ -456,8 +475,6 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
               v-model="viewUsers"
               multiple
               filterable
-              remote
-              :remote-method="fetchUsers"
               :loading="loadingUsers"
               placeholder="请选择用户查看权限"
             >
@@ -476,8 +493,6 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
               v-model="viewRoles"
               multiple
               filterable
-              remote
-              :remote-method="fetchRoles"
               :loading="loadingRoles"
               placeholder="请选择群组查看权限"
             >
