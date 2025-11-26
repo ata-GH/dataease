@@ -83,6 +83,7 @@ const {
   canvasCollapse,
   curComponent,
   componentData,
+  canvasViewDataInfo,
   editMode,
   mobileInPc,
   fullscreenFlag,
@@ -1061,6 +1062,7 @@ const onTypeChange = (render, type) => {
   }
   curComponent.value.innerType = type
   calcData(view.value, true)
+  canvasViewDataInfo.value[view.value.id].sql = null
 }
 
 const onBasicStyleChange = (chartForm: ChartEditorForm<ChartBasicStyle>, prop: string) => {

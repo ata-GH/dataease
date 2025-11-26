@@ -1563,6 +1563,7 @@ export const dvMainStore = defineStore('dataVisualization', {
       this.mainScrollTop = 0
     },
     setViewDataDetails(viewId, chartDataInfo) {
+      chartDataInfo.data.sql = chartDataInfo.sql || null
       this.canvasViewDataInfo[viewId] = chartDataInfo.data
       const viewInfo = this.canvasViewInfo[viewId]
       if (viewInfo) {

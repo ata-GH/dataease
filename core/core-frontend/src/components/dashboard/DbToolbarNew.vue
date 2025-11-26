@@ -70,6 +70,7 @@ const {
   componentData,
   dvInfo,
   canvasViewInfo,
+  canvasViewDataInfo,
   editMode,
   batchOptStatus,
   targetLinkageInfo,
@@ -527,9 +528,6 @@ const initOpenHandler = newWindow => {
 
 // SQL 预览弹窗相关
 const sqlDialogVisible = ref(false)
-const sqlText = ref(
-  'SELECT * FROM (SELECT * FROM (SELECT t_1.city_name AS "M_0", t_1.user_name AS "M_1", t_1.type AS "M_2", t_1.pv AS "M_3", t_1.uv AS "M_4", t_1.pro_name AS "D_0", t_1.use_mon AS "D_1", t_1.use_time AS "D_2" FROM `sdsr`.`jk_test` t_1) dataTable ) AS firstTopTable LIMIT 350,50'
-)
 const showSql = () => {
   sqlDialogVisible.value = true
 }
@@ -818,11 +816,12 @@ const copySql = async () => {
       ref="resourceGroupOpt"
     />
     <outer-params-set ref="outerParamsSetRef"> </outer-params-set>
+    <!-- 查看sql -->
     <el-dialog v-model="sqlDialogVisible" width="60%" :title="'查看SQL'">
-      <div style="margin-bottom: 12px">
+      <div v-if="componentData[0] && canvasViewDataInfo[componentData[0].id]">{{ canvasViewDataInfo[componentData[0].id].sql || 'null' }}</div>
+      <div style="margin-bottom: 12px;text-align: right;">
         <el-button text type="primary" @click="copySql">复制SQL</el-button>
       </div>
-      <el-input type="textarea" :rows="12" v-model="sqlText" readonly />
     </el-dialog>
   </div>
   <de-fullscreen show-position="edit" ref="fullScreeRef"></de-fullscreen>
