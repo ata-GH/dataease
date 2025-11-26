@@ -528,6 +528,12 @@ const initOpenHandler = newWindow => {
 
 // SQL 预览弹窗相关
 const sqlDialogVisible = ref(false)
+const sqlText = computed(() => {
+  if (!(componentData.value[0] && componentData.value[0].id && canvasViewDataInfo.value[componentData.value[0].id])) {
+    return 'null'
+  }
+  return canvasViewDataInfo.value[componentData.value[0].id]?.sql
+})
 const showSql = () => {
   sqlDialogVisible.value = true
 }
@@ -818,7 +824,7 @@ const copySql = async () => {
     <outer-params-set ref="outerParamsSetRef"> </outer-params-set>
     <!-- 查看sql -->
     <el-dialog v-model="sqlDialogVisible" width="60%" :title="'查看SQL'">
-      <div v-if="componentData[0] && canvasViewDataInfo[componentData[0].id]">{{ canvasViewDataInfo[componentData[0].id].sql || 'null' }}</div>
+      <div>{{ sqlText }}</div>
       <div style="margin-bottom: 12px;text-align: right;">
         <el-button text type="primary" @click="copySql">复制SQL</el-button>
       </div>
