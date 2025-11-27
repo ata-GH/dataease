@@ -48,7 +48,12 @@ const resourceFormNameLabel = ref('')
 const resourceForm = reactive({
   pid: '',
   pName: null,
-  name: '新建'
+  name: '新建',
+  manageOperators: [],
+  manageGroups: [],
+  viewOperators: [],
+  viewGroups: [],
+  description: ''
 })
 const sourceLabel = computed(() =>
   curCanvasType.value === 'dataV' ? t('work_branch.big_data_screen') : t('work_branch.dashboard')
@@ -150,13 +155,13 @@ const nameValidator = (_, value, callback) => {
   }
 }
 
-const showPid = computed(() => {
-  return ['newLeaf', 'copy', 'newLeafAfter'].includes(cmd.value) && showParentSelected.value
-})
+// const showPid = computed(() => {
+//   return ['newLeaf', 'copy', 'newLeafAfter'].includes(cmd.value) && showParentSelected.value
+// })
 
-const showName = computed(() => {
-  return !['newLeafAfter', 'move'].includes(cmd.value)
-})
+// const showName = computed(() => {
+//   return !['newLeafAfter', 'move'].includes(cmd.value)
+// })
 
 let nameList = []
 const resourceFormRules = ref()
@@ -175,11 +180,11 @@ const resetForm = () => {
   resourceForm.pid = ''
   resourceDialogShow.value = false
   // 清空权限与描述
-  manageUsers.value = []
-  manageRoles.value = []
-  viewUsers.value = []
-  viewRoles.value = []
-  chartDesc.value = ''
+  resourceForm.manageOperators = []
+  resourceForm.manageGroups = []
+  resourceForm.viewOperators = []
+  resourceForm.viewGroups = []
+  resourceForm.description = ''
 }
 
 const dfs = (arr: BusiTreeNode[]) => {
@@ -334,11 +339,11 @@ const saveResource = () => {
         mobileLayout: state.targetInfo?.extraFlag,
         status: state.targetInfo?.extraFlag1,
         // 额外字段：权限与描述（后端若不识别会被忽略）
-        manageUserIds: manageUsers.value,
-        manageRoleIds: manageRoles.value,
-        viewUserIds: viewUsers.value,
-        viewRoleIds: viewRoles.value,
-        description: chartDesc.value
+        manageOperators: resourceForm.manageOperators,
+        manageGroups: resourceForm.manageGroups,
+        viewOperators: resourceForm.viewOperators,
+        viewGroups: resourceForm.viewGroups,
+        description: resourceForm.description
       }
 
       switch (cmd.value) {
@@ -407,7 +412,7 @@ const emits = defineEmits(['finish'])
     class="create-dialog"
     :title="dialogTitle"
     v-model="resourceDialogShow"
-    :width="cmd === 'move' ? '600px' : '600px'"
+    width="600px"
     :before-close="resetForm"
     @submit.prevent
   >
@@ -419,7 +424,7 @@ const emits = defineEmits(['finish'])
       :model="resourceForm"
       :rules="resourceFormRules"
     >
-      <el-form-item v-if="showName" :label="resourceFormNameLabel" prop="name">
+      <el-form-item :label="resourceFormNameLabel" prop="name">
         <el-input
           @keydown.stop
           @keyup.stop
@@ -427,7 +432,7 @@ const emits = defineEmits(['finish'])
           v-model="resourceForm.name"
         />
       </el-form-item>
-      <el-form-item v-if="showPid" :label="t('visualization.belong_folder')" prop="pid">
+      <el-form-item :label="t('visualization.belong_folder')" prop="pid">
         <el-tree-select
           style="width: 100%"
           @keydown.stop
@@ -452,11 +457,11 @@ const emits = defineEmits(['finish'])
       </el-form-item>
 
       <!-- 管理权限（用户/群组 多选） -->
-      <el-row class="ed-form-item" v-if="showName" :gutter="12">
+      <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
             <el-select
-              v-model="manageUsers"
+              v-model="resourceForm.manageOperators"
               multiple
               filterable
               :loading="loadingUsers"
@@ -474,7 +479,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
             <el-select
-              v-model="manageRoles"
+              v-model="resourceForm.manageGroups"
               multiple
               filterable
               :loading="loadingRoles"
@@ -492,11 +497,11 @@ const emits = defineEmits(['finish'])
       </el-row>
 
       <!-- 查看权限（用户/群组 多选） -->
-      <el-row class="ed-form-item" v-if="showName" :gutter="12">
+      <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
             <el-select
-              v-model="viewUsers"
+              v-model="resourceForm.viewGroups"
               multiple
               filterable
               :loading="loadingUsers"
@@ -514,7 +519,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
             <el-select
-              v-model="viewRoles"
+              v-model="resourceForm.viewOperators"
               multiple
               filterable
               :loading="loadingRoles"
@@ -532,51 +537,14 @@ const emits = defineEmits(['finish'])
       </el-row>
 
       <!-- 图表描述 -->
-      <el-form-item v-if="showName" label="图表描述">
+      <el-form-item label="图表描述">
         <el-input
           type="textarea"
           :rows="3"
-          v-model="chartDesc"
+          v-model="resourceForm.description"
           placeholder="请输入"
         />
       </el-form-item>
-      <div v-if="cmd === 'move'">
-        <el-input style="margin-bottom: 12px" v-model="filterText" clearable>
-          <template #prefix>
-            <el-icon>
-              <Icon name="icon_search-outline_outlined"
-                ><icon_searchOutline_outlined class="svg-icon"
-              /></Icon>
-            </el-icon>
-          </template>
-        </el-input>
-        <div class="tree-content">
-          <el-tree
-            ref="treeRef"
-            :filter-node-method="filterNode"
-            filterable
-            v-model="resourceForm.pid"
-            empty-text=""
-            menu
-            :data="state.tData"
-            :props="propsTree"
-            @node-click="nodeClick"
-          >
-            <template #default="{ data }">
-              <span class="custom-tree-node">
-                <el-icon style="font-size: 18px">
-                  <Icon name="dv-folder"><dvFolder class="svg-icon" /></Icon>
-                </el-icon>
-                <span :title="data.name">{{ data.name }}</span>
-              </span>
-            </template>
-          </el-tree>
-          <div v-if="searchEmpty" class="empty-search">
-            <img :src="nothingTree" />
-            <span>{{ t('visualization.no_content') }}</span>
-          </div>
-        </div>
-      </div>
     </el-form>
     <template #footer>
       <el-button secondary @click="resetForm()">{{ t('visualization.cancel') }} </el-button>

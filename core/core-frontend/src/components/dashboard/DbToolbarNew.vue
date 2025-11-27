@@ -183,6 +183,11 @@ const resourceOptFinish = param => {
     dvInfo.value.dataState = 'ready'
     dvInfo.value.pid = param.pid
     dvInfo.value.name = param.name
+    dvInfo.value.manageOperators = param.manageOperators
+    dvInfo.value.manageGroups = param.manageGroups
+    dvInfo.value.viewOperators = param.viewOperators
+    dvInfo.value.viewGroups = param.viewGroups
+    dvInfo.value.description = param.description
     saveCanvasWithCheck(param.withPublish, param.status)
   }
 }
@@ -442,20 +447,20 @@ const batchOptStatusChange = value => {
   dvMainStore.setBatchOptStatus(value)
 }
 
-const openOuterParamsSet = () => {
-  if (componentData.value.length === 0) {
-    ElMessage.warning(t('components.add_components_first'))
-    return
-  }
-  if (!dvInfo.value.id || dvInfo.value.dataState === 'prepare') {
-    ElMessage.warning(t('components.current_page_first'))
-    return
-  }
-  //设置需要先触发保存
-  canvasSave(() => {
-    outerParamsSetRef.value.optInit()
-  })
-}
+// const openOuterParamsSet = () => {
+//   if (componentData.value.length === 0) {
+//     ElMessage.warning(t('components.add_components_first'))
+//     return
+//   }
+//   if (!dvInfo.value.id || dvInfo.value.dataState === 'prepare') {
+//     ElMessage.warning(t('components.current_page_first'))
+//     return
+//   }
+//   //设置需要先触发保存
+//   canvasSave(() => {
+//     outerParamsSetRef.value.optInit()
+//   })
+// }
 
 const saveBatchChange = () => {
   batchOptStatusChange(false)

@@ -83,7 +83,12 @@ export const dvMainStore = defineStore('dataVisualization', {
         selfWatermarkStatus: null,
         watermarkInfo: {},
         type: null,
-        mobileLayout: false
+        mobileLayout: false,
+        manageOperators: [],
+        manageGroups: [],
+        viewOperators: [],
+        viewGroups: [],
+        description: null,
       },
       // 图表信息
       canvasViewInfo: {},
