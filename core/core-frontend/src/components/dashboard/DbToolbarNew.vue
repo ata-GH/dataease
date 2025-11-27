@@ -702,7 +702,7 @@ const copySql = async () => {
           </template>
         </el-dropdown> -->
 
-        <el-button
+        <!-- <el-button
           class="custom-normal-button"
           v-if="editMode === 'preview'"
           icon="EditPen"
@@ -710,7 +710,7 @@ const copySql = async () => {
           type="primary"
         >
           {{ t('data_set.edit') }}
-        </el-button>
+        </el-button> -->
         <template v-if="editMode === 'edit' || editMode === 'preview'">
           <el-button
             v-if="editMode === 'edit' || editMode === 'preview'"

@@ -436,6 +436,11 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- 初始加载居中 Loading 覆盖层：在页面未完成初始化时显示 -->
+  <div v-if="!loadFinish" class="initial-loading-overlay">
+    <div class="loader"></div>
+    <div class="loading-text">加载中...</div>
+  </div>
   <div
     class="dv-common-layout dv-teleport-query"
     :class="isDataEaseBi && !newWindowFromDiv && 'dataease-w-h'"
@@ -463,8 +468,9 @@ onUnmounted(() => {
       >
         <component :is="findComponentAttr(curComponent)" :themes="'light'" />
       </dv-sidebar>
+      <!-- 隐藏仪表板配置 -->
       <dv-sidebar
-        v-show="!curComponent && !batchOptStatus && !hiddenListStatus"
+        v-show="false && !curComponent && !batchOptStatus && !hiddenListStatus"
         :theme-info="'light'"
         :title="t('visualization.dashboard_configuration')"
         :width="420"
@@ -503,7 +509,7 @@ onUnmounted(() => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 250px;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 250px;">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"
@@ -553,6 +559,36 @@ onUnmounted(() => {
 </template>
 
 <style lang="less">
+.initial-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.92);
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e5e5e5;
+    border-top-color: #409eff;
+    border-radius: 50%;
+    animation: de-spin 0.8s linear infinite;
+    margin-bottom: 10px;
+  }
+  .loading-text {
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+@keyframes de-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .dv-common-layout {
   height: 100vh;
   width: 100vw;
