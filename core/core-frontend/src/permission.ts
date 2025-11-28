@@ -29,6 +29,19 @@ const embeddedRouteWhiteList = ['/dataset-embedded', '/dataset-form', '/dataset-
 router.beforeEach(async (to, from, next) => {
   start()
   loadStart()
+  // 支持通过 URL 携带 token 直接访问并登录
+  const tokenParam = Array.isArray(to.query?.token)
+    ? (to.query?.token as string[])[0]
+    : (to.query?.token as string | undefined)
+  if (tokenParam) {
+    // 将 token 写入本地（通过 userStore 统一处理）
+    userStore.setToken(tokenParam)
+    userStore.setTime(Date.now())
+    // 为避免 token 暴露在地址栏，移除后重定向至同一路径
+    const { token, ...restQuery } = to.query as Record<string, any>
+    next({ path: to.path, query: restQuery, replace: true })
+    return
+  }
   const platform = checkPlatform()
   let isDesktop = wsCache.get('app.desktop')
   if (isDesktop === null) {
@@ -158,7 +171,10 @@ router.beforeEach(async (to, from, next) => {
       permissionStore.setCurrentPath(to.path)
       next()
     } else {
-      next(`/login?redirect=${to.fullPath || to.path}`) // 否则全部重定向到登录页
+      // 屏蔽未登录时自动跳转登录页，允许继续访问目标路由
+      await appearanceStore.setFontList()
+      permissionStore.setCurrentPath(to.path)
+      next()
     }
   }
 })
