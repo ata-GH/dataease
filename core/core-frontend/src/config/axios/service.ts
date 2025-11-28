@@ -100,6 +100,10 @@ service.interceptors.request.use(
     if (config instanceof Promise) {
       config = await config
     }
+    // 特殊前缀 /sdar：请求时不携带 PATH_URL (/api) 前缀
+    if (typeof config.url === 'string' && config.url.startsWith('/sdar')) {
+      config.baseURL = ''
+    }
     if (
       config.method === 'post' &&
       (config.headers as AxiosRequestHeaders)['Content-Type'] ===
@@ -108,7 +112,10 @@ service.interceptors.request.use(
       config.data = qs.stringify(config.data)
     }
     if (embeddedStore.baseUrl) {
-      config.baseURL = PATH_URL
+      // 嵌入式模式下默认携带 PATH_URL，但 /sdar 已在上面特殊处理
+      if (!(typeof config.url === 'string' && config.url.startsWith('/sdar'))) {
+        config.baseURL = PATH_URL
+      }
     }
 
     if (isMobile()) {

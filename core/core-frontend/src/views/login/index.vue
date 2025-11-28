@@ -228,6 +228,43 @@ const handlerFail = () => {
   }
   autoCallback(param)
 }
+
+const loginBySingleBtn = async () => {
+  try {
+    duringLogin.value = true
+    const response = await fetch('http://10.149.245.148:8100/de2api/login/analysisLogin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: 'test',
+        name: '测试账号',
+        projectId: '17343',
+        extUserId: '6ffef073263454d0b0a241fd0d8043ad'
+      })
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const result = await response.json()
+    const { token, exp } = result?.data || {}
+    if (!token || !exp) {
+      throw new Error('登录返回不包含 token/exp')
+    }
+    userStore.setToken(token)
+    userStore.setExp(exp)
+    userStore.setTime(Date.now())
+    const queryRedirectPath = getCurLocation()
+    router.push({ path: queryRedirectPath })
+  } catch (error) {
+    console.error('一键登录失败:', error)
+    ElMessage.error('一键登录失败')
+  } finally {
+    duringLogin.value = false
+  }
+}
+
 onMounted(async () => {
   loadArrearance()
   duringLogin.value = false
@@ -333,6 +370,14 @@ onMounted(async () => {
                   >
                     {{ t('login.btn') }}
                   </el-button>
+                  <el-button
+                    class="submit"
+                    size="default"
+                    :style="{ 'margin-top': '10px', 'margin-left': '0px' }"
+                    :disabled="duringLogin"
+                    @click="loginBySingleBtn"
+                    >一键登录</el-button
+                  >
                   <div v-if="showDempTips" class="demo-tips">
                     <span>{{ demoTips }}</span>
                   </div>
