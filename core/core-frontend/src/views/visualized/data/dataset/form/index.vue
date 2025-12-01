@@ -744,8 +744,8 @@ const initEdite = async () => {
     allfields.value = res.allFields || []
     isCross.value = res.isCross || false
     dfsUnion(arr, res.union || [])
-    const [fir] = res.union as { currentDs: { datasourceId: string } }[]
-    dataSource.value = fir?.currentDs?.datasourceId
+    const [fir] = res.union as { currentDs: { extDatasourceId: string } }[]
+    dataSource.value = fir?.currentDs?.extDatasourceId
     dsChange(dataSource.value)
     datasetDrag.value.initState(arr)
   } catch (error) {
@@ -1464,6 +1464,7 @@ const dfsNodeList = (arr, list) => {
       tableName,
       type,
       datasourceId,
+      extDatasourceId,
       id,
       info,
       unionType,
@@ -1477,6 +1478,7 @@ const dfsNodeList = (arr, list) => {
         tableName,
         type,
         datasourceId,
+        extDatasourceId,
         id,
         info
       },

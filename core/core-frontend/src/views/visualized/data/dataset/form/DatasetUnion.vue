@@ -883,7 +883,7 @@ const dragenter_handler = ev => {
 const drop_handler = ev => {
   ev.preventDefault()
   let data = ev.dataTransfer.getData('text')
-  const { tableName, type, datasourceId, name: noteName } = JSON.parse(data) as Table
+  const { tableName, type, datasourceId, extDatasourceId, name: noteName } = JSON.parse(data) as Table
   const extraData = {
     info: JSON.stringify({
       table: tableName,
@@ -902,6 +902,7 @@ const drop_handler = ev => {
         tableName,
         type,
         datasourceId,
+        extDatasourceId,
         id: guid(),
         ...extraData
       }
@@ -919,6 +920,7 @@ const drop_handler = ev => {
       type,
       isShadow: true,
       datasourceId,
+      extDatasourceId,
       id: guid(),
       ...extraData
     })
