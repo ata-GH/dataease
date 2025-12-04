@@ -4,10 +4,10 @@ import {
   COLOR_PANEL,
   DEFAULT_BASIC_STYLE,
   DEFAULT_MISC
-} from '@/views/chart/components/editor/util/chart'
+} from '@/views/chart/componentsnew/util/chart'
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
-import CustomColorStyleSelect from '@/views/chart/components/editor/editor-style/components/CustomColorStyleSelect.vue'
+import CustomColorStyleSelect from '@/views/chart/componentsnew/editor-style/components/CustomColorStyleSelect.vue'
 import { cloneDeep, debounce, defaultsDeep } from 'lodash-es'
 import { SERIES_NUMBER_FIELD } from '@antv/s2'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

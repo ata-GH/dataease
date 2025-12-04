@@ -5,7 +5,7 @@ import {
   compareYearList,
   compareMonthList,
   compareDayList
-} from '@/views/chart/components/editor/drag-item/components/compare'
+} from '@/views/chart/componentsnew/drag-item/components/compare'
 
 const { t } = useI18n()
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor/util/chart'
+import { DEFAULT_BASIC_STYLE } from '@/views/chart/componentsnew/util/chart'
 import { ElMessage, UploadProps } from 'element-plus-secondary'
 import { svgStrToUrl } from '@/views/chart/components/js/util'
 import { useI18n } from '@/hooks/web/useI18n'

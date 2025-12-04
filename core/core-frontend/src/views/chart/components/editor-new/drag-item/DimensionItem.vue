@@ -11,7 +11,7 @@ import icon_visible_outlined from '@/assets/svg/icon_visible_outlined.svg'
 import icon_invisible_outlined from '@/assets/svg/icon_invisible_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, onMounted, ref, toRefs, watch } from 'vue'
-import { getItemType } from '@/views/chart/components/editor/drag-item/utils'
+import { getItemType } from '@/views/chart/componentsnew/drag-item/utils'
 import { fieldType } from '@/utils/attr'
 import { iconFieldMap } from '@/components/icon-group/field-list'
 

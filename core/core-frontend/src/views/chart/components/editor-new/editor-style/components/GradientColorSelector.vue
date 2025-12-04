@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_CASES } from '@/views/chart/components/editor/util/chart'
+import { COLOR_CASES } from '@/views/chart/components/editor-new/util/chart'
 import { ElPopover } from 'element-plus-secondary'
 import { getMapColorCases } from '@/views/chart/components/js/util'
 

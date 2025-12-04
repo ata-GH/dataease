@@ -16,7 +16,7 @@ import {
   DEFAULT_INDICATOR_STYLE,
   DEFAULT_BASIC_STYLE,
   CHART_FONT_FAMILY_ORIGIN
-} from '@/views/chart/components/editor/util/chart'
+} from '@/views/chart/componentsnew/util/chart'
 import { cloneDeep, defaultsDeep } from 'lodash-es'
 import { ElIcon, ElInput } from 'element-plus-secondary'
 import Icon from '@/components/icon-custom/src/Icon.vue'

@@ -1,6 +1,6 @@
 <script lang="tsx" setup>
 import { reactive, onMounted, watch } from 'vue'
-import { COLOR_PANEL, DEFAULT_MISC } from '@/views/chart/components/editor/util/chart'
+import { COLOR_PANEL, DEFAULT_MISC } from '@/views/chart/componentsnew/util/chart'
 import { cloneDeep, defaultsDeep } from 'lodash-es'
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()

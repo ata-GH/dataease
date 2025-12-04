@@ -4,7 +4,7 @@ import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { onMounted, reactive, watch, computed, PropType } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElIcon, ElMessage } from 'element-plus-secondary'
-import AssistLineEdit from '@/views/chart/components/editor/editor-senior/components/dialog/AssistLineEdit.vue'
+import AssistLineEdit from '@/views/chart/componentsnew/editor-senior/components/dialog/AssistLineEdit.vue'
 import { defaultsDeep, find } from 'lodash-es'
 import { DEFAULT_ASSIST_LINE_CFG } from '../../util/chart'
 

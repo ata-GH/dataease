@@ -9,7 +9,7 @@ import icon_done_outlined from '@/assets/svg/icon_done_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
 import { onMounted, ref, toRefs, watch } from 'vue'
-import { getItemType } from '@/views/chart/components/editor/drag-item/utils'
+import { getItemType } from '@/views/chart/components/editor-new/drag-item/utils'
 import { fieldType } from '@/utils/attr'
 import { iconFieldMap } from '@/components/icon-group/field-list'
 

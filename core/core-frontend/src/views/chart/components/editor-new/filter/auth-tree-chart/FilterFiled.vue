@@ -5,7 +5,7 @@ import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.s
 import { ref, inject, computed, watch, onBeforeMount, toRefs, nextTick } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import type { SelectConfig } from '../TimeDialog.vue'
-import TimeDialog from '@/views/chart/components/editor/filter/TimeDialog.vue'
+import TimeDialog from '@/views/chart/components/editor-new/filter/TimeDialog.vue'
 import { multFieldValuesForPermissions } from '@/api/dataset'
 import {
   textOptions,

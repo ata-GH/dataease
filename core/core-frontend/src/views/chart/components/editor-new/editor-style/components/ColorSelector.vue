@@ -5,7 +5,7 @@ import {
   COLOR_PANEL,
   DEFAULT_COLOR_CASE,
   COLOR_CASES
-} from '@/views/chart/components/editor/util/chart'
+} from '@/views/chart/componentsnew/util/chart'
 
 const { t } = useI18n()
 

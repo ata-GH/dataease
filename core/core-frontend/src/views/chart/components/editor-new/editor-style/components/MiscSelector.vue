@@ -2,7 +2,7 @@
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { computed, onMounted, reactive, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { DEFAULT_MISC } from '@/views/chart/components/editor/util/chart'
+import { DEFAULT_MISC } from '@/views/chart/componentsnew/util/chart'
 import { ElRow } from 'element-plus-secondary'
 import { fieldType } from '@/utils/attr'
 import { cloneDeep, defaultsDeep } from 'lodash-es'

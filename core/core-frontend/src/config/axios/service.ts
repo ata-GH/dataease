@@ -163,6 +163,10 @@ service.interceptors.response.use(
     response: AxiosResponse<any> & { config: InternalAxiosRequestConfig & { loading?: boolean } }
   ) => {
     executeVersionHandler(response)
+    // 白名单：以 /sdar 开头的接口，直接放行原始响应（不走统一的 code 判断）
+    if (typeof response.config.url === 'string' && response.config.url.startsWith('/sdar')) {
+      return response
+    }
     /* if (response.headers['x-de-refresh-token']) {
       wsCache.set('user.token', response.headers['x-de-refresh-token'])
       wsCache.set('user.exp', new Date().getTime() + 90000)
@@ -237,6 +241,11 @@ service.interceptors.response.use(
       return
     }
     const header = error.response?.headers as AxiosHeaders
+    // 白名单：以 /sdar 开头的接口，错误由调用方自行处理（不弹全局错误）
+    if (typeof error.config?.url === 'string' && error.config.url.startsWith('/sdar')) {
+      error.config.loading && tryHideLoading(permissionStore.getCurrentPath)
+      return Promise.reject(error)
+    }
     if (
       !error.config.url.startsWith('/xpackComponent/content') &&
       !header.has('DE-FORBIDDEN-FLAG') &&

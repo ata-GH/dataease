@@ -14,7 +14,7 @@ import {
   CHART_FONT_FAMILY,
   CHART_FONT_LETTER_SPACE,
   DEFAULT_TITLE_STYLE
-} from '@/views/chart/components/editor/util/chart'
+} from '@/views/chart/componentsnew/util/chart'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import { cloneDeep, defaultsDeep } from 'lodash-es'

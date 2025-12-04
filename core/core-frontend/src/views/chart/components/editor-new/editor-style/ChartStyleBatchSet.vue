@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
-import ChartStyle from '@/views/chart/components/editor/editor-style/ChartStyle.vue'
+import ChartStyle from '@/views/chart/components/editor-new/editor-style/ChartStyle.vue'
 import { reactive } from 'vue'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'
 import CommonAttr from '@/custom-component/common/CommonAttr.vue'

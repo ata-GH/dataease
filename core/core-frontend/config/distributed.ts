@@ -4,7 +4,6 @@ import viteCompression from 'vite-plugin-compression'
 export default {
   plugins: [
     viteCompression({
-      // gzip静态资源压缩配置
       verbose: true, // 是否在控制台输出压缩结果
       disable: false, // 是否禁用压缩
       threshold: 10240, // 启用压缩的文件大小限制
@@ -15,10 +14,7 @@ export default {
   build: {
     cssCodeSplit: false,
     rollupOptions: {
-      external: id =>
-        /de-xpack/.test(id) ||
-        /extensions/.test(id) ||
-        /^element-plus-secondary(\/|$)/.test(id),
+      external: id => /de-xpack/.test(id) || /extensions/.test(id),
       output: {
         // 用于命名代码拆分时创建的共享块的输出命名
         chunkFileNames: `assets/chunk/[name]-${pkg.version}-${pkg.name}.js`,

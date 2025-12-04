@@ -1,6 +1,6 @@
 <script lang="tsx" setup>
 import { reactive, ref, toRefs } from 'vue'
-import { CHART_TYPE_CONFIGS } from '@/views/chart/components/editor/util/chart'
+import { CHART_TYPE_CONFIGS } from '@/views/chart/components/editor-new/util/chart'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 import { ElScrollbar } from 'element-plus-secondary'
 import { iconChartDarkMap } from '@/components/icon-group/chart-dark-list'

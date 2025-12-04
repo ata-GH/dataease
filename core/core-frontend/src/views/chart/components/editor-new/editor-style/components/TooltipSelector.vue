@@ -2,7 +2,7 @@
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { PropType, computed, onMounted, reactive, watch, ref, inject } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL, DEFAULT_TOOLTIP } from '@/views/chart/components/editor/util/chart'
+import { COLOR_PANEL, DEFAULT_TOOLTIP } from '@/views/chart/componentsnew/util/chart'
 import { ElFormItem, ElIcon, ElSpace } from 'element-plus-secondary'
 import cloneDeep from 'lodash-es/cloneDeep'
 import defaultsDeep from 'lodash-es/defaultsDeep'
