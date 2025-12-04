@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, onMounted, PropType, reactive, watch } from 'vue'
-import { DEFAULT_BASIC_STYLE } from '@/views/chart/componentsnew/util/chart'
+import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor-new/util/chart'
 import { cloneDeep, defaultsDeep, filter, find } from 'lodash-es'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'

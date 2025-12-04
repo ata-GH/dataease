@@ -12,7 +12,7 @@ import {
   SENIOR_STYLE_SETTING_LIGHT,
   TAB_COMMON_STYLE_DARK,
   TAB_COMMON_STYLE_LIGHT
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import {
   COMMON_COMPONENT_BACKGROUND_DARK,
   COMMON_COMPONENT_BACKGROUND_LIGHT,

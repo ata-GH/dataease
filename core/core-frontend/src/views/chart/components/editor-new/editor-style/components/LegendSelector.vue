@@ -11,12 +11,12 @@ import {
   COLOR_PANEL,
   DEFAULT_LEGEND_STYLE,
   DEFAULT_MISC
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import { ElCol, ElFormItem, ElRow, ElSpace } from 'element-plus-secondary'
 import { cloneDeep } from 'lodash-es'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { getDynamicColorScale } from '@/views/chart/components/js/util'
-import CustomSortEdit from '@/views/chart/componentsnew/drag-item/components/CustomSortEdit.vue'
+import CustomSortEdit from '@/views/chart/components/editor-new/drag-item/components/CustomSortEdit.vue'
 
 const { t } = useI18n()
 

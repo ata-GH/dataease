@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { computed, onMounted, PropType, reactive, ref, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL, DEFAULT_FUNCTION_CFG } from '@/views/chart/componentsnew/util/chart'
+import { COLOR_PANEL, DEFAULT_FUNCTION_CFG } from '@/views/chart/components/editor-new/util/chart'
 import { equalsAny, includesAny } from '../../util/StringUtils'
 import { parseJson } from '../../../js/util'
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'

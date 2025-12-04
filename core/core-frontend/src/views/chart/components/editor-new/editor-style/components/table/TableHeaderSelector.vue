@@ -7,7 +7,7 @@ import icon_rightAlignment_outlined from '@/assets/svg/icon_right-alignment_outl
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import { computed, onMounted, PropType, reactive, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL, DEFAULT_TABLE_HEADER } from '@/views/chart/componentsnew/util/chart'
+import { COLOR_PANEL, DEFAULT_TABLE_HEADER } from '@/views/chart/components/editor-new/util/chart'
 import { ElDivider, ElSpace } from 'element-plus-secondary'
 import { cloneDeep, defaultsDeep, isEqual } from 'lodash-es'
 import { convertToAlphaColor, isAlphaColor } from '@/views/chart/components/js/util'

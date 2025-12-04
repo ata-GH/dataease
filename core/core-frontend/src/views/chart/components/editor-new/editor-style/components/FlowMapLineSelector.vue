@@ -5,7 +5,7 @@ import {
   COLOR_PANEL,
   DEFAULT_BASIC_STYLE,
   DEFAULT_MISC
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import { cloneDeep, defaultsDeep } from 'lodash-es'
 
 const { t } = useI18n()

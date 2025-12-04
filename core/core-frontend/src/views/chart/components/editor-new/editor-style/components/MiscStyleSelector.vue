@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { computed, onMounted, reactive, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL, DEFAULT_MISC_STYLE } from '@/views/chart/componentsnew/util/chart'
+import { COLOR_PANEL, DEFAULT_MISC_STYLE } from '@/views/chart/components/editor-new/util/chart'
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 
 const { t } = useI18n()

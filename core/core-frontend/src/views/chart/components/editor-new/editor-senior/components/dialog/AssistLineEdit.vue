@@ -3,7 +3,7 @@ import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.s
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import { computed, onMounted, PropType, reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL } from '@/views/chart/componentsnew/util/chart'
+import { COLOR_PANEL } from '@/views/chart/components/editor-new/util/chart'
 import { fieldType } from '@/utils/attr'
 import { find } from 'lodash-es'
 import { iconFieldMap } from '@/components/icon-group/field-list'

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { computed, nextTick, onMounted, PropType, reactive, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { COLOR_PANEL, DEFAULT_MISC } from '@/views/chart/componentsnew/util/chart'
+import { COLOR_PANEL, DEFAULT_MISC } from '@/views/chart/components/editor-new/util/chart'
 import { ElSpace } from 'element-plus-secondary'
 import { cloneDeep } from 'lodash-es'
 

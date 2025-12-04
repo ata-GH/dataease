@@ -4,7 +4,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import {
   DEFAULT_YAXIS_EXT_STYLE,
   DEFAULT_YAXIS_STYLE
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import { cloneDeep } from 'lodash-es'
 import DualYAxisSelectorInner from './DualYAxisSelectorInner.vue'
 

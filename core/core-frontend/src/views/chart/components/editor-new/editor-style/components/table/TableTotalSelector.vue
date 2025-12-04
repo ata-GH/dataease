@@ -4,7 +4,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import {
   DEFAULT_BASIC_STYLE,
   DEFAULT_TABLE_TOTAL
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import { cloneDeep, defaultsDeep, find, includes } from 'lodash-es'
 import CustomAggrEdit from './CustomAggrEdit.vue'
 

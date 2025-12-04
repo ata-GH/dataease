@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, PropType, reactive, watch, ref } from 'vue'
-import { DEFAULT_BASIC_STYLE, DEFAULT_MISC } from '@/views/chart/componentsnew/util/chart'
+import { DEFAULT_BASIC_STYLE, DEFAULT_MISC } from '@/views/chart/components/editor-new/util/chart'
 import { useI18n } from '@/hooks/web/useI18n'
-import CustomColorStyleSelect from '@/views/chart/componentsnew/editor-style/components/CustomColorStyleSelect.vue'
+import CustomColorStyleSelect from '@/views/chart/components/editor-new/editor-style/components/CustomColorStyleSelect.vue'
 import { cloneDeep, defaultsDeep } from 'lodash-es'
 import {
   CHART_MIX_DEFAULT_BASIC_STYLE,

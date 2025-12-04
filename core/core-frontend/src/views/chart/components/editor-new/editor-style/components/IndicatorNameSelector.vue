@@ -10,7 +10,7 @@ import {
   DEFAULT_INDICATOR_NAME_STYLE,
   DEFAULT_BASIC_STYLE,
   CHART_FONT_FAMILY_ORIGIN
-} from '@/views/chart/componentsnew/util/chart'
+} from '@/views/chart/components/editor-new/util/chart'
 import { cloneDeep, defaultsDeep } from 'lodash-es'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 import { useAppearanceStoreWithOut } from '@/store/modules/appearance'
