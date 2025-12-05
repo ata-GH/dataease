@@ -171,10 +171,15 @@ router.beforeEach(async (to, from, next) => {
       permissionStore.setCurrentPath(to.path)
       next()
     } else {
-      // 屏蔽未登录时自动跳转登录页，允许继续访问目标路由
+      // 未登录：嵌入/iframe场景不跳转，非嵌入场景跳转登录页
       await appearanceStore.setFontList()
       permissionStore.setCurrentPath(to.path)
-      next()
+      if (appStore.getIsIframe) {
+        next()
+      } else {
+        const redirect = to.fullPath
+        next({ path: '/login', query: { redirect } })
+      }
     }
   }
 })

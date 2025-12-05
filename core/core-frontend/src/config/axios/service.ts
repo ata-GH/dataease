@@ -29,6 +29,8 @@ type InternalAxiosRequestConfigWidthLoading<T> = T & {
 }
 
 import { ElMessage, ElMessageBox } from 'element-plus-secondary'
+import { showTokenExpiredPrompt } from '@/utils/tokenExpiredPrompt'
+import { isInIframe } from '@/utils/utils'
 import router from '@/router'
 
 const { result_code } = config
@@ -202,12 +204,18 @@ service.interceptors.response.use(
           showClose: true
         })
         if (response.data.code === 80001) {
+          // 登录过期：在 iframe/嵌入模式下弹窗提示，避免跳转登录页
           clearCache()
-          let queryRedirectPath = '/workbranch/index'
-          if (router.currentRoute.value.fullPath) {
-            queryRedirectPath = router.currentRoute.value.fullPath as string
+          const embeddedMode = !!embeddedStore.baseUrl || isInIframe()
+          if (embeddedMode) {
+            showTokenExpiredPrompt()
+          } else {
+            let queryRedirectPath = '/workbranch/index'
+            if (router.currentRoute.value.fullPath) {
+              queryRedirectPath = router.currentRoute.value.fullPath as string
+            }
+            router.push(`/login?redirect=${queryRedirectPath}`)
           }
-          router.push(`/login?redirect=${queryRedirectPath}`)
         }
       } else if (response?.config?.url.startsWith('/xpackComponent/content')) {
         console.error(
@@ -264,14 +272,20 @@ service.interceptors.response.use(
 
     error.config.loading && tryHideLoading(permissionStore.getCurrentPath)
     if (header.has('DE-GATEWAY-FLAG')) {
+      // 网关鉴权失败同样用弹窗（在嵌入场景），否则保持原逻辑
       clearCache()
       const flag = header.get('DE-GATEWAY-FLAG')
       localStorage.setItem('DE-GATEWAY-FLAG', flag.toString())
-      let queryRedirectPath = '/workbranch/index'
-      if (router.currentRoute.value.fullPath) {
-        queryRedirectPath = router.currentRoute.value.fullPath as string
+      const embeddedMode = !!embeddedStore.baseUrl || isInIframe()
+      if (embeddedMode) {
+        showTokenExpiredPrompt()
+      } else {
+        let queryRedirectPath = '/workbranch/index'
+        if (router.currentRoute.value.fullPath) {
+          queryRedirectPath = router.currentRoute.value.fullPath as string
+        }
+        router.push(`/login?redirect=${queryRedirectPath}`)
       }
-      router.push(`/login?redirect=${queryRedirectPath}`)
     }
     if (header.has('DE-FORBIDDEN-FLAG')) {
       showMsg('当前用户权限配置已变更，请刷新页面', '-changed-')
