@@ -692,6 +692,7 @@ onUnmounted(() => {
       flex: 1;
       position: relative;
       overflow: auto;
+      background: #fff;
       .button-area {
         padding: 10px;
       }

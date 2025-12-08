@@ -5250,6 +5250,8 @@ span {
   padding: 5px 10px;
   overflow-y: auto;
   border-bottom: solid 1px @side-outline-border-color-light !important;
+  border-left: solid 1px @side-outline-border-color-light !important;
+  background: #fff;
   .form-draggable-title {
     display: flex;
     flex-direction: row;
