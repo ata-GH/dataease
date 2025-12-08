@@ -84,6 +84,7 @@ const {
 // 本地状态
 const canvasCacheOutRef = ref(null)
 const deCanvasRef = ref(null)
+const snapshotTimer = ref<any>(null)
 const dataInitState = ref(false)
 const mobileConfig = ref(false)
 const loadFinish = ref(false)
@@ -152,6 +153,11 @@ const otherEditorTitle = computed(() => {
 })
 
 const viewEditorShow = computed(() => {
+  const rid = embeddedStore.resourceId || router.currentRoute.value.query.resourceId
+  if (rid) {
+    // 如果 URL 携带 resourceId，编辑区域应显示
+    return true
+  }
   return Boolean(
     curComponent.value &&
       ['UserView', 'VQuery'].includes(curComponent.value.component) &&
@@ -191,10 +197,14 @@ const onMobileConfig = () => {
 const XpackLoaded = () => p(true)
 
 const doUseCache = flag => {
-  const canvasCache = wsCache.get('DE-DV-CATCH-' + state.resourceId)
+  const canvasCache = wsCache.get('DE-DV-CATCH-' + (state.resourceId ?? 'null'))
+  console.log('canvasCache', canvasCache)
   if (flag && canvasCache) {
     const canvasCacheSeries = deepCopy(canvasCache)
     snapshotStore.snapshotPublish(canvasCacheSeries)
+    // 数据准备完成，允许计入镜像
+    dvMainStore.setDataPrepareState(true)
+    dvMainStore.setEditMode('edit')
     dataInitState.value = true
     setTimeout(() => {
       snapshotStore.recordSnapshotCache('doUseCache')
@@ -202,9 +212,64 @@ const doUseCache = flag => {
       snapshotStore.recordSnapshotCache('renderChart')
     }, 1500)
   } else {
-    initLocalCanvasData(()=>{})
-    wsCache.delete('DE-DV-CATCH-' + state.resourceId)
+    // 新建模式下不使用缓存，走新建设计初始化；否则走常规初始化
+    if (!state.resourceId && state.opt === 'create') {
+      initDashboardCreateMode(state.sourcePid, router.currentRoute.value.query.createType, router.currentRoute.value.query.templateParams)
+    } else {
+      initLocalCanvasData(()=>{})
+    }
+    // 不使用缓存时也保留本地存储，避免刷新导致缓存被清空
+    // wsCache.delete('DE-DV-CATCH-' + state.resourceId)
   }
+}
+
+// 新建设计页初始化（含模板）
+const initDashboardCreateMode = async (pid, createType, templateParams) => {
+  dataInitState.value = false
+  let watermarkBaseInfo
+  try {
+    await watermarkFind().then(rsp => {
+      watermarkBaseInfo = rsp.data
+      watermarkBaseInfo.settingContent = JSON.parse(watermarkBaseInfo.settingContent)
+    })
+  } catch (e) {
+    console.error('can not find watermark info')
+  }
+  let deTemplateData
+  let preName
+  if (createType === 'template' && templateParams) {
+    const templateParamsApply = JSON.parse(Base64.decode(decodeURIComponent(templateParams + '')))
+    await decompressionPre(templateParamsApply, result => {
+      deTemplateData = result
+      preName = deTemplateData.baseInfo?.preName
+    })
+  }
+  nextTick(() => {
+    dvMainStore.createInit('dashboard', null, pid, watermarkBaseInfo, preName)
+    // 从模板新建
+    if (createType === 'template' && deTemplateData) {
+      wsCache.delete('de-template-data')
+      dvMainStore.setComponentData(deTemplateData['componentData'])
+      dvMainStore.setCanvasStyle(deTemplateData['canvasStyleData'])
+      dvMainStore.setCanvasViewInfo(deTemplateData['canvasViewInfo'])
+      dvMainStore.setAppDataInfo(deTemplateData['appData'])
+      setTimeout(() => {
+        snapshotStore.recordSnapshotCache('template')
+      }, 1500)
+      if (dvMainStore.getAppDataInfo()) {
+        eventBus.emit('save')
+      }
+    } else {
+      // 新建组件
+      handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
+    }
+    dataInitState.value = true
+    dvMainStore.setEditMode('edit')
+    // 数据准备完成，允许计入镜像
+    dvMainStore.setDataPrepareState(true)
+    // preOpt
+    canvasStyleData.value.component.chartTitle.color = '#000000'
+  })
 }
 
 const initLocalCanvasData = callBack => {
@@ -215,6 +280,8 @@ const initLocalCanvasData = callBack => {
     { busiFlag, resourceTable: 'snapshot', source: 'main-edit' },
     function () {
       dataInitState.value = true
+      // 数据准备完成，允许计入镜像
+      dvMainStore.setDataPrepareState(true)
       if (dvInfo.value && opt === 'copy') {
         dvInfo.value.dataState = 'prepare'
         dvInfo.value.optType = 'copy'
@@ -291,6 +358,10 @@ onMounted(async () => {
   dvMainStore.setCurComponent({ component: null, index: null })
   dvMainStore.setHiddenListStatus(false)
   snapshotStore.initSnapShot()
+  // 启动快照定时器，将缓存计数定期落入镜像
+  snapshotTimer.value = setInterval(() => {
+    snapshotStore.snapshotCatchToStore()
+  }, 1000)
   if (window.location.hash.includes('#/dashboard')) {
     newWindowFromDiv.value = true
   }
@@ -319,6 +390,10 @@ onMounted(async () => {
   state.sourcePid = pid
   state.opt = opt
   state.resourceId = resourceId
+  // 刷新后清空历史，重新开始记录（支持 null 键）
+  snapshotStore.clearPersistHistory(resourceId ?? null)
+  snapshotStore.initSnapShot()
+  console.log(resourceId, 'resourceId')
   if (resourceId) {
     dataInitState.value = false
     const canvasCache = wsCache.get('DE-DV-CATCH-' + resourceId)
@@ -331,48 +406,56 @@ onMounted(async () => {
     }
   } else if (opt && opt === 'create') {
     dataInitState.value = false
-    let watermarkBaseInfo
-    try {
-      await watermarkFind().then(rsp => {
-        watermarkBaseInfo = rsp.data
-        watermarkBaseInfo.settingContent = JSON.parse(watermarkBaseInfo.settingContent)
-      })
-    } catch (e) {
-      console.error('can not find watermark info')
-    }
-    let deTemplateData
-    let preName
-    if (createType === 'template') {
-      const templateParamsApply = JSON.parse(Base64.decode(decodeURIComponent(templateParams + '')))
-      await decompressionPre(templateParamsApply, result => {
-        deTemplateData = result
-        preName = deTemplateData.baseInfo?.preName
-      })
-    }
-    nextTick(() => {
-      dvMainStore.createInit('dashboard', null, pid, watermarkBaseInfo, preName)
-      // 从模板新建
-      if (createType === 'template') {
-        wsCache.delete('de-template-data')
-        dvMainStore.setComponentData(deTemplateData['componentData'])
-        dvMainStore.setCanvasStyle(deTemplateData['canvasStyleData'])
-        dvMainStore.setCanvasViewInfo(deTemplateData['canvasViewInfo'])
-        dvMainStore.setAppDataInfo(deTemplateData['appData'])
-        setTimeout(() => {
-          snapshotStore.recordSnapshotCache('template')
-        }, 1500)
-        if (dvMainStore.getAppDataInfo()) {
-          eventBus.emit('save')
-        }
-      } else {
-        // 新建组件
-        handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
+    // 新建页也检查 null 键缓存
+    const nullCache = wsCache.get('DE-DV-CATCH-' + (resourceId ?? 'null'))
+    if (nullCache) {
+      canvasCacheOutRef.value?.dialogInit({ canvasType: 'dashboard', resourceId: resourceId })
+    } else {
+      let watermarkBaseInfo
+      try {
+        await watermarkFind().then(rsp => {
+          watermarkBaseInfo = rsp.data
+          watermarkBaseInfo.settingContent = JSON.parse(watermarkBaseInfo.settingContent)
+        })
+      } catch (e) {
+        console.error('can not find watermark info')
       }
-      dataInitState.value = true
-      dvMainStore.setEditMode('edit')
-      // preOpt
-      canvasStyleData.value.component.chartTitle.color = '#000000'
-    })
+      let deTemplateData
+      let preName
+      if (createType === 'template') {
+        const templateParamsApply = JSON.parse(Base64.decode(decodeURIComponent(templateParams + '')))
+        await decompressionPre(templateParamsApply, result => {
+          deTemplateData = result
+          preName = deTemplateData.baseInfo?.preName
+        })
+      }
+      nextTick(() => {
+        dvMainStore.createInit('dashboard', null, pid, watermarkBaseInfo, preName)
+        // 从模板新建
+        if (createType === 'template') {
+          wsCache.delete('de-template-data')
+          dvMainStore.setComponentData(deTemplateData['componentData'])
+          dvMainStore.setCanvasStyle(deTemplateData['canvasStyleData'])
+          dvMainStore.setCanvasViewInfo(deTemplateData['canvasViewInfo'])
+          dvMainStore.setAppDataInfo(deTemplateData['appData'])
+          setTimeout(() => {
+            snapshotStore.recordSnapshotCache('template')
+          }, 1500)
+          if (dvMainStore.getAppDataInfo()) {
+            eventBus.emit('save')
+          }
+        } else {
+          // 新建组件
+          handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
+        }
+        dataInitState.value = true
+        dvMainStore.setEditMode('edit')
+        // 数据准备完成，允许计入镜像
+        dvMainStore.setDataPrepareState(true)
+        // preOpt
+        canvasStyleData.value.component.chartTitle.color = '#000000'
+      })
+    }
   } else {
     let url = '#/panel/index'
     window.open(url, '_self')
@@ -432,6 +515,10 @@ onUnmounted(() => {
   document.body.style.overflow = ''
   window.removeEventListener('storage', eventCheck)
   window.removeEventListener('message', winMsgHandle)
+  if (snapshotTimer.value) {
+    clearInterval(snapshotTimer.value)
+    snapshotTimer.value = null
+  }
 })
 </script>
 

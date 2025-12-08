@@ -49,6 +49,25 @@ export const snapshotStore = defineStore('snapshot', {
     }
   },
   actions: {
+    loadPersistHistory(id?) {
+      try {
+        const keyId = id ?? dvInfo.value.id ?? 'null'
+        const history = wsCache.get('DE-DV-HISTORY-' + keyId)
+        if (history && Array.isArray(history.snapshotData)) {
+          this.snapshotData = deepCopy(history.snapshotData)
+          this.snapshotIndex =
+            typeof history.snapshotIndex === 'number'
+              ? history.snapshotIndex
+              : this.snapshotData.length - 1
+        }
+      } catch (e) {}
+    },
+    clearPersistHistory(id?) {
+      try {
+        const keyId = id ?? dvInfo.value.id ?? 'null'
+        wsCache.delete('DE-DV-HISTORY-' + keyId)
+      } catch (e) {}
+    },
     initSnapShot() {
       this.styleChangeTimes = -1
       this.cacheStyleChangeTimes = 0
@@ -107,6 +126,8 @@ export const snapshotStore = defineStore('snapshot', {
         this.snapshotPublish(componentSnapshot)
         this.styleChangeTimes++
         this.snapshotDisableTime = Date.now() + 3000
+        // 持久化历史记录
+        this.persistHistory()
       }
     },
 
@@ -121,6 +142,8 @@ export const snapshotStore = defineStore('snapshot', {
         this.snapshotPublish(snapshotInfo)
         this.styleChangeTimes++
         this.snapshotDisableTime = Date.now() + 3000
+        // 持久化历史记录
+        this.persistHistory()
       }
     },
     snapshotPublish(snapshotInfo) {
@@ -152,6 +175,17 @@ export const snapshotStore = defineStore('snapshot', {
           dvMainStore.setCurComponent({
             component: null,
             index: null
+          })
+        }
+      } else {
+        // 初始没有选中组件时，默认选中一个可编辑视图，避免页面空白
+        const firstViewIndex = snapshotInfo.componentData.findIndex(
+          cmp => ['UserView', 'VQuery'].includes(cmp.component) && cmp.innerType !== 'picture-group'
+        )
+        if (firstViewIndex >= 0) {
+          dvMainStore.setCurComponent({
+            component: snapshotInfo.componentData[firstViewIndex],
+            index: firstViewIndex
           })
         }
       }
@@ -191,6 +225,11 @@ export const snapshotStore = defineStore('snapshot', {
       this.snapshotData = []
       this.snapshotIndex = -1
       this.recordSnapshot()
+      // 清理缓存
+      try {
+        wsCache.delete('DE-DV-CATCH-' + dvInfo.value.id)
+        wsCache.delete('DE-DV-HISTORY-' + dvInfo.value.id)
+      } catch (e) {}
     },
 
     recordSnapshot() {
@@ -216,10 +255,27 @@ export const snapshotStore = defineStore('snapshot', {
         }
         // 清理缓存计数器
         this.snapshotCacheTimes = 0
-        if (this.snapshotData.length > 1) {
+        // 始终持久化最新快照到本地，保证刷新后可恢复
+        try {
           wsCache.set('DE-DV-CATCH-' + dvInfo.value.id, newSnapshot)
-        }
+        } catch (e) {}
+        // 同步持久化历史记录（裁剪到最近 50 条，避免 localStorage 过大）
+        this.persistHistory()
       }
+    }
+  ,
+    // 将完整的快照历史写入本地存储，保留撤回/恢复轨迹
+    persistHistory() {
+      try {
+        const max = 50
+        const start = Math.max(0, this.snapshotData.length - max)
+        const history = {
+          snapshotData: deepCopy(this.snapshotData.slice(start)),
+          snapshotIndex: Math.max(0, this.snapshotIndex - start)
+        }
+        console.log('persistHistory', history)
+        wsCache.set('DE-DV-HISTORY-' + dvInfo.value.id, history)
+      } catch (e) {}
     }
   }
 })

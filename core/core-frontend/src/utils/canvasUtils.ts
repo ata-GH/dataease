@@ -631,6 +631,13 @@ export async function canvasSave(callBack) {
 }
 
 export async function canvasSaveWithParams(params, callBack) {
+  // 点击保存后，清理新建页面的本地缓存与历史（null 键）
+  try {
+    wsCache.delete('DE-DV-CATCH-null')
+    wsCache.delete('DE-DV-HISTORY-null')
+  } catch (e) {
+    // ignore
+  }
   dvMainStore.removeGroupArea()
   const componentDataToSave = cloneDeep(componentData.value)
   componentDataToSave.forEach(item => {

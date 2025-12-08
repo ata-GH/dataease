@@ -9,7 +9,7 @@ export interface Font {
 }
 
 export const list = (data = {}) => {
-  return request.post({ url: '/typeface/listFont', data }).then(res => {
+  return request.get({ url: '/typeface/listFont', data }).then(res => {
     return res?.data
   })
 }
