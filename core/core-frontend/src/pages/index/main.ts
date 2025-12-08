@@ -18,8 +18,9 @@ import WebSocketPlugin from '../../websocket'
 
 // 支持父页面通过 postMessage 控制子页面路由跳转
 window.addEventListener('message', (event: MessageEvent<any>) => {
+  const isTab = window.location.href.includes('mode=tab')
   const data = event?.data
-  if (data?.type === 'navigate') {
+  if (!isTab && data?.type === 'navigate') {
     const { path, params } = data
     try {
       router.push({

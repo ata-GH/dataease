@@ -520,6 +520,15 @@ onUnmounted(() => {
     snapshotTimer.value = null
   }
 })
+
+window.addEventListener('message', (event: MessageEvent) => {
+  const data = event?.data
+  if (data?.type === 'dashboardClose') {
+    // 清空localstorage里的DashboardCache
+    wsCache.delete('DE-DV-CATCH-' + (dvInfo.value.id ?? 'null'))
+    wsCache.delete('DE-DV-HISTORY-' + (dvInfo.value.pid ?? 'null'))
+  }
+})
 </script>
 
 <template>
