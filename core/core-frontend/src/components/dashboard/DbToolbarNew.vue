@@ -520,6 +520,18 @@ const onDvNameChange = () => {
 const appStore = useAppStoreWithOut()
 const isEmbedded = computed(() => appStore.getIsDataEaseBi || appStore.getIsIframe)
 
+const showBackIcon = computed(() => {
+  const hash = window.location.hash || ''
+  let queryString = ''
+  if (hash.includes('?')) {
+    queryString = hash.substring(hash.indexOf('?') + 1)
+  } else {
+    queryString = window.location.search ? window.location.search.substring(1) : ''
+  }
+  const params = new URLSearchParams(queryString)
+  return params.get('mode') === 'edit'
+})
+
 const openHandler = ref(null)
 const initOpenHandler = newWindow => {
   if (openHandler?.value) {
@@ -573,7 +585,7 @@ const copySql = async () => {
         <div class="middle-area"></div>
       </template>
       <template v-else>
-        <el-icon v-if="!batchOptStatus" class="custom-el-icon back-icon" @click="backToMain()">
+        <el-icon v-if="!batchOptStatus && showBackIcon" class="custom-el-icon back-icon" @click="backToMain()">
           <Icon name="icon_left_outlined"
             ><icon_left_outlined class="svg-icon toolbar-icon"
           /></Icon>

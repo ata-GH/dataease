@@ -89,6 +89,7 @@ const dataInitState = ref(false)
 const mobileConfig = ref(false)
 const loadFinish = ref(false)
 const newWindowFromDiv = ref(false)
+const showAreaRef = ref(null)
 let p = null
 
 // 共享状态
@@ -460,6 +461,24 @@ onMounted(async () => {
     let url = '#/panel/index'
     window.open(url, '_self')
   }
+  // 监听展示区域尺寸变化：当从隐藏（高度≈0）变为可见时，触发一次全量重绘
+  nextTick(() => {
+    const el = showAreaRef.value as unknown as HTMLElement
+    if (!el) return
+    let hasRedrawnAfterShow = false
+    const observer = new ResizeObserver(([entry] = []) => {
+      const height = (entry as any)?.contentRect?.height ?? el.offsetHeight
+      if (height > 1 && !hasRedrawnAfterShow) {
+        useEmitt().emitter.emit('calcData-all')
+        hasRedrawnAfterShow = true
+      } else if (height <= 1) {
+        hasRedrawnAfterShow = false
+      }
+    })
+    observer.observe(el)
+    // 在组件卸载时清理
+    onUnmounted(() => observer.disconnect())
+  })
 })
 
 // 目标校验： 需要校验targetSourceId 是否是当前可视化资源ID
@@ -621,7 +640,7 @@ window.addEventListener('message', (event: MessageEvent) => {
             <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button>
             <el-button size="small" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">查询</el-button>
           </div>
-          <div class="show-area">
+          <div class="show-area" ref="showAreaRef">
             <div v-for="item in componentData" :key="item.id" style="height: 100%">
               <component
                 :is="findComponent(item.component)"

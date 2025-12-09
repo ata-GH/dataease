@@ -178,6 +178,14 @@ export const routes: AppRouteRecordRaw[] = [
     meta: {},
     component: () => import('@/views/template/indexInject.vue')
   }
+  ,
+  {
+    path: '/loading',
+    name: 'loading',
+    hidden: true,
+    meta: {},
+    component: () => import('@/views/common/LoadingPage.vue')
+  }
 ]
 
 const router = createRouter({

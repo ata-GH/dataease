@@ -18,18 +18,20 @@ import WebSocketPlugin from '../../websocket'
 
 // 支持父页面通过 postMessage 控制子页面路由跳转
 window.addEventListener('message', (event: MessageEvent<any>) => {
-  const isTab = window.location.href.includes('mode=tab')
   const data = event?.data
-  if (!isTab && data?.type === 'navigate') {
-    const { path, params } = data
-    try {
-      router.push({
-        path,
-        query: params
-      })
-    } catch (e) {
-      console.error('[postMessage navigate] failed', e)
+  const { path, params } = data || {}
+  try {
+    if (data?.type === 'navigate' && path) {
+      router.push({ path, query: params })
+      return
     }
+    // 当父页面通知 iframe 已关闭时，跳转到 Loading 页
+    if (data?.type === 'iframeClosed') {
+      router.push({ path: '/loading' })
+      return
+    }
+  } catch (e) {
+    console.error('[postMessage navigate] failed', e)
   }
 })
 const setupAll = async () => {
