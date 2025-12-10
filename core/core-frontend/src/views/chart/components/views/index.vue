@@ -1102,7 +1102,7 @@ const clearG2Tooltip = () => {
     @mouseover="chartHover = true"
     @mouseleave="chartHover = false"
   >
-    <div
+    <!-- <div
       class="title-container"
       :style="{ 'justify-content': titleAlign, 'margin-bottom': marginBottom }"
     >
@@ -1177,7 +1177,7 @@ const clearG2Tooltip = () => {
           </el-tooltip>
         </div>
       </transition>
-    </div>
+    </div> -->
     <!--这里去渲染不同图库的图表-->
     <div v-if="allEmptyCheck || (chartAreaShow && !showEmpty)" style="flex: 1; overflow: hidden">
       <plugin-component

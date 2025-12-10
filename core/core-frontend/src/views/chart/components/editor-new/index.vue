@@ -3760,7 +3760,7 @@ const deleteChartFieldItem = id => {
         </el-row>
 
         <!--filter-->
-        <el-row class="padding-lr drag-data no-top-border no-top-padding">
+        <el-row class="padding-lr drag-data">
           <div class="form-draggable-title">
             <span>
               {{ t('chart.result_filter') }}
@@ -4107,6 +4107,7 @@ const deleteChartFieldItem = id => {
   cursor: pointer;
   font-size: 14px;
   color: #646a73;
+  display: inline-block;
 
   &.hint-icon--dark {
     color: #a6a6a6;
@@ -4296,7 +4297,7 @@ span {
       padding-top: 0 !important;
 
       :deep(.drag-placeholder-style) {
-        top: calc(50% - 2px);
+        top: calc(50% - 10px);
       }
     }
   }
@@ -4580,7 +4581,7 @@ span {
   .drag-block-style {
     padding: 2px 0 0 0;
     width: 100%;
-    min-height: 32px;
+    min-height: 35px;
     border-radius: 4px;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -4621,8 +4622,25 @@ span {
   }
 
   .drag-data {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
     padding-top: 8px;
-    padding-bottom: 16px;
+    padding-bottom: 8px;
+
+    .form-draggable-title {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    > div:last-child {
+      flex: 1 1 0;
+    }
+
+    .drag-block-style {
+      margin-top: 0;
+    }
 
     .tree-btn {
       width: 100%;
@@ -5245,9 +5263,10 @@ span {
   top: 0;
   left: 420px;
   width: calc(100vw - 420px);
-  height: 250px;
+  height: 180px;
   z-index: 10;
   padding: 5px 10px;
+  overflow-x: hidden;
   overflow-y: auto;
   border-bottom: solid 1px @side-outline-border-color-light !important;
   border-left: solid 1px @side-outline-border-color-light !important;
@@ -5274,9 +5293,9 @@ span {
     .remove-icon {
       color: #646a73;
       cursor: pointer;
-      margin-top: 2px;
-      margin-right: 2px;
-      top: 5px;
+      margin-top: 0px;
+      margin-left: 2px;
+      top: 0px;
 
       &.remove-icon--dark {
         color: #a6a6a6;
@@ -5291,7 +5310,7 @@ span {
   .drag-block-style {
     padding: 2px 0 0 0;
     width: 100%;
-    min-height: 32px;
+    min-height: 35px;
     border-radius: 4px;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -5315,7 +5334,7 @@ span {
       margin-left: 5px;
       .item-axis {
         padding: 0px 25px;
-        margin: 5px 0;
+        margin: 0;
         position: relative;
         i.remove-icon {
           top: 6px;
@@ -5349,8 +5368,25 @@ span {
   }
 
   .drag-data {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
     padding-top: 8px;
-    padding-bottom: 16px;
+    padding-bottom: 8px;
+
+    .form-draggable-title {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    > div:last-child {
+      flex: 1 1 0;
+    }
+
+    .drag-block-style {
+      margin-top: 0;
+    }
 
     .tree-btn {
       width: 100%;

@@ -624,7 +624,7 @@ window.addEventListener('message', (event: MessageEvent) => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 250px;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 180px;">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"
@@ -726,7 +726,7 @@ window.addEventListener('message', (event: MessageEvent) => {
       }
       .show-area {
         padding: 0 10px;
-        height: calc(100vh - 365px);
+        height: calc(100vh - 300px);
       }
       .content {
         flex: 1;

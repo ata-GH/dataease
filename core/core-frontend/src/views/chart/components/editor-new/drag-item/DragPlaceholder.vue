@@ -42,7 +42,7 @@ span {
 
 .drag-placeholder-style {
   position: absolute;
-  top: calc(50% - 4px);
+  top: calc(50% - 10px);
   width: 100%;
   color: #757575;
   text-align: left;
