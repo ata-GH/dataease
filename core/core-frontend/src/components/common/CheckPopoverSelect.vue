@@ -96,6 +96,17 @@ const onSearchInput = (val: string) => {
   // 纯前端筛选：仅更新关键字，利用 filteredOptions 计算结果
   keyword.value = val
 }
+
+// 通用：移除英文括号及其前的空格，清理多余空格
+const formatLabel = (label: string | null | undefined) => {
+  const s = String(label ?? '')
+  return s
+    // 移除形如 " (xxx)" 的英文括号内容（可出现多次）
+    .replace(/\s*\([^)]*\)/g, '')
+    // 合并可能出现的多余空格
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
 </script>
 
 <template>
@@ -110,7 +121,7 @@ const onSearchInput = (val: string) => {
             closable
             @close="remove(opt.value)"
           >
-            {{ opt.label }}
+            {{ formatLabel(opt.label) }}
           </el-tag>
         </div>
         <span v-else class="placeholder">{{ props.placeholder || '请选择' }}</span>
@@ -146,17 +157,20 @@ const onSearchInput = (val: string) => {
 <style lang="less" scoped>
 .check-select-reference {
   display: flex;
-  align-items: center;
-  min-height: 32px;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 60px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   padding: 4px 8px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 .check-select-reference .tags {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+  flex: 1 1 auto;
 }
 .check-select-reference .placeholder {
   color: #c0c4cc;

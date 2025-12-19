@@ -275,7 +275,7 @@ const initDashboardCreateMode = async (pid, createType, templateParams) => {
     // preOpt
         canvasStyleData.value.component.chartTitle.color = '#000000'
       })
-
+    }
 const initLocalCanvasData = callBack => {
   const { resourceId, opt, sourcePid } = state
   const busiFlag = opt === 'copy' ? 'dashboard-copy' : 'dashboard'

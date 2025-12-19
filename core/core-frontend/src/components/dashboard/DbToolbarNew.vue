@@ -83,6 +83,8 @@ const fullScreeRef = ref(null)
 let nameEdit = ref(false)
 let inputName = ref('')
 let nameInput = ref(null)
+// 与 DeResourceGroupOpt 保持一致：中文、字母、数字、下划线，长度1-50
+const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
 const state = reactive({
   preBatchComponentData: [],
   preBatchCanvasViewInfo: {}
@@ -117,8 +119,9 @@ const closeEditCanvasName = () => {
   if (inputName.value.trim() === dvInfo.value.name) {
     return
   }
-  if (inputName.value.trim().length > 64 || inputName.value.trim().length < 1) {
-    ElMessage.warning(t('components.length_1_64_characters'))
+  const val = inputName.value.trim()
+  if (!NAME_REG.test(val)) {
+    ElMessage.warning('请填写1~50位名称，允许汉字、字母、下划线、数字')
     editCanvasName()
     return
   }
@@ -517,6 +520,15 @@ const saveLinkageSetting = () => {
 const onDvNameChange = () => {
   snapshotStore.recordSnapshotCache('onDvNameChange')
 }
+
+// 输入时即时限制为允许字符，并裁剪至50长度
+const limitNameInput = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  const raw = target?.value ?? ''
+  // 只保留中文、字母、数字、下划线
+  const sanitized = raw.replace(/[^\u4E00-\u9FA5A-Za-z0-9_]/g, '')
+  inputName.value = sanitized.slice(0, 50)
+}
 const appStore = useAppStoreWithOut()
 const isEmbedded = computed(() => appStore.getIsDataEaseBi || appStore.getIsIframe)
 
@@ -828,6 +840,7 @@ const copySql = async () => {
         @change="onDvNameChange"
         ref="nameInput"
         v-model="inputName"
+        @input="limitNameInput"
         @blur="closeEditCanvasName"
       />
     </Teleport>

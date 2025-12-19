@@ -99,6 +99,10 @@ const calcEdit = ref()
 const editUnion = ref(false)
 const datasetDrag = ref()
 const datasetName = ref(t('data_set.unnamed_dataset'))
+// 名称规则与 DbToolbarNew 保持一致：中文、字母、数字、下划线，长度1-50
+const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
+// 记录编辑前的名称，用于校验失败时还原
+const prevDatasetName = ref(datasetName.value)
 const tabActive = ref('preview')
 const activeName = ref('')
 const dataSource = ref('')
@@ -1613,13 +1617,22 @@ const dfsUnion = (arr, list) => {
       dfsUnion(children, ele.childrenDs)
     }
     const { unionToParent, currentDsFields, currentDs } = ele
-    const { tableName, type, datasourceId, id, info, sqlVariableDetails } = currentDs || {}
+    const {
+      tableName,
+      type,
+      datasourceId,
+      extDatasourceId,
+      id,
+      info,
+      sqlVariableDetails
+    } = currentDs || {}
     const { unionType, unionFields } = unionToParent || {}
     arr.push({
       sqlVariableDetails,
       tableName,
       type,
       datasourceId,
+      extDatasourceId,
       id,
       info,
       currentDsFields,
@@ -1631,6 +1644,8 @@ const dfsUnion = (arr, list) => {
 }
 const handleClick = () => {
   showInput.value = true
+  // 进入编辑时记录当前名称
+  prevDatasetName.value = datasetName.value
   nextTick(() => {
     editorName.value.focus()
   })
@@ -1665,18 +1680,17 @@ const finish = res => {
   allfields.value = res.allFields || []
 }
 
-const errorTips = ref('')
-
 const handleDatasetName = () => {
-  errorTips.value = ''
-  if (!datasetName.value.trim()) {
-    errorTips.value = t('commons.input_content')
+  const val = datasetName.value.trim()
+  if (!NAME_REG.test(val)) {
+    // 与 DbToolbarNew 保持一致的提示并还原为编辑前的值
+    ElMessage.warning('请填写1~50位名称，允许汉字、字母、下划线、数字')
+    datasetName.value = prevDatasetName.value
+    showInput.value = true
+    return
   }
-
-  if (datasetName.value.trim().length < 1) {
-    errorTips.value = t('datasource.input_limit_1_64', [1, 64])
-  }
-  showInput.value = !!errorTips.value
+  datasetName.value = val
+  showInput.value = false
 }
 
 const treeProps = {
@@ -1724,12 +1738,12 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
         </el-icon>
         <template v-if="showInput">
           <el-input
-            maxlength="64"
+            maxlength="50"
             ref="editorName"
             v-model="datasetName"
             @blur="handleDatasetName"
           />
-          <div class="ed-form-item__error" v-if="errorTips">{{ errorTips }}</div>
+          <!-- <div class="ed-form-item__error" v-if="errorTips">{{ errorTips }}</div> -->
         </template>
         <template v-else>
           <span @click="handleClick" class="dataset-name ellipsis" style="margin-left: 12px">{{
