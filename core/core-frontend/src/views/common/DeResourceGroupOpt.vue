@@ -2,6 +2,7 @@
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_searchOutline_outlined from '@/assets/svg/icon_search-outline_outlined.svg'
 import { ref, reactive, computed, watch, toRefs, nextTick } from 'vue'
+import CheckPopoverSelect from '@/components/common/CheckPopoverSelect.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useCache } from '@/hooks/web/useCache'
 import nothingTree from '@/assets/img/nothing-tree.png'
@@ -88,6 +89,19 @@ const allUsers = ref<any[]>([])
 const allRoles = ref<any[]>([])
 const loadingUsers = ref(false)
 const loadingRoles = ref(false)
+// 下拉复选显示项：统一映射为 {label, value}
+const userCheckOptions = computed(() =>
+  (userOptions.value || []).map(u => ({
+    label: `${u.name || u.username || u.nickName || ''}${u.loginName ? ' (' + u.loginName + ')' : ''}`,
+    value: u.id || u.uid || u.userId
+  }))
+)
+const roleCheckOptions = computed(() =>
+  (roleOptions.value || []).map(r => ({
+    label: r.name,
+    value: r.id || r.rid
+  }))
+)
 // 获取权限用户列表
 const fetchUsers = async (keyword: string) => {
   loadingUsers.value = true
@@ -147,7 +161,13 @@ const nameRepeat = value => {
   }
   return nameList.some(name => name === value)
 }
+// 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
+const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
 const nameValidator = (_, value, callback) => {
+  if (!value || !NAME_REG.test(value)) {
+    callback(new Error('请填写1~50位名称，允许汉字、字母、下划线、数字'))
+    return
+  }
   if (nameRepeat(value)) {
     callback(new Error(t('visualization.name_repeat')))
   } else {
@@ -273,8 +293,8 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
       },
       {
         min: 1,
-        max: 64,
-        message: t('commons.char_1_64'),
+        max: 50,
+        message: t('commons.character_length_1_50'),
         trigger: 'change'
       },
       { required: true, trigger: 'blur', validator: nameValidator }
@@ -460,38 +480,22 @@ const emits = defineEmits(['finish'])
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
-            <el-select
-              v-model="resourceForm.manageOperators"
-              multiple
-              filterable
-              :loading="loadingUsers"
-              placeholder="请选择用户管理权限"
-            >
-              <el-option
-                v-for="item in userOptions"
-                :key="item.id || item.uid || item.userId"
-                :label="item.name || item.username || item.nickName"
-                :value="item.id || item.uid || item.userId"
+              <CheckPopoverSelect
+                v-model="formData.manageUserIds"
+                :options="userCheckOptions"
+                :loading="loadingUsers"
+                placeholder="请选择用户管理权限"
               />
-            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
-            <el-select
-              v-model="resourceForm.manageGroups"
-              multiple
-              filterable
-              :loading="loadingRoles"
-              placeholder="请选择群组管理权限"
-            >
-              <el-option
-                v-for="item in roleOptions"
-                :key="item.id || item.rid"
-                :label="item.name"
-                :value="item.id || item.rid"
+              <CheckPopoverSelect
+                v-model="formData.manageRoleIds"
+                :options="roleCheckOptions"
+                :loading="loadingRoles"
+                placeholder="请选择群组管理权限"
               />
-            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -500,38 +504,22 @@ const emits = defineEmits(['finish'])
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
-            <el-select
-              v-model="resourceForm.viewGroups"
-              multiple
-              filterable
-              :loading="loadingUsers"
-              placeholder="请选择用户查看权限"
-            >
-              <el-option
-                v-for="item in userOptions"
-                :key="item.id || item.uid || item.userId"
-                :label="item.name || item.username || item.nickName"
-                :value="item.id || item.uid || item.userId"
+              <CheckPopoverSelect
+                v-model="formData.viewUserIds"
+                :options="userCheckOptions"
+                :loading="loadingUsers"
+                placeholder="请选择用户查看权限"
               />
-            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
-            <el-select
-              v-model="resourceForm.viewOperators"
-              multiple
-              filterable
-              :loading="loadingRoles"
-              placeholder="请选择群组查看权限"
-            >
-              <el-option
-                v-for="item in roleOptions"
-                :key="item.id || item.rid"
-                :label="item.name"
-                :value="item.id || item.rid"
+              <CheckPopoverSelect
+                v-model="formData.viewRoleIds"
+                :options="roleCheckOptions"
+                :loading="loadingRoles"
+                placeholder="请选择群组查看权限"
               />
-            </el-select>
           </el-form-item>
         </el-col>
       </el-row>

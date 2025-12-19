@@ -198,7 +198,9 @@ const onMobileConfig = () => {
 const XpackLoaded = () => p(true)
 
 const doUseCache = flag => {
-  const canvasCache = wsCache.get('DE-DV-CATCH-' + (state.resourceId ?? 'null'))
+  const canvasCache = state.resourceId
+    ? wsCache.get('DE-DV-CATCH-' + state.resourceId)
+    : undefined
   console.log('canvasCache', canvasCache)
   if (flag && canvasCache) {
     const canvasCacheSeries = deepCopy(canvasCache)
@@ -262,6 +264,8 @@ const initDashboardCreateMode = async (pid, createType, templateParams) => {
       }
     } else {
       // 新建组件
+      // 同时默认添加查询组件与明细表
+      handleNewFromCanvasMain({ componentName: 'VQuery', innerType: 'VQuery' })
       handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
     }
     dataInitState.value = true
@@ -269,9 +273,8 @@ const initDashboardCreateMode = async (pid, createType, templateParams) => {
     // 数据准备完成，允许计入镜像
     dvMainStore.setDataPrepareState(true)
     // preOpt
-    canvasStyleData.value.component.chartTitle.color = '#000000'
-  })
-}
+        canvasStyleData.value.component.chartTitle.color = '#000000'
+      })
 
 const initLocalCanvasData = callBack => {
   const { resourceId, opt, sourcePid } = state
@@ -391,8 +394,10 @@ onMounted(async () => {
   state.sourcePid = pid
   state.opt = opt
   state.resourceId = resourceId
-  // 刷新后清空历史，重新开始记录（支持 null 键）
-  snapshotStore.clearPersistHistory(resourceId ?? null)
+  // 刷新后清空历史，重新开始记录（仅在存在资源ID时处理）
+  if (resourceId) {
+    snapshotStore.clearPersistHistory(resourceId)
+  }
   snapshotStore.initSnapShot()
   console.log(resourceId, 'resourceId')
   if (resourceId) {
@@ -407,11 +412,7 @@ onMounted(async () => {
     }
   } else if (opt && opt === 'create') {
     dataInitState.value = false
-    // 新建页也检查 null 键缓存
-    const nullCache = wsCache.get('DE-DV-CATCH-' + (resourceId ?? 'null'))
-    if (nullCache) {
-      canvasCacheOutRef.value?.dialogInit({ canvasType: 'dashboard', resourceId: resourceId })
-    } else {
+    // 新建页不检查 null 键缓存，直接走初始化
       let watermarkBaseInfo
       try {
         await watermarkFind().then(rsp => {
@@ -447,6 +448,7 @@ onMounted(async () => {
           }
         } else {
           // 新建组件
+          handleNewFromCanvasMain({ componentName: 'VQuery', innerType: 'VQuery' })
           handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
         }
         dataInitState.value = true
@@ -456,7 +458,6 @@ onMounted(async () => {
         // preOpt
         canvasStyleData.value.component.chartTitle.color = '#000000'
       })
-    }
   } else {
     let url = '#/panel/index'
     window.open(url, '_self')
@@ -530,6 +531,17 @@ const doRecoverToPublished = () => {
   )
 }
 
+//计算ComponentData中的style
+const calcComponentItemstyle = (item) => {
+  const heightObj = {
+    'VQuery': '100px',
+    'table-info': 'calc(100vh-345px)'
+  }
+  return {
+    height: heightObj[item.innerType]
+  }
+}
+
 onUnmounted(() => {
   document.body.style.overflow = ''
   window.removeEventListener('storage', eventCheck)
@@ -544,8 +556,12 @@ window.addEventListener('message', (event: MessageEvent) => {
   const data = event?.data
   if (data?.type === 'dashboardClose') {
     // 清空localstorage里的DashboardCache
-    wsCache.delete('DE-DV-CATCH-' + (dvInfo.value.id ?? 'null'))
-    wsCache.delete('DE-DV-HISTORY-' + (dvInfo.value.pid ?? 'null'))
+    if (dvInfo.value.id) {
+      wsCache.delete('DE-DV-CATCH-' + dvInfo.value.id)
+    }
+    if (dvInfo.value.pid) {
+      wsCache.delete('DE-DV-HISTORY-' + dvInfo.value.pid)
+    }
   }
 })
 </script>
@@ -641,7 +657,7 @@ window.addEventListener('message', (event: MessageEvent) => {
             <el-button size="small" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">查询</el-button>
           </div>
           <div class="show-area" ref="showAreaRef">
-            <div v-for="item in componentData" :key="item.id" style="height: 100%">
+            <div v-for="item in componentData" :key="item.id" :style="calcComponentItemstyle(item)">
               <component
                 :is="findComponent(item.component)"
                 class="component"

@@ -2493,18 +2493,6 @@ const deleteChartFieldItem = id => {
             </el-row>
 
             <el-row :style="elRowStyle">
-              <!-- <el-scrollbar v-if="view.type === 'VQuery' && curComponent">
-                <div class="query-style-tab">
-                  <div style="padding-top: 1px">
-                    <VQueryChartStyle
-                      :element="curComponent"
-                      :common-background-pop="curComponent?.commonBackground"
-                      :chart="view"
-                      :themes="themes"
-                    />
-                  </div>
-                </div>
-              </el-scrollbar> -->
               <div class="chart-select-box">
                 <chart-type
                   :themes="themes"
@@ -2780,6 +2768,26 @@ const deleteChartFieldItem = id => {
                       </template>
                     </el-scrollbar>
                   </el-container>
+                </el-tab-pane>
+
+                <el-tab-pane
+                  name="query"
+                  label="查询条件"
+                  class="padding-tab"
+                  style="width: 100%"
+                >
+                  <el-scrollbar v-if="view.type === 'VQuery' && curComponent">
+                    <div class="query-style-tab">
+                      <div style="padding-top: 1px">
+                        <!-- <VQueryChartStyle
+                          :element="curComponent"
+                          :common-background-pop="curComponent?.commonBackground"
+                          :chart="view"
+                          :themes="themes"
+                        /> -->
+                      </div>
+                    </div>
+                  </el-scrollbar>
                 </el-tab-pane>
               </el-tabs>
             </el-row>
