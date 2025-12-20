@@ -47,7 +47,7 @@ const treeRef = ref()
 const filterText = ref('')
 const resourceFormNameLabel = ref('')
 const resourceForm = reactive({
-  pid: '',
+  pid: [],
   pName: null,
   name: '新建',
   manageOperators: [],
@@ -197,7 +197,7 @@ const resetForm = () => {
   dialogTitle.value = null
   resourceFormNameLabel.value = ''
   resourceForm.name = t('visualization.new')
-  resourceForm.pid = ''
+  resourceForm.pid = []
   resourceDialogShow.value = false
   // 清空权限与描述
   resourceForm.manageOperators = []
@@ -271,7 +271,7 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
       cutTargetTree(state.tData, data.id)
     }
     if (['newLeaf', 'newFolder'].includes(exec)) {
-      resourceForm.pid = data.id as string
+      resourceForm.pid = [data.id as string]
       pid.value = data.id
     } else {
       id.value = data.id
@@ -327,12 +327,15 @@ const propsTree = {
 }
 
 const nodeClick = (data: BusiTreeNode) => {
-  resourceForm.pid = data.id as string
+  resourceForm.pid = [data.id as string]
   resourceForm.pName = data.name as string
 }
 
 const checkParent = params => {
-  if (params.pid !== 0 && !params.pid) {
+  const pids = Array.isArray(params.pid) ? params.pid : [params.pid]
+  const hasValidPid = pids.some(p => p !== null && p !== undefined && p !== '')
+
+  if (!hasValidPid) {
     ElMessage.error(t('visualization.select_target_folder'))
     return false
   }
@@ -342,7 +345,7 @@ const checkParent = params => {
     return false
   }
   // 点击后不能选择自身作为父ID
-  if (params.pid === params.id) {
+  if (pids.includes(params.id)) {
     ElMessage.warning(t('visualization.select_target_tips'))
     return
   }
@@ -368,19 +371,19 @@ const saveResource = () => {
 
       switch (cmd.value) {
         case 'move':
-          params.pid = resourceForm.pid as string
+          params.pid = resourceForm.pid
           params.id = id.value
           break
         case 'copy':
           params.id = id.value
-          params.pid = resourceForm.pid || pid.value || '0'
+          params.pid = (resourceForm.pid && resourceForm.pid.length) ? resourceForm.pid : (pid.value || '0')
           break
         case 'rename':
           params.pid = pid.value as string
           params.id = id.value
           break
         default:
-          params.pid = resourceForm.pid || pid.value || '0'
+          params.pid = (resourceForm.pid && resourceForm.pid.length) ? resourceForm.pid : (pid.value || '0')
           break
       }
       nameTrim(params, t('components.length_1_64_characters'))
@@ -458,9 +461,10 @@ const emits = defineEmits(['finish'])
           @keydown.stop
           @keyup.stop
           v-model="resourceForm.pid"
+          multiple
+          check-strictly
           :data="state.tData"
           :props="propsTree"
-          @node-click="nodeClick"
           :filter-method="filterMethod"
           :render-after-expand="false"
           filterable
@@ -481,7 +485,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
               <CheckPopoverSelect
-                v-model="formData.manageUserIds"
+                v-model="resourceForm.manageUserIds"
                 :options="userCheckOptions"
                 :loading="loadingUsers"
                 placeholder="请选择用户管理权限"
@@ -491,7 +495,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
               <CheckPopoverSelect
-                v-model="formData.manageRoleIds"
+                v-model="resourceForm.manageRoleIds"
                 :options="roleCheckOptions"
                 :loading="loadingRoles"
                 placeholder="请选择群组管理权限"
@@ -505,7 +509,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
               <CheckPopoverSelect
-                v-model="formData.viewUserIds"
+                v-model="resourceForm.viewUserIds"
                 :options="userCheckOptions"
                 :loading="loadingUsers"
                 placeholder="请选择用户查看权限"
@@ -515,7 +519,7 @@ const emits = defineEmits(['finish'])
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
               <CheckPopoverSelect
-                v-model="formData.viewRoleIds"
+                v-model="resourceForm.viewRoleIds"
                 :options="roleCheckOptions"
                 :loading="loadingRoles"
                 placeholder="请选择群组查看权限"

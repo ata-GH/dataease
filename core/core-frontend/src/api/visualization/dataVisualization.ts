@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash-es'
 export interface ResourceOrFolder {
   name: string
   id?: number | string
-  pid?: number | string
+  pid?: number | string | string[]
   nodeType: 'folder' | 'leaf'
   type: string
   mobileLayout: boolean
