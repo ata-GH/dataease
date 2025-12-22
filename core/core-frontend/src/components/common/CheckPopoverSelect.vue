@@ -147,7 +147,7 @@ const formatLabel = (label: string | null | undefined) => {
             </el-checkbox>
           </el-checkbox-group>
         </template>
-        <div v-else class="empty-tip">未搜索到</div>
+        <div v-else class="empty-tip">暂无数据</div>
       </el-scrollbar>
 
     </div>
