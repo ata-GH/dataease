@@ -192,6 +192,13 @@ export const routes: AppRouteRecordRaw[] = [
     hidden: true,
     meta: {},
     component: () => import('@/views/common/LoadingPage.vue')
+  },
+  {
+    path: '/template-new',
+    name: 'template-new',
+    hidden: true,
+    meta: {},
+    component: () => import('@/views/template-new/index.vue')
   }
 ]
 

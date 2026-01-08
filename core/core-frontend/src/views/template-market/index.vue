@@ -190,6 +190,7 @@ import { useEmbedded } from '@/store/modules/embedded'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import elementResizeDetectorMaker from 'element-resize-detector'
 import { nextTick, reactive, watch, onMounted, ref, computed } from 'vue'
+import { useRouter } from 'vue-router_2'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElMessage } from 'element-plus-secondary'
 import { useCache } from '@/hooks/web/useCache'
@@ -203,6 +204,7 @@ import { useEmitt } from '@/hooks/web/useEmitt'
 import { Base64 } from 'js-base64'
 import { getActiveCategories } from '@/utils/utils'
 const { t } = useI18n()
+const router = useRouter()
 const { wsCache } = useCache()
 const embeddedStore = useEmbedded()
 const appStore = useAppStoreWithOut()
@@ -488,12 +490,7 @@ const apply = () => {
   }
   state.curApplyTemplate.recentUseTime = Date.now()
   state.curApplyTemplate.categoryNames.push(t('work_branch.recent'))
-  const baseUrl =
-    (['dataV', 'SCREEN'].includes(state.dvCreateForm.nodeType)
-      ? '#/dvCanvas?opt=create&createType=template'
-      : '#/dashboard?opt=create&createType=template') +
-    '&templateParams=' +
-    encodeURIComponent(Base64.encode(JSON.stringify(templateTemplate)))
+
   let newWindow = null
   if (isEmbedded.value) {
     embeddedStore.clearState()
@@ -514,13 +511,16 @@ const apply = () => {
     )
     return
   }
-  const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
-  if (state.pid) {
-    newWindow = window.open(baseUrl + `&pid=${state.pid}`, openType)
-  } else {
-    newWindow = window.open(baseUrl, openType)
+  const path = ['dataV', 'SCREEN'].includes(state.dvCreateForm.nodeType)
+    ? '/dvCanvas'
+    : '/dashboard'
+  const query = {
+    opt: 'create',
+    createType: 'template',
+    templateParams: Base64.encode(JSON.stringify(templateTemplate)),
+    pid: state.pid || undefined
   }
-  initOpenHandler(newWindow)
+  router.push({ path, query })
 }
 const openHandler = ref(null)
 const initOpenHandler = newWindow => {
