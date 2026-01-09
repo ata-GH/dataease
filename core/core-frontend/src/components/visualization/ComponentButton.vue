@@ -9,10 +9,14 @@ const props = defineProps({
   tips: propTypes.string,
   iconName: propTypes.string,
   showSplitLine: propTypes.bool,
-  active: propTypes.bool
+  active: propTypes.bool,
+  themes: {
+    type: String,
+    default: 'dark'
+  }
 })
 
-const { title, tips, iconName, showSplitLine } = toRefs(props)
+const { title, tips, iconName, showSplitLine, themes } = toRefs(props)
 const emits = defineEmits(['customClick'])
 </script>
 
@@ -20,7 +24,7 @@ const emits = defineEmits(['customClick'])
   <el-row
     class="group_icon"
     :title="tips"
-    :class="{ 'group-right-border': showSplitLine }"
+    :class="[{ 'group-right-border': showSplitLine }, { 'light-theme': themes === 'light' }]"
     v-on:click="emits('customClick')"
   >
     <el-col :span="24" class="group_inner" :class="{ 'inner-active': active }">
@@ -85,5 +89,30 @@ const emits = defineEmits(['customClick'])
 
 .toolbar-icon {
   font-size: 20px;
+}
+
+.light-theme {
+  &.group-right-border {
+    border-right: 1px solid rgba(31, 35, 41, 0.15);
+  }
+  .group_inner {
+    color: #646a73;
+    &:hover {
+      &::after {
+        background: rgba(31, 35, 41, 0.1);
+      }
+    }
+    &:active {
+      &::after {
+        background: rgba(31, 35, 41, 0.2);
+      }
+    }
+    span {
+      color: #646a73;
+    }
+  }
+  .inner-active {
+    background: rgba(31, 35, 41, 0.1);
+  }
 }
 </style>

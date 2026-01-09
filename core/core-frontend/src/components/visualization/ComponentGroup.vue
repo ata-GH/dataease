@@ -41,6 +41,7 @@ const { title, iconName, baseWidth, themes } = toRefs(props)
         :title="title"
         :icon-name="iconName"
         :show-split-line="showSplitLine"
+        :themes="themes"
       ></component>
     </template>
     <slot></slot>

@@ -9,15 +9,19 @@ const props = defineProps({
   tips: propTypes.string,
   iconName: propTypes.string,
   showSplitLine: propTypes.bool,
-  active: propTypes.bool
+  active: propTypes.bool,
+  themes: {
+    type: String,
+    default: 'dark'
+  }
 })
 
-const { title, tips, iconName, showSplitLine } = toRefs(props)
+const { title, tips, iconName, showSplitLine, themes } = toRefs(props)
 const emits = defineEmits(['customClick'])
 </script>
 
 <template>
-  <div class="flex-align-center">
+  <div class="flex-align-center" :class="[{ 'light-theme': themes === 'light' }]">
     <el-row class="group_icon" :title="tips" @click="emits('customClick')">
       <el-col :span="24" class="group_inner" :class="{ 'inner-active': active }">
         <Icon><component class="svg-icon toolbar-icon" :is="iconName"></component></Icon>
@@ -73,5 +77,25 @@ const emits = defineEmits(['customClick'])
   float: left;
   width: 20px;
   height: 20px;
+}
+
+.light-theme {
+  .group_inner {
+    color: #646a73;
+    &:hover {
+      background: rgba(31, 35, 41, 0.1);
+      color: #1f2329;
+    }
+    &:active {
+      color: #1f2329;
+      background: rgba(31, 35, 41, 0.2);
+    }
+  }
+  .group-right-border {
+    border-color: rgba(31, 35, 41, 0.15);
+  }
+  .inner-active {
+    background: rgba(31, 35, 41, 0.1);
+  }
 }
 </style>
