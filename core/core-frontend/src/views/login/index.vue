@@ -38,6 +38,16 @@ const loginErrorMsg = ref('')
 const xpackLoginHandler = ref()
 const showDempTips = ref(false)
 const xpackInvalidPwd = ref()
+const isLoginHidden = ref(true)
+
+const closePage = () => {
+  try {
+    parent.window.postMessage({ type: 'closeBoard', data: {} }, '*')
+  } catch (e) {
+    window.parent?.postMessage({ type: 'closeBoard', data: {} }, '*')
+  }
+}
+
 const demoTips = computed(() => {
   if (!showDempTips.value) {
     return ''
@@ -140,7 +150,7 @@ const showLoginImage = computed<boolean>(() => {
   return !(loginContainerWidth.value < 889)
 })
 
-const preheat = ref(true)
+const preheat = ref(false)
 const showLoginErrorMsg = () => {
   if (!loginErrorMsg.value) {
     return
@@ -300,7 +310,12 @@ onMounted(async () => {
   />
   <div v-show="contentShow" class="login-background" v-loading="duringLogin">
     <div class="login-container" ref="loginContainer">
-      <div class="login-image-content" v-loading="!axiosFinished" v-if="showLoginImage">
+      <div
+        class="login-image-content"
+        v-loading="!axiosFinished"
+        v-if="showLoginImage"
+        @dblclick="isLoginHidden = !isLoginHidden"
+      >
         <el-image
           v-if="axiosFinished"
           class="login-image"
@@ -309,7 +324,11 @@ onMounted(async () => {
         />
       </div>
       <div class="login-form-content" v-loading="loading">
-        <div class="login-form-center">
+        <div v-if="isLoginHidden" class="session-expired-view">
+          <div class="expired-text">登录会话已失效，请关闭页面重新登录</div>
+          <button class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
+        </div>
+        <div v-else class="login-form-center">
           <el-form
             ref="formRef"
             :model="state.loginForm"
@@ -603,5 +622,32 @@ onMounted(async () => {
 .login-logo-icon {
   width: auto;
   height: 52px;
+}
+
+.session-expired-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.expired-text {
+  color: #606266;
+  font-size: 14px;
+}
+
+.close-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #fff;
+  color: #606266;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  border-color: #c0c4cc;
+  color: #409eff;
 }
 </style>

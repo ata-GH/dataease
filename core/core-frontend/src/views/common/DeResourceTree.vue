@@ -143,7 +143,7 @@ const state = reactive({
 })
 
 const dvSvgType = computed(() =>
-  curCanvasType.value === 'dashboard' ? dvDashboardSpine : dvScreenSpine
+  ['dashboard', 'chart'].includes(curCanvasType.value) ? dvDashboardSpine : dvScreenSpine
 )
 
 const isEmbedded = computed(() => appStore.getIsDataEaseBi || appStore.getIsIframe)
@@ -233,10 +233,10 @@ const menuList = [
   }
 ]
 
-const infoId = wsCache.get(curCanvasType.value === 'dashboard' ? 'db-info-id' : 'dv-info-id')
+const infoId = wsCache.get((curCanvasType.value === 'dashboard' || curCanvasType.value === 'chart') ? 'db-info-id' : 'dv-info-id')
 const routerDvId = router.currentRoute.value.query.dvId
 const dvId = embeddedStore.dvId || infoId || routerDvId
-wsCache.delete(curCanvasType.value === 'dashboard' ? 'db-info-id' : 'dv-info-id')
+wsCache.delete((curCanvasType.value === 'dashboard' || curCanvasType.value === 'chart') ? 'db-info-id' : 'dv-info-id')
 if (dvId && showPosition.value === 'preview') {
   selectedNodeKey.value = dvId
   returnMounted.value = true
@@ -321,7 +321,7 @@ const getTree = async () => {
     busiFlag: curCanvasType.value,
     resourceTable: props.resourceTable
   } as BusiTreeRequest
-  const isDashboard = curCanvasType.value == 'dashboard'
+  const isDashboard = curCanvasType.value === 'dashboard' || curCanvasType.value === 'chart'
   await interactiveStore.setInteractive(request)
   const interactiveData = isDashboard ? interactiveStore.getPanel : interactiveStore.getScreen
   const nodeData = interactiveData.treeNodes
@@ -632,6 +632,26 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
   return false
 }, 300)
 
+watch(curCanvasType, () => {
+  getTree()
+  selectedNodeKey.value = null
+  if (resourceListTree.value) {
+    resourceListTree.value.setCurrentKey(null)
+  }
+  if (!embeddedStore.baseUrl) {
+    let url = window.location.href
+    const paramName = 'dvId'
+    if (url.includes(paramName)) {
+      const regex = new RegExp(`([?&])${paramName}=[^&]*(&|$)`)
+      url = url.replace(regex, (match, separator, end) => {
+        if (end === '&') return separator
+        return ''
+      })
+      window.history.replaceState({ path: url }, '', url)
+    }
+  }
+})
+
 watch(filterText, val => {
   resourceListTree.value.filter(val)
 })
@@ -787,7 +807,7 @@ defineExpose({
             <el-icon style="font-size: 18px" v-if="!data.leaf">
               <Icon name="dv-folder"><dvFolder class="svg-icon" /></Icon>
             </el-icon>
-            <el-icon style="font-size: 18px" v-else-if="curCanvasType === 'dashboard'">
+            <el-icon style="font-size: 18px" v-else-if="curCanvasType === 'dashboard' || curCanvasType === 'chart'">
               <Icon v-if="data.extraFlag1"
                 ><component
                   :is="data.extraFlag ? dvDashboardSpineMobile : dvDashboardSpine"

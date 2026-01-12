@@ -848,7 +848,7 @@ const copySql = async () => {
     <multiplexing-canvas ref="multiplexingRef"></multiplexing-canvas>
     <de-resource-group-opt
       @finish="resourceOptFinish"
-      cur-canvas-type="dashboard"
+      cur-canvas-type="chart"
       ref="resourceGroupOpt"
     />
     <outer-params-set ref="outerParamsSetRef"> </outer-params-set>

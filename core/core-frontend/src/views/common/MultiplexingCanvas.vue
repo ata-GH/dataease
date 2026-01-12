@@ -11,7 +11,7 @@
     <!-- 标识当前在复用页，用于作为轮播提示前缀 -->
     <div v-if="dialogShow" id="multiplexingDrawer" />
     <dashboard-preview-show
-      v-if="dialogShow && curDvType === 'dashboard'"
+      v-if="dialogShow && (curDvType === 'dashboard' || curDvType === 'chart')"
       ref="multiplexingPreviewShowRef"
       class="multiplexing-area"
       no-close

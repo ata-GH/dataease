@@ -21,9 +21,9 @@ interface InteractiveState {
   data: Record<number, InnerInteractive>
 }
 
-const apiMap = [queryTreeApi, queryTreeApi, getDatasetTree, listDatasources]
+const apiMap = [queryTreeApi, queryTreeApi, getDatasetTree, listDatasources, queryTreeApi]
 
-const busiFlagMap = ['dashboard', 'dataV', 'dataset', 'datasource']
+const busiFlagMap = ['dashboard', 'dataV', 'dataset', 'datasource', 'chart']
 
 export const interactiveStore = defineStore('interactive', {
   state: (): InteractiveState => ({
@@ -41,6 +41,9 @@ export const interactiveStore = defineStore('interactive', {
     },
     getDatasource(): InnerInteractive {
       return this.data[3]
+    },
+    getChart(): InnerInteractive {
+      return this.data[4]
     },
     getData(): InteractiveState {
       return this.data
@@ -85,7 +88,7 @@ export const interactiveStore = defineStore('interactive', {
         await this.loadBusiInteractive()
         return
       }
-      let index = 4
+      let index = busiFlagMap.length
       while (index--) {
         if (!this.data[index] || refresh) {
           const param: BusiTreeRequest = {

@@ -2,7 +2,7 @@
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import DeResourceTree from '@/views/common/DeResourceTree.vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
-import { reactive, nextTick, ref, toRefs, onBeforeMount, computed, onMounted } from 'vue'
+import { reactive, nextTick, ref, toRefs, onBeforeMount, computed, onMounted, watch } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'
 import PreviewHead from '@/views/data-visualization/PreviewHead.vue'
 import EmptyBackground from '@/components/empty-background/src/EmptyBackground.vue'
@@ -73,6 +73,20 @@ const props = defineProps({
 })
 
 const { showPosition, resourceTable } = toRefs(props)
+
+const curCanvasType = ref('dashboard')
+const tabList = [
+  { label: '仪表盘', value: 'dashboard' },
+  { label: '单图表', value: 'chart' }
+]
+
+watch(curCanvasType, () => {
+  state.canvasDataPreview = null
+  state.canvasStylePreview = null
+  state.canvasViewInfoPreview = null
+  state.dvInfo = null
+})
+
 
 const resourceTreeRef = ref()
 
@@ -277,10 +291,21 @@ defineExpose({
         :style="{ left: (sideTreeStatus ? width - 12 : 0) + 'px' }"
         @change-side-tree-status="changeSideTreeStatus"
       ></ArrowSide>
+      <div class="canvas-type-tab" v-if="slideShow">
+        <div
+          v-for="tab in tabList"
+          :key="tab.value"
+          class="tab-item"
+          :class="{ active: curCanvasType === tab.value }"
+          @click="curCanvasType = tab.value"
+        >
+          {{ tab.label }}
+        </div>
+      </div>
       <de-resource-tree
         ref="resourceTreeRef"
         v-show="slideShow"
-        :cur-canvas-type="'dashboard'"
+        :cur-canvas-type="curCanvasType"
         :show-position="showPosition"
         :resource-table="resourceTable"
         @node-click="resourceNodeClick"
@@ -371,6 +396,44 @@ defineExpose({
     padding: 0;
     border-right: 1px solid #d7d7d7;
     overflow: visible;
+
+    .canvas-type-tab {
+      display: flex;
+      width: 100%;
+      height: 40px;
+      border-bottom: 1px solid #dcdfe6;
+      background: #fff;
+
+      .tab-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #646a73;
+        cursor: pointer;
+        position: relative;
+
+        &.active {
+          color: var(--ed-color-primary);
+          font-weight: 500;
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--ed-color-primary);
+          }
+        }
+
+        &:hover:not(.active) {
+          color: var(--ed-color-primary);
+        }
+      }
+    }
 
     &.retract {
       display: none;
