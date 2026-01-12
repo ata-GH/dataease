@@ -105,6 +105,11 @@ const props = defineProps({
     type: String,
     required: false,
     default: null
+  },
+  curCanvasType: {
+    type: String,
+    required: false,
+    default: 'dashboard'
   }
 })
 
@@ -552,7 +557,8 @@ defineExpose({
     :class="{
       'de-download-custom': downloadStatus,
       'datav-preview': dataVPreview,
-      'datav-preview-unpublish': showUnpublishFlag
+      'datav-preview-unpublish': showUnpublishFlag,
+      'single-chart': curCanvasType === 'chart'
     }"
     ref="previewCanvas"
     @mousedown="handleMouseDown"

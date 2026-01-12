@@ -354,6 +354,7 @@ defineExpose({
             :show-position="showPosition"
             :download-status="downloadStatus"
             :show-linkage-button="false"
+            :cur-canvas-type="curCanvasType"
           ></de-preview>
         </div>
       </template>
