@@ -151,73 +151,73 @@ const initOpenHandler = newWindow => {
       </el-popover>
     </div>
     <div class="canvas-opt-button">
+      <template v-if="false">
+        <el-button
+          v-if="!isIframe"
+          :disabled="dvInfo.status === 0"
+          secondary
+          @click="() => useEmitt().emitter.emit('canvasFullscreen')"
+        >
+          <template #icon>
+            <icon name="icon_pc_fullscreen"><icon_pc_fullscreen class="svg-icon" /></icon>
+          </template>
+          {{ t('visualization.fullscreen') }}</el-button
+        >
+        <el-button secondary @click="preview()" :disabled="dvInfo.status === 0">
+          <template #icon>
+            <icon name="icon_pc_outlined"><icon_pc_outlined class="svg-icon" /></icon>
+          </template>
+          {{ t('template_manage.preview') }}
+        </el-button>
+        <ShareVisualHead
+          v-if="!shareDisable"
+          :disabled="dvInfo.status === 0"
+          :resource-id="dvInfo.id"
+          :weight="dvInfo.weight"
+          :resource-type="dvInfo.type"
+        />
+        <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
+          <template #icon>
+            <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
+          </template>
+          {{ t('visualization.edit') }}</el-button
+        >
+      </template>
       <el-button
-        v-if="!isIframe"
         :disabled="dvInfo.status === 0"
-        secondary
-        @click="() => useEmitt().emitter.emit('canvasFullscreen')"
+        class="custom-icon"
+        text
+        @click="reload()"
       >
         <template #icon>
-          <icon name="icon_pc_fullscreen"><icon_pc_fullscreen class="svg-icon" /></icon>
+          <el-icon size="16"><icon_replace_outlined /></el-icon>
         </template>
-        {{ t('visualization.fullscreen') }}</el-button
-      >
-      <el-button secondary @click="preview()" :disabled="dvInfo.status === 0">
-        <template #icon>
-          <icon name="icon_pc_outlined"><icon_pc_outlined class="svg-icon" /></icon>
-        </template>
-        {{ t('template_manage.preview') }}
+        {{ t('visualization.refresh_data') }}
       </el-button>
-      <ShareVisualHead
-        v-if="!shareDisable"
+      <el-dropdown
+        v-if="exportPermissions[0]"
         :disabled="dvInfo.status === 0"
-        :resource-id="dvInfo.id"
-        :weight="dvInfo.weight"
-        :resource-type="dvInfo.type"
-      />
-      <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
-        <template #icon>
-          <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
-        </template>
-        {{ t('visualization.edit') }}</el-button
+        popper-class="pad12"
+        trigger="click"
       >
-      <el-dropdown :disabled="dvInfo.status === 0" popper-class="pad12" trigger="click">
-        <el-icon class="head-more-icon">
-          <Icon name="dv-head-more"><dvHeadMore class="svg-icon" /></Icon>
-        </el-icon>
+        <el-button class="custom-icon" text :disabled="dvInfo.status === 0">
+          <template #icon>
+            <el-icon size="16"><icon_download_outlined /></el-icon>
+          </template>
+          {{ t('visualization.export_as') }}
+        </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="reload()"
-              ><el-icon color="#646A73" size="16"><icon_replace_outlined /></el-icon
-              >{{ t('visualization.refresh_data') }}
-            </el-dropdown-item>
-            <el-dropdown
-              style="width: 100%; overflow: hidden"
-              trigger="hover"
-              popper-class="pad12"
-              placement="left-start"
-              v-if="exportPermissions[0]"
-            >
-              <div class="ed-dropdown-menu__item flex-align-center icon">
-                <el-icon color="#646A73" size="16"><icon_download_outlined /></el-icon>
-                {{ t('visualization.export_as') }}
-                <el-icon color="#646A73" size="16" class="arrow-right_icon"><ArrowRight /></el-icon>
-              </div>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="download('pdf')">PDF</el-dropdown-item>
-                  <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
-                    t('visualization.style_template')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
-                    t('visualization.apply_template')
-                  }}</el-dropdown-item>
-                  <el-dropdown-item @click="download('img')">{{
-                    t('chart.image')
-                  }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <el-dropdown-item @click="download('pdf')">PDF</el-dropdown-item>
+            <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
+              t('visualization.style_template')
+            }}</el-dropdown-item>
+            <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
+              t('visualization.apply_template')
+            }}</el-dropdown-item>
+            <el-dropdown-item @click="download('img')">{{
+              t('chart.image')
+            }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

@@ -15,9 +15,11 @@ import { download2AppTemplate, downloadCanvas2 } from '@/utils/imgUtils'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus-secondary'
 import AppExportForm from '@/components/de-app/AppExportForm.vue'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { useI18n } from '@/hooks/web/useI18n'
+import { useRoute } from 'vue-router_2'
 import CanvasOptBar from '@/components/visualization/CanvasOptBar.vue'
 import {
   exportLogApp,
@@ -37,6 +39,9 @@ const slideShow = ref(true)
 const appStore = useAppStoreWithOut()
 const dataInitState = ref(true)
 const downloadStatus = ref(false)
+const exportApplicationDialogRef = ref(null)
+const downloadTypeTemp = ref('')
+
 const state = reactive({
   canvasDataPreview: null,
   canvasStylePreview: null,
@@ -53,6 +58,8 @@ const { fullscreenFlag, canvasViewDataInfo } = storeToRefs(dvMainStore)
 
 const { width, node } = useMoveLine('DASHBOARD')
 const { t } = useI18n()
+const route = useRoute()
+const isPanel = computed(() => !!route.path && route.path.includes('panel'))
 
 const props = defineProps({
   showPosition: {
@@ -146,6 +153,15 @@ const loadCanvasData = (dvId, weight?) => {
 // 地图类图表，需要预先准备图片
 const mapChartTypes = ['bubble-map', 'flow-map', 'heat-map', 'map', 'symbolic-map']
 const downloadH2 = type => {
+  downloadTypeTemp.value = type
+  exportApplicationDialogRef.value.open()
+}
+
+const handleExportConfirm = formData => {
+  executeDownload(downloadTypeTemp.value, formData)
+}
+
+const executeDownload = (type, formData) => {
   downloadStatus.value = true
   const mapElementIds =
     state.canvasDataPreview
@@ -158,7 +174,9 @@ const downloadH2 = type => {
       downloadStatus.value = false
       const param = {
         id: state.dvInfo.id,
-        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen'
+        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen',
+        reason: formData.reason,
+        desc: formData.desc
       }
       type === 'img' ? exportLogImg(param) : exportLogPDF(param)
       mapElementIds.forEach(id => useEmitt().emitter.emit('l7-unprepare-picture', id))
@@ -283,7 +301,7 @@ defineExpose({
       class="resource-area"
       :class="{ 'close-side': !slideShow, retract: !sideTreeStatus }"
       ref="node"
-      :style="{ width: width + 'px' }"
+      :style="{ width: width + 'px', display: isPanel ? 'none' : 'block' }"
     >
       <ArrowSide
         v-if="!noClose"
@@ -380,6 +398,10 @@ defineExpose({
     :canvas-view-info="state.canvasViewInfoPreview"
     @downLoadApp="downLoadApp"
   ></app-export-form>
+  <export-application-dialog
+    ref="exportApplicationDialogRef"
+    @confirm="handleExportConfirm"
+  />
 </template>
 
 <style lang="less">
