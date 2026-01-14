@@ -152,6 +152,7 @@ const wrapperId = 'wrapper-outer-id-' + config.value.id
 
 const viewDemoInnerId = computed(() => 'enlarge-inner-content-' + config.value.id)
 const htmlToImage = () => {
+  console.log('导出图片1')
   useEmitt().emitter.emit('l7-prepare-picture', config.value.id)
   downLoading.value = true
   setTimeout(() => {

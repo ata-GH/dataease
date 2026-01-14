@@ -115,6 +115,42 @@ export function downloadCanvas2(type, canvasDom, name, callBack?) {
   }
 }
 
+export function generateCanvasFile(type, canvasDom, name, callBack) {
+  if (canvasDom) {
+    html2canvas(canvasDom)
+      .then(canvas => {
+        const dom = document.body.appendChild(canvas)
+        dom.style.display = 'none'
+        document.body.removeChild(dom)
+        const dataUrl = dom.toDataURL('image/png', 1)
+        if (type === 'img') {
+          const blob = dataURLToBlob(dataUrl)
+          const file = new File([blob], name + '.png', { type: 'image/png' })
+          if (callBack) {
+            callBack(file)
+          }
+        } else {
+          const contentWidth = canvasDom.offsetWidth
+          const contentHeight = canvasDom.offsetHeight
+          const lp = contentWidth > contentHeight ? 'l' : 'p'
+          const PDF = new JsPDF(lp, 'pt', [contentWidth, contentHeight])
+          PDF.addImage(dataUrl, 'PNG', 0, 0, contentWidth, contentHeight)
+          const blob = PDF.output('blob')
+          const file = new File([blob], name + '.pdf', { type: 'application/pdf' })
+          if (callBack) {
+            callBack(file)
+          }
+        }
+      })
+      .catch(error => {
+        console.error('oops, something went wrong!', error)
+        if (callBack) {
+          callBack(null)
+        }
+      })
+  }
+}
+
 export function downloadCanvas(type, canvasDom, name, callBack?) {
   toPng(canvasDom)
     .then(dataUrl => {

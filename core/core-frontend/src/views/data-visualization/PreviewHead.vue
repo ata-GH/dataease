@@ -209,12 +209,12 @@ const initOpenHandler = newWindow => {
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="download('pdf')">PDF</el-dropdown-item>
-            <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
+            <!-- <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
               t('visualization.style_template')
             }}</el-dropdown-item>
             <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
               t('visualization.apply_template')
-            }}</el-dropdown-item>
+            }}</el-dropdown-item> -->
             <el-dropdown-item @click="download('img')">{{
               t('chart.image')
             }}</el-dropdown-item>

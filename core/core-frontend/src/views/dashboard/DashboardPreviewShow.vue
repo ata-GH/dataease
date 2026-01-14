@@ -11,7 +11,7 @@ import { initCanvasData, initCanvasDataPrepare, onInitReady } from '@/utils/canv
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMoveLine } from '@/hooks/web/useMoveLine'
 import { Icon } from '@/components/icon-custom'
-import { download2AppTemplate, downloadCanvas2 } from '@/utils/imgUtils'
+import { download2AppTemplate, generateCanvasFile } from '@/utils/imgUtils'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus-secondary'
 import AppExportForm from '@/components/de-app/AppExportForm.vue'
@@ -25,7 +25,8 @@ import {
   exportLogApp,
   exportLogImg,
   exportLogPDF,
-  exportLogTemplate
+  exportLogTemplate,
+  submitExportFile
 } from '@/api/visualization/dataVisualization'
 const userStore = useUserStoreWithOut()
 
@@ -170,15 +171,21 @@ const executeDownload = (type, formData) => {
   mapElementIds.forEach(id => useEmitt().emitter.emit('l7-prepare-picture', id))
   nextTick(() => {
     const vueDom = previewCanvasContainer.value.querySelector('.canvas-container')
-    downloadCanvas2(type, vueDom, state.dvInfo.name, () => {
+    generateCanvasFile(type, vueDom, state.dvInfo.name, (file) => {
+      console.log('file', file)
       downloadStatus.value = false
       const param = {
         id: state.dvInfo.id,
-        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen',
-        reason: formData.reason,
-        desc: formData.desc
+        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen'
       }
       type === 'img' ? exportLogImg(param) : exportLogPDF(param)
+      const form = new FormData()
+      form.append('id', state.dvInfo.id)
+      form.append('type', state.dvInfo.type === 'dashboard' ? 'panel' : 'screen')
+      form.append('reason', formData.reason)
+      form.append('desc', formData.desc)
+      form.append('file', file)
+      submitExportFile(form)
       mapElementIds.forEach(id => useEmitt().emitter.emit('l7-unprepare-picture', id))
     })
   })

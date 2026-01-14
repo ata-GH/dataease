@@ -1135,6 +1135,7 @@ const dragCollision = computed(() => {
 })
 
 const htmlToImage = () => {
+  console.log('导出图片2')
   downLoading.value = true
   useEmitt().emitter.emit('l7-prepare-picture', element.value.id)
   setTimeout(() => {

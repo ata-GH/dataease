@@ -169,3 +169,10 @@ export const exportLogTemplate = data =>
 export const exportLogPDF = data => request.post({ url: '/dataVisualization/exportLogPDF', data })
 
 export const exportLogImg = data => request.post({ url: '/dataVisualization/exportLogImg', data })
+
+export const submitExportFile = data =>
+  request.post({
+    url: '/dataVisualization/submitExportFile',
+    data,
+    headersType: 'multipart/form-data'
+  })
