@@ -158,6 +158,7 @@
       </div>
     </div>
   </el-dialog>
+  <export-application-dialog ref="exportApplicationDialogRef" @confirm="handleExportConfirm" />
 </template>
 
 <script setup lang="ts">
@@ -186,9 +187,12 @@ import { supportExtremumChartType } from '@/views/chart/components/js/extremumUi
 import ChartCarouselTooltip from '@/views/chart/components/js/g2plot_tooltip_carousel'
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 const downLoading = ref(false)
 const dvMainStore = dvMainStoreWithOut()
 const dialogShow = ref(false)
+const exportApplicationDialogRef = ref(null)
+const currentDownloadType = ref('view')
 const requestStore = useRequestStoreWithOut()
 const permissionStore = usePermissionStoreWithOut()
 let viewInfo = ref<DeepPartial<ChartObj>>(null)
@@ -365,11 +369,18 @@ const downloadViewImage = () => {
 
 const downloadViewDetails = (downloadType = 'view') => {
   const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
-  const viewInfoSource = dvMainStore.getViewDetails(viewInfo.value.id)
   if (!viewDataInfo) {
     ElMessage.error(t('chart.field_is_empty_export_error'))
     return
   }
+  currentDownloadType.value = downloadType
+  exportApplicationDialogRef.value.open()
+}
+
+const handleExportConfirm = (formData) => {
+  const downloadType = currentDownloadType.value
+  const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
+  const viewInfoSource = dvMainStore.getViewDetails(viewInfo.value.id)
   const chartExtRequest = dvMainStore.getLastViewRequestInfo(viewInfo.value.id)
   const chart = {
     ...viewInfoSource,
@@ -377,7 +388,9 @@ const downloadViewDetails = (downloadType = 'view') => {
     data: viewDataInfo,
     type: sourceViewType.value,
     downloadType: downloadType,
-    busiFlag: dvInfo.value.type
+    busiFlag: dvInfo.value.type,
+    reason: formData.reason,
+    desc: formData.desc
   }
   exportLoading.value = true
   exportExcelDownload(chart, dvInfo.value.name, () => {

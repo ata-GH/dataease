@@ -98,6 +98,13 @@ export const innerExportDetails = async (data): Promise<IResponse> => {
   })
 }
 
+export const submitExportFiles = data =>
+  request.post({
+    url: '/chartData/innerExportFiles',
+    data,
+    headersType: 'multipart/form-data'
+  })
+
 export const innerExportDataSetDetails = async (data): Promise<IResponse> => {
   return request.post({
     url: '/chartData/innerExportDataSetDetails',

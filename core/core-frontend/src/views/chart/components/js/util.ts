@@ -568,7 +568,9 @@ export const exportExcelDownload = (chart, preFix, callBack?) => {
     viewInfo: chart,
     viewName: excelName,
     busiFlag: chart.busiFlag,
-    downloadType: chart.downloadType
+    downloadType: chart.downloadType,
+    reason: chart.reason,
+    desc: chart.desc
   }
   if (chart.type.includes('chart-mix')) {
     const req1 = getExcelDownloadRequest(chart.data.left)

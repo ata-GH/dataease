@@ -25,9 +25,9 @@ import {
   exportLogApp,
   exportLogImg,
   exportLogPDF,
-  exportLogTemplate,
-  submitExportFile
+  exportLogTemplate
 } from '@/api/visualization/dataVisualization'
+import { submitExportFiles } from '@/api/chart'
 const userStore = useUserStoreWithOut()
 
 const userName = computed(() => userStore.getName)
@@ -172,7 +172,6 @@ const executeDownload = (type, formData) => {
   nextTick(() => {
     const vueDom = previewCanvasContainer.value.querySelector('.canvas-container')
     generateCanvasFile(type, vueDom, state.dvInfo.name, (file) => {
-      console.log('file', file)
       downloadStatus.value = false
       const param = {
         id: state.dvInfo.id,
@@ -180,12 +179,15 @@ const executeDownload = (type, formData) => {
       }
       type === 'img' ? exportLogImg(param) : exportLogPDF(param)
       const form = new FormData()
-      form.append('id', state.dvInfo.id)
-      form.append('type', state.dvInfo.type === 'dashboard' ? 'panel' : 'screen')
-      form.append('reason', formData.reason)
-      form.append('desc', formData.desc)
+      const jsonBlob = new Blob([JSON.stringify({
+        'dvId': state.dvInfo.id,
+        'busiFlag': 'dashboard',
+        'reason': formData.reason,
+        'desc': formData.desc
+      })], { type: 'application/json' })
+      form.append('request', jsonBlob)
       form.append('file', file)
-      submitExportFile(form)
+      submitExportFiles(form)
       mapElementIds.forEach(id => useEmitt().emitter.emit('l7-unprepare-picture', id))
     })
   })
