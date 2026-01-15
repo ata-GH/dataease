@@ -443,7 +443,7 @@ const executeExportImage = (formData) => {
       const form = new FormData()
       const jsonBlob = new Blob([JSON.stringify({
         'dvId': viewInfo.value.id,
-        'busiFlag': dvInfo.value.type,
+        'busiFlag': 'chart',
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })
