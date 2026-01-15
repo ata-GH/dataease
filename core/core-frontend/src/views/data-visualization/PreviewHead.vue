@@ -176,17 +176,16 @@ const initOpenHandler = newWindow => {
           :weight="dvInfo.weight"
           :resource-type="dvInfo.type"
         />
-        <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
-          <template #icon>
-            <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
-          </template>
-          {{ t('visualization.edit') }}</el-button
-        >
       </template>
+      <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
+        <template #icon>
+          <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
+        </template>
+        {{ t('visualization.edit') }}
+      </el-button>
       <el-button
         :disabled="dvInfo.status === 0"
         class="custom-icon"
-        text
         @click="reload()"
       >
         <template #icon>
@@ -200,7 +199,7 @@ const initOpenHandler = newWindow => {
         popper-class="pad12"
         trigger="click"
       >
-        <el-button class="custom-icon" text :disabled="dvInfo.status === 0">
+        <el-button class="custom-icon" :disabled="dvInfo.status === 0">
           <template #icon>
             <el-icon size="16"><icon_download_outlined /></el-icon>
           </template>
