@@ -128,7 +128,7 @@ const executeDownload = (type, formData) => {
   downloadStatus.value = true
   setTimeout(() => {
     const vueDom = previewCanvasContainer.value.querySelector('.canvas-container')
-    generateCanvasFile(type, vueDom, state.dvInfo.name, () => {
+    generateCanvasFile(type, vueDom, state.dvInfo.name, (file) => {
       downloadStatus.value = false
       const param = {
         id: state.dvInfo.id,

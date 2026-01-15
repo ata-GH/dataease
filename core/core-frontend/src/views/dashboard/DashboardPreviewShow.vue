@@ -187,7 +187,12 @@ const executeDownload = (type, formData) => {
       })], { type: 'application/json' })
       form.append('request', jsonBlob)
       form.append('file', file)
-      submitExportFiles(form)
+      submitExportFiles(form).then(() => {
+        ElMessage.success('申请发送成功')
+        formData.callback && formData.callback()
+      }).catch(() => {
+        formData.callback && formData.callback()
+      })
       mapElementIds.forEach(id => useEmitt().emitter.emit('l7-unprepare-picture', id))
     })
   })

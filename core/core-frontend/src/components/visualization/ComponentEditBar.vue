@@ -222,10 +222,15 @@
       <fields-list :fields="state.curFields" :element="element" />
     </el-popover>
     <custom-tabs-sort ref="customTabsSortRef"></custom-tabs-sort>
+    <export-application-dialog
+      ref="exportApplicationDialogRef"
+      @confirm="handleExportConfirm"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import dvBarEnlarge from '@/assets/svg/dv-bar-enlarge.svg'
@@ -256,6 +261,8 @@ const dvMainStore = dvMainStoreWithOut()
 const snapshotStore = snapshotStoreWithOut()
 const copyStore = copyStoreWithOut()
 const customTabsSortRef = ref(null)
+const exportApplicationDialogRef = ref(null)
+const currentDownloadType = ref('view')
 const exportPermissions = computed(() =>
   exportPermission(dvInfo.value['weight'], dvInfo.value['ext'])
 )
@@ -436,30 +443,7 @@ const showBarTooltipPosition = computed(() => {
 })
 
 const openMessageLoading = cb => {
-  const iconClass = `el-icon-loading`
-  const customClass = `de-message-loading de-message-export`
-  ElMessage({
-    message: h('p', null, [
-      '后台导出中,可前往',
-      h(
-        ElButton,
-        {
-          text: true,
-          size: 'small',
-          class: 'btn-text',
-          onClick: () => {
-            cb()
-          }
-        },
-        t('data_export.export_center')
-      ),
-      '查看进度，进行下载'
-    ]),
-    iconClass,
-    icon: h(RefreshLeft),
-    showClose: true,
-    customClass
-  })
+  ElMessage.success('申请发送成功')
 }
 
 const callbackExport = () => {
@@ -476,11 +460,31 @@ const exportAsFormattedExcel = () => {
 
 const exportAsExcel = () => {
   const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
+  if (!viewDataInfo) {
+    ElMessage.error(t('chart.field_is_empty_export_error'))
+    return
+  }
+  currentDownloadType.value = 'view'
+  exportApplicationDialogRef.value.open()
+}
+
+const handleExportConfirm = (formData) => {
+  const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
   const chartExtRequest = dvMainStore.getLastViewRequestInfo(element.value.id)
   const viewInfo = dvMainStore.getViewDetails(element.value.id)
-  const chart = { ...viewInfo, chartExtRequest, data: viewDataInfo, busiFlag: dvInfo.value.type }
-  exportExcelDownload(chart, dvInfo.value.name, () => {
-    openMessageLoading(callbackExport)
+  const chart = {
+    ...viewInfo,
+    chartExtRequest,
+    data: viewDataInfo,
+    busiFlag: dvInfo.value.type,
+    reason: formData.reason,
+    desc: formData.desc
+  }
+  exportExcelDownload(chart, dvInfo.value.name, (res) => {
+    if (res !== 'error') {
+      openMessageLoading(callbackExport)
+    }
+    formData.callback && formData.callback()
   })
 }
 const exportAsImage = () => {

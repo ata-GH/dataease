@@ -162,6 +162,8 @@
 </template>
 
 <script setup lang="ts">
+import { generateCanvasFile } from '@/utils/imgUtils'
+import { submitExportFiles } from '@/api/chart'
 import ComponentWrapper from '@/components/data-visualization/canvas/ComponentWrapper.vue'
 import { computed, h, nextTick, reactive, ref } from 'vue'
 import { toPng } from 'html-to-image'
@@ -364,7 +366,8 @@ const handleClick = tab => {
 }
 
 const downloadViewImage = () => {
-  htmlToImage()
+  currentDownloadType.value = 'img'
+  exportApplicationDialogRef.value.open()
 }
 
 const downloadViewDetails = (downloadType = 'view') => {
@@ -379,6 +382,10 @@ const downloadViewDetails = (downloadType = 'view') => {
 
 const handleExportConfirm = (formData) => {
   const downloadType = currentDownloadType.value
+  if (downloadType === 'img') {
+    executeExportImage(formData)
+    return
+  }
   const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
   const viewInfoSource = dvMainStore.getViewDetails(viewInfo.value.id)
   const chartExtRequest = dvMainStore.getLastViewRequestInfo(viewInfo.value.id)
@@ -393,8 +400,11 @@ const handleExportConfirm = (formData) => {
     desc: formData.desc
   }
   exportLoading.value = true
-  exportExcelDownload(chart, dvInfo.value.name, () => {
-    openMessageLoading(exportData)
+  exportExcelDownload(chart, dvInfo.value.name, (res) => {
+    if (res !== 'error') {
+      openMessageLoading(exportData)
+    }
+    formData.callback && formData.callback()
   })
   exportLoading.value = false
 }
@@ -412,34 +422,11 @@ const exportData = () => {
 }
 
 const openMessageLoading = cb => {
-  const iconClass = `el-icon-loading`
-  const customClass = `de-message-loading de-message-export`
-  ElMessage({
-    message: h('p', null, [
-      t('data_fill.exporting'),
-      h(
-        ElButton,
-        {
-          text: true,
-          size: 'small',
-          class: 'btn-text',
-          onClick: () => {
-            cb()
-          }
-        },
-        t('data_export.export_center')
-      ),
-      t('data_fill.progress_to_download')
-    ]),
-    iconClass,
-    icon: h(RefreshLeft),
-    showClose: true,
-    customClass
-  })
+  ElMessage.success('申请发送成功')
 }
 // 地图
 const mapChartTypes = ['bubble-map', 'flow-map', 'heat-map', 'map', 'symbolic-map']
-const htmlToImage = () => {
+const executeExportImage = (formData) => {
   downLoading.value = mapChartTypes.includes(viewInfo.value.type) ? false : true
   useEmitt().emitter.emit('renderChart-viewDialog-' + viewInfo.value.id)
   useEmitt().emitter.emit('l7-prepare-picture', viewInfo.value.id)
@@ -451,28 +438,27 @@ const htmlToImage = () => {
       : 500
   setTimeout(() => {
     initWatermark()
-    html2canvas(viewContainer.value)
-      .then(canvas => {
-        const dom = document.body.appendChild(canvas)
-        dom.style.display = 'none'
-        document.body.removeChild(dom)
-        const dataUrl = dom.toDataURL('image/png', 1)
-        downLoading.value = false
-        const a = document.createElement('a')
-        a.setAttribute('download', viewInfo.value.title)
-        a.href = dataUrl
-        a.click()
-        useEmitt().emitter.emit('l7-unprepare-picture', viewInfo.value.id)
-        useEmitt().emitter.emit('renderChart-viewDialog-' + viewInfo.value.id)
-        initWatermark()
+    generateCanvasFile('img', viewContainer.value, viewInfo.value.title, (file) => {
+      downLoading.value = false
+      const form = new FormData()
+      const jsonBlob = new Blob([JSON.stringify({
+        'dvId': viewInfo.value.id,
+        'busiFlag': dvInfo.value.type,
+        'reason': formData.reason,
+        'desc': formData.desc
+      })], { type: 'application/json' })
+      form.append('request', jsonBlob)
+      form.append('file', file)
+      submitExportFiles(form).then(() => {
+        ElMessage.success('申请发送成功')
+        formData.callback && formData.callback()
+      }).catch(() => {
+        formData.callback && formData.callback()
       })
-      .catch(error => {
-        downLoading.value = false
-        initWatermark()
-        useEmitt().emitter.emit('l7-unprepare-picture', viewInfo.value.id)
-        useEmitt().emitter.emit('renderChart-viewDialog-' + viewInfo.value.id)
-        console.error('oops, something went wrong!', error)
-      })
+      useEmitt().emitter.emit('l7-unprepare-picture', viewInfo.value.id)
+      useEmitt().emitter.emit('renderChart-viewDialog-' + viewInfo.value.id)
+      initWatermark()
+    })
   }, renderTime)
 }
 

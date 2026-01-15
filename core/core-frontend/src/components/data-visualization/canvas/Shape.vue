@@ -120,6 +120,10 @@
       </template>
     </div>
     <compose-show :element="element"></compose-show>
+    <export-application-dialog
+      ref="exportApplicationDialogRef"
+      @confirm="handleExportConfirm"
+    />
   </div>
 </template>
 
@@ -139,9 +143,12 @@ import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapsho
 import { contextmenuStoreWithOut } from '@/store/modules/data-visualization/contextmenu'
 import { composeStoreWithOut } from '@/store/modules/data-visualization/compose'
 import { storeToRefs } from 'pinia'
-import { downloadCanvas2, imgUrlTrans } from '@/utils/imgUtils'
+import { imgUrlTrans, generateCanvasFile } from '@/utils/imgUtils'
+import { submitExportFiles } from '@/api/chart'
+import { ElMessage } from 'element-plus-secondary'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 import ComponentEditBar from '@/components/visualization/ComponentEditBar.vue'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import ComposeShow from '@/components/data-visualization/canvas/ComposeShow.vue'
 import dvHidden from '@/assets/svg/dv-hidden.svg'
@@ -168,6 +175,7 @@ const parentNode = ref(null)
 const shapeInnerRef = ref(null)
 const componentInnerRef = ref(null)
 const componentEditBarRef = ref(null)
+const exportApplicationDialogRef = ref(null)
 const downLoading = ref(false)
 const viewDemoInnerId = computed(() => 'enlarge-inner-shape-' + element.value.id)
 
@@ -1135,17 +1143,35 @@ const dragCollision = computed(() => {
 })
 
 const htmlToImage = () => {
-  console.log('导出图片2')
+  exportApplicationDialogRef.value.open()
+}
+
+const handleExportConfirm = (formData) => {
   downLoading.value = true
   useEmitt().emitter.emit('l7-prepare-picture', element.value.id)
   setTimeout(() => {
     activeWatermarkCheckUser(viewDemoInnerId.value, 'canvas-main', scale.value)
     const dom = document.getElementById(viewDemoInnerId.value)
-    downloadCanvas2('img', dom, '图表', () => {
+    generateCanvasFile('img', dom, '图表', (file) => {
       // do callback
       removeActiveWatermark(viewDemoInnerId.value)
       downLoading.value = false
       useEmitt().emitter.emit('l7-unprepare-picture', element.value.id)
+      const form = new FormData()
+      const jsonBlob = new Blob([JSON.stringify({
+        'dvId': element.value.id,
+        'busiFlag': dvInfo.value.type,
+        'reason': formData.reason,
+        'desc': formData.desc
+      })], { type: 'application/json' })
+      form.append('request', jsonBlob)
+      form.append('file', file)
+      submitExportFiles(form).then(() => {
+        ElMessage.success('申请发送成功')
+        formData.callback && formData.callback()
+      }).catch(() => {
+        formData.callback && formData.callback()
+      })
     })
   }, 200)
 }
