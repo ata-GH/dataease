@@ -8,6 +8,7 @@ import icon_pc_outlined from '@/assets/svg/icon_pc_outlined.svg'
 import icon_download_outlined from '@/assets/svg/icon_download_outlined.svg'
 import icon_replace_outlined from '@/assets/svg/icon_replace_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
+import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -15,7 +16,8 @@ import { useAppStoreWithOut } from '@/store/modules/app'
 import DvDetailInfo from '@/views/common/DvDetailInfo.vue'
 import { useEmbedded } from '@/store/modules/embedded'
 import { storeApi, storeStatusApi } from '@/api/visualization/dataVisualization'
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import ShareVisualHead from '@/views/share/share/ShareVisualHead.vue'
 import { XpackComponent } from '@/components/plugin'
 import { useEmitt } from '@/hooks/web/useEmitt'
@@ -34,6 +36,19 @@ const { t } = useI18n()
 const embeddedStore = useEmbedded()
 const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
 const favorited = ref(false)
+const router = useRouter()
+const route = useRoute()
+const showBack = computed(() => {
+  return route.query.back !== 'false'
+})
+const handleCloseIframe = () => {
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({ type: 'closeBoard', data: {} }, '*')
+  })
+}
 const preview = () => {
   const baseUrl = isDataEaseBi.value ? embeddedStore.baseUrl : ''
   const url = baseUrl + '#/preview?dvId=' + dvInfo.value.id + '&ignoreParams=true'
@@ -113,6 +128,15 @@ const initOpenHandler = newWindow => {
 
 <template>
   <div class="preview-head flex-align-center">
+    <el-icon
+      v-if="showBack"
+      class="custom-el-icon back-icon"
+      @click="handleCloseIframe()"
+    >
+      <Icon name="icon_left_outlined"
+        ><icon_left_outlined class="svg-icon toolbar-icon"
+      /></Icon>
+    </el-icon>
     <div :title="dvInfo.name" class="canvas-name ellipsis">{{ dvInfo.name }}</div>
     <div v-show="dvInfo.status === 2" class="canvas-have-update">
       {{ t('visualization.publish_update_tips') }}

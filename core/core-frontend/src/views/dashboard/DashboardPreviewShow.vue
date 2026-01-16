@@ -296,6 +296,14 @@ const freezeStyle = computed(() => [
   { '--left-show-offset': state.showOffset.left }
 ])
 
+const closePage = () => {
+  try {
+    parent.window.postMessage({ type: 'closeBoard', data: {} }, '*')
+  } catch (e) {
+    window.parent?.postMessage({ type: 'closeBoard', data: {} }, '*')
+  }
+}
+
 defineExpose({
   getPreviewStateInfo
 })
@@ -391,7 +399,9 @@ defineExpose({
         </div>
       </template>
       <template v-else-if="hasTreeData && mounted">
-        <empty-background :description="t('visualization.preview_select_tips')" img-type="select" />
+        <empty-background description="请关闭页面重新选择仪表盘" img-type="select">
+          <button class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
+        </empty-background>
       </template>
       <template v-else-if="mounted">
         <empty-background :description="t('visualization.have_none_resource')" img-type="none">
@@ -504,6 +514,16 @@ defineExpose({
 .close-side {
   width: 0px !important;
   padding: 0px !important;
+}
+
+.close-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #fff;
+  color: #606266;
+  cursor: pointer;
 }
 
 .flexible-button-area {
