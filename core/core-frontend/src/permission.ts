@@ -7,7 +7,9 @@ import { useNProgress } from '@/hooks/web/useNProgress'
 import { usePermissionStoreWithOut, pathValid, getFirstAuthMenu } from '@/store/modules/permission'
 import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { getRoleRouters } from '@/api/common'
+import { sdarLoginApi } from '@/api/auth'
 import { useCache } from '@/hooks/web/useCache'
+import { ElMessage, ElLoading } from 'element-plus-secondary'
 import { isMobile, checkPlatform, isLarkPlatform, isPlatformClient } from '@/utils/utils'
 import { interactiveStoreWithOut } from '@/store/modules/interactive'
 import { useAppearanceStoreWithOut } from '@/store/modules/appearance'
@@ -26,22 +28,57 @@ const { loadStart, loadDone } = usePageLoading()
 const whiteList = ['/login', '/de-link', '/chart-view', '/admin-login', '/401'] // 不重定向白名单
 const embeddedWindowWhiteList = ['/dvCanvas', '/dashboard', '/preview', '/dataset-embedded-form']
 const embeddedRouteWhiteList = ['/dataset-embedded', '/dataset-form', '/dataset-embedded-form']
+const handleTokenLogin = async (to, next) => {
+  // 支持通过 URL 携带 token 直接访问并登录
+  const getParam = (key: string) => {
+    const val = to.query?.[key]
+    return Array.isArray(val) ? (val as string[])[0] : (val as string | undefined)
+  }
+  const tokenParam = getParam('token')
+  const dvIdParam = getParam('dvId')
+  const usernameParam = getParam('username')
+  const loginTypeParam = getParam('loginType')
+
+  if (tokenParam) {
+    const loadingInstance = ElLoading.service({
+      lock: true,
+      text: '登录中...',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+    try {
+      const res = await sdarLoginApi({
+        id: dvIdParam,
+        token: tokenParam,
+        username: usernameParam,
+        loginType: loginTypeParam,
+        resourceType: 2
+      })
+      if (res.rspcode === '200') {
+        const dataeaseToken = res.data?.dataeaseToken
+        if (dataeaseToken) {
+          userStore.setToken(dataeaseToken)
+          userStore.setTime(Date.now())
+          const { token, dvId, username, loginType, ...restQuery } = to.query as Record<string, any>
+          next({ path: to.path, query: restQuery, replace: true })
+          return true
+        }
+      } else {
+        ElMessage.error(res.desc || '登录失败')
+        next({ path: '/login', replace: true })
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      loadingInstance.close()
+    }
+  }
+  return false
+}
+
 router.beforeEach(async (to, from, next) => {
   start()
   loadStart()
-  // 支持通过 URL 携带 token 直接访问并登录
-  const tokenParam = Array.isArray(to.query?.token)
-    ? (to.query?.token as string[])[0]
-    : (to.query?.token as string | undefined)
-  if (tokenParam) {
-    // 将 token 写入本地（通过 userStore 统一处理）
-    userStore.setToken(tokenParam)
-    userStore.setTime(Date.now())
-    // 为避免 token 暴露在地址栏，移除后重定向至同一路径
-    const { token, ...restQuery } = to.query as Record<string, any>
-    next({ path: to.path, query: restQuery, replace: true })
-    return
-  }
+  if (await handleTokenLogin(to, next)) return
   const platform = checkPlatform()
   let isDesktop = wsCache.get('app.desktop')
   if (isDesktop === null) {

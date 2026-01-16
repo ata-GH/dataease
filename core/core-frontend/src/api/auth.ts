@@ -7,6 +7,14 @@ export const queryRoleApi = data => request.post({ url: '/role/byCurOrg', data }
 export const fetchOperatorListApi = (params = { numberPerPage: 999999, currentPage: 1 }) =>
   request.get({ url: '/sdar/rest/auth/operator/list', params })
 
+export const sdarLoginApi = (data) => {
+  const formData = new FormData()
+  Object.keys(data).forEach(key => {
+    formData.append(key, data[key])
+  })
+  return request.post({ url: '/sdar/rest/login', data: formData, headersType: 'multipart/form-data' })
+}
+
 export const fetchGroupListApi = (
   params = { state: 1, numberPerPage: 999999, currentPage: 1 }
 ) => request.get({ url: '/sdar/rest/auth/group/list', params })

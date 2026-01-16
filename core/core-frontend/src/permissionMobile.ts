@@ -8,6 +8,8 @@ import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { interactiveStoreWithOut } from '@/store/modules/interactive'
 import { useAppearanceStoreWithOut } from '@/store/modules/appearance'
 import { useLinkStoreWithOut } from '@/store/modules/link'
+import { sdarLoginApi } from '@/api/auth'
+import { ElMessage, ElLoading } from 'element-plus-secondary'
 
 const appearanceStore = useAppearanceStoreWithOut()
 const permissionStore = usePermissionStoreWithOut()
@@ -21,9 +23,57 @@ const interactiveStore = interactiveStoreWithOut()
 const { loadStart, loadDone } = usePageLoading()
 const whiteList = ['/login', '/panel', '/DashboardEmpty', '/preview'] // 不重定向白名单
 
+const handleTokenLogin = async (to, next) => {
+  // 支持通过 URL 携带 token 直接访问并登录
+  const getParam = (key: string) => {
+    const val = to.query?.[key]
+    return Array.isArray(val) ? (val as string[])[0] : (val as string | undefined)
+  }
+  const tokenParam = getParam('token')
+  const dvIdParam = getParam('dvId')
+  const usernameParam = getParam('username')
+  const loginTypeParam = getParam('loginType')
+
+  if (tokenParam) {
+    const loadingInstance = ElLoading.service({
+      lock: true,
+      text: '登录中...',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+    try {
+      const res = await sdarLoginApi({
+        id: dvIdParam,
+        token: tokenParam,
+        username: usernameParam,
+        loginType: loginTypeParam,
+        resourceType: 2
+      })
+      if (res.rspcode === '200') {
+        const dataeaseToken = res.data?.dataeaseToken
+        if (dataeaseToken) {
+          userStore.setToken(dataeaseToken)
+          userStore.setTime(Date.now())
+          const { token, dvId, username, loginType, ...restQuery } = to.query as Record<string, any>
+          next({ path: to.path, query: restQuery, replace: true })
+          return true
+        }
+      } else {
+        ElMessage.error(res.desc || '登录失败')
+        next({ path: '/login', replace: true })
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      loadingInstance.close()
+    }
+  }
+  return false
+}
+
 router.beforeEach(async (to, _, next) => {
   start()
   loadStart()
+  if (await handleTokenLogin(to, next)) return
   await appearanceStore.setAppearance()
   if (to.name === 'link') {
     next()
