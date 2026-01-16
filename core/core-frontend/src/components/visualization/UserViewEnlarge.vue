@@ -444,6 +444,8 @@ const executeExportImage = (formData) => {
       const jsonBlob = new Blob([JSON.stringify({
         'dvId': viewInfo.value.id,
         'busiFlag': 'chart',
+        'fileType': 'png',
+        'viewName': viewInfo.value.title,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })

@@ -1161,6 +1161,8 @@ const handleExportConfirm = (formData) => {
       const jsonBlob = new Blob([JSON.stringify({
         'dvId': element.value.id,
         'busiFlag': 'chart',
+        'fileType': 'png',
+        'viewName': element.value.name,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })

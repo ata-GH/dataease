@@ -37,8 +37,7 @@ const handleTokenLogin = async (to, next) => {
   if (tokenParam) {
     const loadingInstance = ElLoading.service({
       lock: true,
-      text: '登录中...',
-      background: 'rgba(0, 0, 0, 0.7)'
+      text: '登录中...'
     })
     try {
       const res = await sdarLoginApi({
@@ -48,17 +47,18 @@ const handleTokenLogin = async (to, next) => {
         loginType: loginTypeParam,
         resourceType: 2
       })
-      if (res.rspcode === '200') {
-        const dataeaseToken = res.data?.dataeaseToken
+      const result = res.data
+      if (result.rspcode === '200') {
+        const dataeaseToken = result.data?.dataeaseToken
         if (dataeaseToken) {
           userStore.setToken(dataeaseToken)
           userStore.setTime(Date.now())
           const { token, dvId, username, loginType, ...restQuery } = to.query as Record<string, any>
-          next({ path: to.path, query: restQuery, replace: true })
+          next({ path: to.path, query: { dvId, ...restQuery }, replace: true })
           return true
         }
       } else {
-        ElMessage.error(res.desc || '登录失败')
+        ElMessage.error(result.desc || '登录失败')
         next({ path: '/login', replace: true })
       }
     } catch (e) {

@@ -1,4 +1,5 @@
 import request from '@/config/axios'
+import qs from 'qs'
 
 export const queryUserApi = data => request.post({ url: '/user/byCurOrg', data })
 export const queryUserOptionsApi = () => request.get({ url: '/user/org/option' })
@@ -8,11 +9,11 @@ export const fetchOperatorListApi = (params = { numberPerPage: 999999, currentPa
   request.get({ url: '/sdar/rest/auth/operator/list', params })
 
 export const sdarLoginApi = (data) => {
-  const formData = new FormData()
-  Object.keys(data).forEach(key => {
-    formData.append(key, data[key])
+  return request.post({
+    url: '/sdar/rest/login',
+    data: qs.stringify(data),
+    headersType: 'application/x-www-form-urlencoded;charset=UTF-8'
   })
-  return request.post({ url: '/sdar/rest/login', data: formData, headersType: 'multipart/form-data' })
 }
 
 export const fetchGroupListApi = (

@@ -492,11 +492,12 @@ const addOperation = (
       )
       return
     }
+    const path = curCanvasType.value === 'dataV' ? '/dvCanvas' : '/dashboard'
+    const query = { opt: 'create' }
     if (data?.id) {
-      newWindow = window.open(baseUrl + `&pid=${data.id}`, openType)
-    } else {
-      newWindow = window.open(baseUrl, openType)
+      query['pid'] = data.id
     }
+    router.push({ path, query })
     initOpenHandler(newWindow)
   } else if (cmd === 'newFromTemplate') {
     const params = {

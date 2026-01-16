@@ -182,9 +182,12 @@ const executeDownload = (type, formData) => {
       const jsonBlob = new Blob([JSON.stringify({
         'dvId': state.dvInfo.id,
         'busiFlag': 'dashboard',
+        'fileType': type === 'img' ? 'png' : 'pdf',
+        'viewName': state.dvInfo.name,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })
+      console.log(type, state.dvInfo.name)
       form.append('request', jsonBlob)
       form.append('file', file)
       submitExportFiles(form).then(() => {
