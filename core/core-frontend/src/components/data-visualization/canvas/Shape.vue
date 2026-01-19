@@ -1158,11 +1158,13 @@ const handleExportConfirm = (formData) => {
       downLoading.value = false
       useEmitt().emitter.emit('l7-unprepare-picture', element.value.id)
       const form = new FormData()
+      const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
       const jsonBlob = new Blob([JSON.stringify({
-        'dvId': element.value.id,
+        'dvId': viewDataInfo.dvId,
+        'viewId': viewDataInfo.viewId,
         'busiFlag': 'chart',
         'fileType': 'png',
-        'viewName': element.value.name,
+        'viewName': viewDataInfo.viewName,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })

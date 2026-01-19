@@ -441,11 +441,13 @@ const executeExportImage = (formData) => {
     generateCanvasFile('img', viewContainer.value, viewInfo.value.title, (file) => {
       downLoading.value = false
       const form = new FormData()
+      const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
       const jsonBlob = new Blob([JSON.stringify({
-        'dvId': viewInfo.value.id,
+        'dvId': viewDataInfo.dvId,
+        'viewId': viewDataInfo.viewId,
         'busiFlag': 'chart',
         'fileType': 'png',
-        'viewName': viewInfo.value.title,
+        'viewName': viewDataInfo.viewName,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })

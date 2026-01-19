@@ -187,7 +187,6 @@ const executeDownload = (type, formData) => {
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })
-      console.log(type, state.dvInfo.name)
       form.append('request', jsonBlob)
       form.append('file', file)
       submitExportFiles(form).then(() => {
