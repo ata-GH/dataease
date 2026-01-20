@@ -1143,9 +1143,25 @@ const dragCollision = computed(() => {
 })
 
 const htmlToImage = () => {
+  const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
+  if (!viewDataInfo) {
+    ElMessage.error(t('chart.field_is_empty_export_error'))
+    return
+  }
   exportApplicationDialogRef.value.open()
 }
 
+const getChartExcelTitle = (preFix, viewTitle) => {
+  const now = new Date()
+  const pad = n => n.toString().padStart(2, '0')
+  const year = now.getFullYear()
+  const month = pad(now.getMonth() + 1) // 月份从 0 开始
+  const day = pad(now.getDate())
+  const hour = pad(now.getHours())
+  const minute = pad(now.getMinutes())
+  const second = pad(now.getSeconds())
+  return `${preFix}_${viewTitle}_${year}${month}${day}_${hour}${minute}${second}`
+}
 const handleExportConfirm = (formData) => {
   downLoading.value = true
   useEmitt().emitter.emit('l7-prepare-picture', element.value.id)
@@ -1158,13 +1174,14 @@ const handleExportConfirm = (formData) => {
       downLoading.value = false
       useEmitt().emitter.emit('l7-unprepare-picture', element.value.id)
       const form = new FormData()
-      const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
+      const viewInfo = dvMainStore.getViewDetails(element.value.id)
+      const viewName = getChartExcelTitle(dvInfo.value.name, viewInfo.title)
       const jsonBlob = new Blob([JSON.stringify({
-        'dvId': viewDataInfo.dvId,
-        'viewId': viewDataInfo.viewId,
+        'dvId': viewInfo.sceneId,
+        'viewId': viewInfo.id,
         'busiFlag': 'chart',
         'fileType': 'png',
-        'viewName': viewDataInfo.viewName,
+        'viewName': viewName,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })

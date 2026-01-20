@@ -286,6 +286,16 @@ const saveResource = (checkParams?) => {
               snapshotStore.resetSnapshot()
             }
           )
+        } else {
+          initCanvasData(
+            dvInfo.value.id,
+            { busiFlag: 'dashboard', resourceTable: 'snapshot' },
+            () => {
+              useEmitt().emitter.emit('refresh-dataset-selector')
+              useEmitt().emitter.emit('calcData-all')
+              resourceAppOpt.value.close()
+            }
+          )
         }
         if (checkParams.withPublish) {
           publishStatusChange(checkParams.status)

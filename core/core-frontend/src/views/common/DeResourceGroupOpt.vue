@@ -19,6 +19,7 @@ import {
 } from '@/api/visualization/dataVisualization'
 import { ElMessage } from 'element-plus-secondary'
 import { cutTargetTree, filterFreeFolder, nameTrim } from '@/utils/utils'
+import { useRouter } from 'vue-router_2'
 const props = defineProps({
   curCanvasType: {
     type: String,
@@ -29,6 +30,7 @@ const props = defineProps({
 const { curCanvasType } = toRefs(props)
 const { wsCache } = useCache('localStorage')
 const { t } = useI18n()
+const router = useRouter()
 
 const state = reactive({
   tData: [],
@@ -405,13 +407,16 @@ const saveResource = () => {
             resourceDialogShow.value = false
             emits('finish')
             ElMessage.success(t('visualization.save_success'))
+            resetForm()
             if (cmd.value === 'copy') {
-              const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
-              const baseUrl =
-                curCanvasType.value === 'dataV'
-                  ? '#/dvCanvas?opt=copy&dvId='
-                  : '#/dashboard?opt=copy&resourceId='
-              window.open(baseUrl + data.data, openType)
+              const path = curCanvasType.value === 'dataV' ? '/dvCanvas' : '/dashboard'
+              const query = { opt: 'copy' }
+              if (curCanvasType.value === 'dataV') {
+                query['dvId'] = data.data
+              } else {
+                query['resourceId'] = data.data
+              }
+              router.push({ path, query })
             }
           })
           .finally(() => {

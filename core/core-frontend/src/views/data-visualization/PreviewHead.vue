@@ -17,7 +17,7 @@ import DvDetailInfo from '@/views/common/DvDetailInfo.vue'
 import { useEmbedded } from '@/store/modules/embedded'
 import { storeApi, storeStatusApi } from '@/api/visualization/dataVisualization'
 import { ref, watch, computed, nextTick } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router_2'
 import ShareVisualHead from '@/views/share/share/ShareVisualHead.vue'
 import { XpackComponent } from '@/components/plugin'
 import { useEmitt } from '@/hooks/web/useEmitt'
@@ -39,7 +39,7 @@ const favorited = ref(false)
 const router = useRouter()
 const route = useRoute()
 const showBack = computed(() => {
-  return route.query.back !== 'false'
+  return route.query && route.query.back !== 'false'
 })
 const handleCloseIframe = () => {
   router.replace({

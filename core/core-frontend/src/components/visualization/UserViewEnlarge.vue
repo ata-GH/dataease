@@ -366,6 +366,11 @@ const handleClick = tab => {
 }
 
 const downloadViewImage = () => {
+  const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
+  if (!viewDataInfo) {
+    ElMessage.error(t('chart.field_is_empty_export_error'))
+    return
+  }
   currentDownloadType.value = 'img'
   exportApplicationDialogRef.value.open()
 }
@@ -431,6 +436,17 @@ const executeExportImage = (formData) => {
   useEmitt().emitter.emit('renderChart-viewDialog-' + viewInfo.value.id)
   useEmitt().emitter.emit('l7-prepare-picture', viewInfo.value.id)
   // 表格和支持最值图表的渲染时间为2000毫秒，其他图表为500毫秒。
+  const getChartExcelTitle = (preFix, viewTitle) => {
+    const now = new Date()
+    const pad = n => n.toString().padStart(2, '0')
+    const year = now.getFullYear()
+    const month = pad(now.getMonth() + 1) // 月份从 0 开始
+    const day = pad(now.getDate())
+    const hour = pad(now.getHours())
+    const minute = pad(now.getMinutes())
+    const second = pad(now.getSeconds())
+    return `${preFix}_${viewTitle}_${year}${month}${day}_${hour}${minute}${second}`
+  }
   const renderTime =
     viewInfo.value.type?.includes('table') ||
     supportExtremumChartType({ type: viewInfo.value.type })
@@ -441,13 +457,14 @@ const executeExportImage = (formData) => {
     generateCanvasFile('img', viewContainer.value, viewInfo.value.title, (file) => {
       downLoading.value = false
       const form = new FormData()
-      const viewDataInfo = dvMainStore.getViewDataDetails(viewInfo.value.id)
+      const viewInfoObj = dvMainStore.getViewDetails(viewInfo.value.id)
+      const viewName = getChartExcelTitle(dvInfo.value.name, viewInfoObj.title)
       const jsonBlob = new Blob([JSON.stringify({
-        'dvId': viewDataInfo.dvId,
-        'viewId': viewDataInfo.viewId,
+        'dvId': viewInfoObj.sceneId,
+        'viewId': viewInfoObj.id,
         'busiFlag': 'chart',
         'fileType': 'png',
-        'viewName': viewDataInfo.viewName,
+        'viewName': viewName,
         'reason': formData.reason,
         'desc': formData.desc
       })], { type: 'application/json' })
