@@ -36,6 +36,7 @@ import TextGroup from '@/custom-component/component-group/TextGroup.vue'
 import ComponentButton from '@/components/visualization/ComponentButton.vue'
 import ComponentButtonLabel from '@/components/visualization/ComponentButtonLabel.vue'
 import MultiplexingCanvas from '@/views/common/MultiplexingCanvas.vue'
+import { useRouter } from 'vue-router_2'
 import { useI18n } from '@/hooks/web/useI18n'
 import { getPanelAllLinkageInfo, saveLinkage } from '@/api/visualization/linkage'
 import { queryVisualizationJumpInfo } from '@/api/visualization/linkJump'
@@ -59,6 +60,7 @@ import DeAppApply from '@/views/common/DeAppApply.vue'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { updatePublishStatus } from '@/api/visualization/dataVisualization'
 const { t } = useI18n()
+const router = useRouter()
 const dvMainStore = dvMainStoreWithOut()
 const snapshotStore = snapshotStoreWithOut()
 const copyStore = copyStoreWithOut()
@@ -263,16 +265,11 @@ const saveResource = (checkParams?) => {
     try {
       canvasSaveWithParams(checkParams, () => {
         snapshotStore.resetStyleChangeTimes()
-        let url = window.location.href
-        url = url.replace(/(#\/[^?]*)(?:\?[^#]*)?/, `$1?resourceId=${dvInfo.value.id}`)
         if (!embeddedStore.baseUrl) {
-          window.history.replaceState(
-            {
-              path: url
-            },
-            '',
-            url
-          )
+          router.replace({
+            path: router.currentRoute.value.path,
+            query: { resourceId: dvInfo.value.id }
+          })
         }
         if (appData.value) {
           initCanvasData(

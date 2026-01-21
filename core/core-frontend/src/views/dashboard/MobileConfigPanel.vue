@@ -379,8 +379,8 @@ const save = () => {
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 10;
-    background: #050e21;
+    z-index: 30;
+    background: #fff;
     box-shadow: 0px 2px 4px 0px #1f23291f;
     height: 64px;
     padding: 0 24px 0 20px;
@@ -406,13 +406,13 @@ const save = () => {
         &:hover {
           &::after {
             display: block;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(31, 35, 41, 0.1);
           }
         }
         position: relative;
       }
       .open-mobile-line {
-        background: #ffffff4d;
+        background: #1f232926;
         width: 1px;
         height: 18px;
         margin: 0 20px;
@@ -422,14 +422,14 @@ const save = () => {
         font-size: 14px;
         font-weight: 400;
         line-height: 22px;
-        color: #ffffff99;
+        color: #1f2329;
         margin-right: 8px;
       }
       .ed-icon {
         font-size: 20px;
         cursor: pointer;
         margin-right: 20px;
-        color: #ffffff99;
+        color: #1f2329;
       }
     }
 
@@ -439,12 +439,12 @@ const save = () => {
       font-size: 16px;
       font-weight: 400;
       line-height: 24px;
-      color: #ffffffe5;
+      color: #1f2329;
       .ed-icon {
         font-size: 20px;
         cursor: pointer;
         margin-right: 12px;
-        color: #ffffffcc;
+        color: #1f2329;
       }
     }
   }
