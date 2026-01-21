@@ -30,7 +30,7 @@
           </el-select>
           <el-button
             class="m-button"
-            v-if="optType === 'enlarge' && exportPermissions[0] && route.query.resourceId"
+            v-if="optType === 'enlarge' && exportPermissions[0] && isPreview"
             link
             size="default"
             @click="downloadViewImage"
@@ -42,7 +42,7 @@
           </el-button>
           <el-button
             class="m-button"
-            v-if="optType === 'details' && exportPermissions[1] && route.query.resourceId"
+            v-if="optType === 'details' && exportPermissions[1] && isPreview"
             link
             size="default"
             :loading="exportLoading"
@@ -59,7 +59,7 @@
           </el-button>
           <el-button
             class="m-button"
-            v-if="optType === 'details' && exportPermissions[2] && route.query.resourceId"
+            v-if="optType === 'details' && exportPermissions[2] && isPreview"
             link
             size="default"
             :loading="exportLoading"
@@ -192,6 +192,7 @@ import JsPDF from 'jspdf'
 import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { useRoute } from 'vue-router_2'
 const route = useRoute()
+const isPreview = computed(() => !!route.query.resourceId || !!route.query.dvId)
 const downLoading = ref(false)
 const dvMainStore = dvMainStoreWithOut()
 const dialogShow = ref(false)

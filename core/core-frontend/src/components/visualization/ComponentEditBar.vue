@@ -126,7 +126,7 @@
                 barShowCheck('download') &&
                 showDownload &&
                 (exportPermissions[0] || exportPermissions[1]) &&
-                route.query.resourceId
+                isPreview
               "
               @click.prevent
             >
@@ -266,6 +266,7 @@ const customTabsSortRef = ref(null)
 const exportApplicationDialogRef = ref(null)
 const currentDownloadType = ref('view')
 const route = useRoute()
+const isPreview = computed(() => !!route.query.resourceId || !!route.query.dvId)
 const exportPermissions = computed(() =>
   exportPermission(dvInfo.value['weight'], dvInfo.value['ext'])
 )
