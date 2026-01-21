@@ -95,6 +95,14 @@ watch(curCanvasType, () => {
   state.dvInfo = null
 })
 
+watch(
+  () => route.query.dvId,
+  (val: any) => {
+    if (val && showPosition.value === 'preview' && state.dvInfo?.id !== val) {
+      loadCanvasData(val)
+    }
+  }
+)
 
 const resourceTreeRef = ref()
 
@@ -137,7 +145,9 @@ const loadCanvasData = (dvId, weight?) => {
       canvasViewInfoPreview,
       curPreviewGap
     }) {
-      dvInfo['weight'] = weight
+      if (typeof weight !== 'undefined') {
+        dvInfo['weight'] = weight
+      }
       state.canvasDataPreview = canvasDataResult
       state.canvasStylePreview = canvasStyleResult
       state.canvasViewInfoPreview = canvasViewInfoPreview

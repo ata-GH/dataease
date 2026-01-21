@@ -3,7 +3,11 @@ import { getStyle } from '@/utils/style'
 import eventBus from '@/utils/eventBus'
 import { ref, toRefs, computed, nextTick } from 'vue'
 import findComponent from '@/utils/components'
-import { downloadCanvas2, imgUrlTrans } from '@/utils/imgUtils'
+import { downloadCanvas2, imgUrlTrans, generateCanvasFile } from '@/utils/imgUtils'
+import { submitExportFiles } from '@/api/chart'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
+import { ElMessage } from 'element-plus-secondary'
+import { useI18n } from '@/hooks/web/useI18n'
 import ComponentEditBar from '@/components/visualization/ComponentEditBar.vue'
 import ComponentSelector from '@/components/visualization/ComponentSelector.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
@@ -151,20 +155,63 @@ const emits = defineEmits(['userViewEnlargeOpen', 'datasetParamsInit', 'onPointC
 const wrapperId = 'wrapper-outer-id-' + config.value.id
 
 const viewDemoInnerId = computed(() => 'enlarge-inner-content-' + config.value.id)
-const htmlToImage = () => {
-  console.log('导出图片1')
-  useEmitt().emitter.emit('l7-prepare-picture', config.value.id)
+const { t } = useI18n()
+const exportApplicationDialogRef = ref(null)
+
+const getChartExcelTitle = (preFix, viewTitle) => {
+  const now = new Date()
+  const pad = n => n.toString().padStart(2, '0')
+  const year = now.getFullYear()
+  const month = pad(now.getMonth() + 1)
+  const day = pad(now.getDate())
+  const hour = pad(now.getHours())
+  const minute = pad(now.getMinutes())
+  const second = pad(now.getSeconds())
+  return `${preFix}_${viewTitle}_${year}${month}${day}_${hour}${minute}${second}`
+}
+
+const handleExportConfirm = (formData) => {
   downLoading.value = true
+  useEmitt().emitter.emit('l7-prepare-picture', config.value.id)
   setTimeout(() => {
-    const vueDom = document.getElementById(viewDemoInnerId.value)
     activeWatermarkCheckUser(viewDemoInnerId.value, 'canvas-main', scale.value / 100)
-    downloadCanvas2('img', vueDom, '图表', () => {
+    const dom = document.getElementById(viewDemoInnerId.value)
+    generateCanvasFile('img', dom, '图表', (file) => {
       // do callback
       removeActiveWatermark(viewDemoInnerId.value)
       downLoading.value = false
       useEmitt().emitter.emit('l7-unprepare-picture', config.value.id)
+      const form = new FormData()
+      const viewInfo = dvMainStore.getViewDetails(config.value.id)
+      const viewName = getChartExcelTitle(dvInfo.value.name, viewInfo.title)
+      const jsonBlob = new Blob([JSON.stringify({
+        'dvId': viewInfo.sceneId,
+        'viewId': viewInfo.id,
+        'busiFlag': 'chart',
+        'fileType': 'png',
+        'viewName': viewName,
+        'reason': formData.reason,
+        'desc': formData.desc
+      })], { type: 'application/json' })
+      form.append('request', jsonBlob)
+      form.append('file', file)
+      submitExportFiles(form).then(() => {
+        ElMessage.success('申请发送成功')
+        formData.callback && formData.callback()
+      }).catch(() => {
+        formData.callback && formData.callback()
+      })
     })
-  }, 1000)
+  }, 200)
+}
+
+const htmlToImage = () => {
+  const viewDataInfo = dvMainStore.getViewDataDetails(config.value.id)
+  if (!viewDataInfo) {
+    ElMessage.error(t('chart.field_is_empty_export_error'))
+    return
+  }
+  exportApplicationDialogRef.value.open()
 }
 
 const handleInnerMouseDown = e => {
@@ -546,6 +593,10 @@ const updateFromMobile = (e, type) => {
       jsname="L2NvbXBvbmVudC9lbWJlZGRlZC1pZnJhbWUvT3BlbkhhbmRsZXI="
     />
     <DePreviewPopDialog ref="dePreviewPopDialogRef"></DePreviewPopDialog>
+    <export-application-dialog
+      ref="exportApplicationDialogRef"
+      @confirm="handleExportConfirm"
+    />
   </div>
 </template>
 

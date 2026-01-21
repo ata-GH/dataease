@@ -125,7 +125,8 @@
                 !['picture-group', 'rich-text'].includes(element.innerType) &&
                 barShowCheck('download') &&
                 showDownload &&
-                (exportPermissions[0] || exportPermissions[1])
+                (exportPermissions[0] || exportPermissions[1]) &&
+                route.query.resourceId
               "
               @click.prevent
             >
@@ -257,12 +258,14 @@ import { exportPivotExcel } from '@/views/chart/components/js/panel/common/commo
 import { XpackComponent } from '@/components/plugin'
 import { exportPermission, isMobile } from '@/utils/utils'
 import { isMainCanvas } from '@/utils/canvasUtils'
+import { useRoute } from 'vue-router_2'
 const dvMainStore = dvMainStoreWithOut()
 const snapshotStore = snapshotStoreWithOut()
 const copyStore = copyStoreWithOut()
 const customTabsSortRef = ref(null)
 const exportApplicationDialogRef = ref(null)
 const currentDownloadType = ref('view')
+const route = useRoute()
 const exportPermissions = computed(() =>
   exportPermission(dvInfo.value['weight'], dvInfo.value['ext'])
 )

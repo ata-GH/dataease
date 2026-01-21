@@ -30,7 +30,7 @@
           </el-select>
           <el-button
             class="m-button"
-            v-if="optType === 'enlarge' && exportPermissions[0]"
+            v-if="optType === 'enlarge' && exportPermissions[0] && route.query.resourceId"
             link
             size="default"
             @click="downloadViewImage"
@@ -42,7 +42,7 @@
           </el-button>
           <el-button
             class="m-button"
-            v-if="optType === 'details' && exportPermissions[1]"
+            v-if="optType === 'details' && exportPermissions[1] && route.query.resourceId"
             link
             size="default"
             :loading="exportLoading"
@@ -59,7 +59,7 @@
           </el-button>
           <el-button
             class="m-button"
-            v-if="optType === 'details' && exportPermissions[2]"
+            v-if="optType === 'details' && exportPermissions[2] && route.query.resourceId"
             link
             size="default"
             :loading="exportLoading"
@@ -190,6 +190,8 @@ import ChartCarouselTooltip from '@/views/chart/components/js/g2plot_tooltip_car
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
+import { useRoute } from 'vue-router_2'
+const route = useRoute()
 const downLoading = ref(false)
 const dvMainStore = dvMainStoreWithOut()
 const dialogShow = ref(false)
