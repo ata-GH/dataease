@@ -102,7 +102,9 @@ export const submitExportFiles = data =>
   request.post({
     url: '/chartData/innerExportFiles',
     data,
-    headersType: 'multipart/form-data'
+    headersType: 'multipart/form-data',
+    loading: true,
+    responseType: 'blob'
   })
 
 export const innerExportDataSetDetails = async (data): Promise<IResponse> => {
