@@ -319,7 +319,8 @@ const nodeClick = (data: BusiTreeNode, node) => {
 const getTree = async () => {
   const request = {
     busiFlag: curCanvasType.value,
-    resourceTable: props.resourceTable
+    resourceTable: props.resourceTable,
+    type: 'full'
   } as BusiTreeRequest
   await interactiveStore.setInteractive(request)
   let interactiveData

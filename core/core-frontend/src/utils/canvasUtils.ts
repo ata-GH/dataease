@@ -693,6 +693,7 @@ export async function canvasSaveWithParams(params, callBack) {
     })
   }
   method(canvasInfo).then(res => {
+    console.log('保存接口', res)
     if (method === updateCanvas) {
       // saveCanvas 为初次保存 状态为0 updateCanvas为二次保存状态为2 当存在传入状态时，则修改对应的传入状态
       const status = params?.status ? params?.status : res.data?.status

@@ -16,4 +16,5 @@ export interface BusiTreeRequest {
   weight?: number
   sortType?: string
   resourceTable?: string
+  type?: string
 }

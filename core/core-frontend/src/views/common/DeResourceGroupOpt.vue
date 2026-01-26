@@ -393,11 +393,12 @@ const saveResource = () => {
         return
       }
       if (['newLeaf', 'newLeafAfter', 'newFolder', 'rename', 'move', 'copy'].includes(cmd.value)) {
-        await dvNameCheck({ opt: cmd.value, ...params })
+        // await dvNameCheck({ opt: cmd.value, ...params })
       }
       if (cmd.value === 'newLeaf') {
-        resourceDialogShow.value = false
-        emits('finish', { opt: 'newLeaf', ...params, ...state.attachParams })
+        emits('finish', { opt: 'newLeaf', ...params, ...state.attachParams, callback: () => {
+          resourceDialogShow.value = false
+        } })
       } else {
         loading.value = true
         const method = methodMap[cmd.value] ? methodMap[cmd.value] : updateBase

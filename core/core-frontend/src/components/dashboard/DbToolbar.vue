@@ -184,7 +184,9 @@ const resourceOptFinish = param => {
     dvInfo.value.dataState = 'ready'
     dvInfo.value.pid = param.pid
     dvInfo.value.name = param.name
-    saveCanvasWithCheck(param.withPublish, param.status)
+    saveCanvasWithCheck(param.withPublish, param.status, () => {
+      param.callback && param.callback()
+    })
   }
 }
 
@@ -206,7 +208,7 @@ const publishStatusChange = status => {
   }).then(() => {
     dvMainStore.updateDvInfoCall(status)
     if (status) {
-      ElMessage.success(t('visualization.published_success'))
+      // ElMessage.success(t('visualization.published_success'))
       snapshotStore.initSnapShot()
     } else {
       ElMessage.success(t('visualization.cancel_publish_tips'))
@@ -214,7 +216,7 @@ const publishStatusChange = status => {
   })
 }
 
-const saveCanvasWithCheck = (withPublish = false, status?) => {
+const saveCanvasWithCheck = (withPublish = false, status?, callback?) => {
   if (userStore.getOid && wsCache.get('user.oid') && userStore.getOid !== wsCache.get('user.oid')) {
     ElMessageBox.confirm(t('components.from_other_organizations'), {
       confirmButtonType: 'primary',
@@ -251,11 +253,20 @@ const saveCanvasWithCheck = (withPublish = false, status?) => {
     }
   }
   checkCanvasChangePre(() => {
-    saveResource({ withPublish, status })
+    saveResource({ withPublish, status }, () => {
+      // 保存成功后的回调
+      if (!withPublish) {
+        if (!status) {
+          callback && callback()
+        }
+        // 如果不是发布，且保存成功，则执行发布
+        saveCanvasWithCheck(true, 1)
+      }
+    })
   })
 }
 
-const saveResource = (checkParams?) => {
+const saveResource = (checkParams?, callback?) => {
   wsCache.delete('DE-DV-CATCH-' + dvInfo.value.id)
   if (styleChangeTimes.value > 0 || checkParams.withPublish) {
     dvMainStore.matrixSizeAdaptor()
@@ -298,6 +309,9 @@ const saveResource = (checkParams?) => {
           publishStatusChange(checkParams.status)
         } else {
           ElMessage.success(t('commons.save_success'))
+        }
+        if (callback) {
+          callback()
         }
       })
     } catch (e) {
@@ -754,6 +768,7 @@ const initOpenHandler = newWindow => {
             {{ t('data_set.save') }}
           </el-button>
           <el-dropdown
+            v-if="false"
             :disabled="dvInfo.status === 0"
             popper-class="menu-outer-dv_popper"
             trigger="hover"

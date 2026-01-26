@@ -60,35 +60,37 @@
             :placeholder="t('visualization.enter_template_name_tips')"
             :clearable="true"
           />
-          <el-select class="title-type" v-model="state.templateSourceType" placeholder="Select">
-            <el-option
-              v-for="item in state.templateSourceOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <el-select
-            v-if="['branchCreate', 'branch'].includes(state.curPosition)"
-            class="title-type"
-            v-model="state.templateType"
-            placeholder="Select"
-          >
-            <el-option
-              v-for="item in state.templateTypeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <el-select class="title-type" v-model="state.templateClassifyType" placeholder="Select">
-            <el-option
-              v-for="item in state.templateClassifyOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <template v-if="false">
+            <el-select class="title-type" v-model="state.templateSourceType" placeholder="Select">
+              <el-option
+                v-for="item in state.templateSourceOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-select
+              v-if="['branchCreate', 'branch'].includes(state.curPosition)"
+              class="title-type"
+              v-model="state.templateType"
+              placeholder="Select"
+            >
+              <el-option
+                v-for="item in state.templateTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-select class="title-type" v-model="state.templateClassifyType" placeholder="Select">
+              <el-option
+                v-for="item in state.templateClassifyOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
           <template v-if="['branchCreate', 'create'].includes(state.curPosition)">
             <el-divider class="custom-divider-line" direction="vertical" />
             <el-icon class="custom-market-icon hover-icon_custom" @click="close"><Close /></el-icon>
@@ -428,7 +430,12 @@ const initMarketTemplate = async () => {
       state.marketTabs = rsp.data.categories.filter(category =>
         activeCategories.has(category.label)
       )
-      state.marketActiveTab = state.marketTabs[1].label
+      // 过滤掉 最近使用
+      state.marketTabs = state.marketTabs.filter(category => category.label !== t('work_branch.recent'))
+
+      if (state.marketTabs.length > 0) {
+        state.marketActiveTab = state.marketTabs[0].label
+      }
     })
     .catch(err => {
       console.error('searchMarket:', err)

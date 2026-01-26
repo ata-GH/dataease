@@ -5,6 +5,7 @@
     width="500px"
     append-to-body
     :close-on-click-modal="false"
+    @closed="handleClose"
   >
     <el-form
       ref="formRef"
@@ -24,7 +25,7 @@
         />
 
       </el-form-item>
-      <div style="color: #f56c6c; font-size: 12px; padding-top: 5px; margin-bottom: 10px; line-height: 1.5;">
+      <div style="color: #FF7C42; font-size: 12px; padding-top: 5px; margin-bottom: 10px; line-height: 1.5;">
         根据《咪咕文化科技有限公司4A管理办法》，数据导出必须通过4A金库模式管控并填写申请理由，若不填写或申请理由不充分，将会承担安全审计责任，后果自负！
       </div>
       <el-form-item label="任务描述" prop="desc">
@@ -80,6 +81,10 @@ const open = () => {
   form.reason = ''
   form.desc = ''
   dialogVisible.value = true
+}
+
+const handleClose = () => {
+  formRef.value?.resetFields()
 }
 
 const confirm = () => {

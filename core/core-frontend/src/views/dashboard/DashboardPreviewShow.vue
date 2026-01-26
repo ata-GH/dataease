@@ -28,6 +28,7 @@ import {
   exportLogTemplate
 } from '@/api/visualization/dataVisualization'
 import { submitExportFiles } from '@/api/chart'
+import { InfoFilled } from '@element-plus/icons-vue'
 const userStore = useUserStoreWithOut()
 
 const userName = computed(() => userStore.getName)
@@ -352,6 +353,13 @@ defineExpose({
           @click="curCanvasType = tab.value"
         >
           {{ tab.label }}
+          <el-tooltip
+            v-if="tab.value === 'dashboard'"
+            content="仅支持选择拥有查看权限、管理权限的图表仪表盘"
+            placement="right"
+          >
+            <el-icon class="info-icon"><InfoFilled /></el-icon>
+          </el-tooltip>
         </div>
       </div>
       <de-resource-tree
@@ -473,9 +481,18 @@ defineExpose({
         cursor: pointer;
         position: relative;
 
+        .info-icon {
+          margin-left: 4px;
+          color: #646a73;
+        }
+
         &.active {
           color: var(--ed-color-primary);
           font-weight: 500;
+
+          .info-icon {
+            color: var(--ed-color-primary);
+          }
 
           &::after {
             content: '';

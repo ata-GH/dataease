@@ -142,6 +142,7 @@ const initOpenHandler = newWindow => {
       {{ t('visualization.publish_update_tips') }}
     </div>
     <el-tooltip
+      v-if="false"
       effect="dark"
       :content="favorited ? t('visualization.cancel_store') : t('visualization.store')"
       placement="top"
@@ -160,33 +161,24 @@ const initOpenHandler = newWindow => {
         ></icon>
       </el-icon>
     </el-tooltip>
-    <el-divider style="margin: 0 16px 0 7px" direction="vertical" />
-    <div class="create-area flex-align-center">
-      <span style="line-height: 22px"
-        >{{ t('visualization.creator') }}:{{ dvInfo.creatorName }}</span
-      >
-      <el-popover show-arrow :offset="8" placement="bottom" width="400" trigger="hover">
-        <template #reference>
-          <el-icon class="info-tips"
-            ><Icon name="dv-info"><dvInfoSvg class="svg-icon" /></Icon
-          ></el-icon>
-        </template>
-        <dv-detail-info></dv-detail-info>
-      </el-popover>
-    </div>
+    <template v-if="false">
+      <el-divider style="margin: 0 16px 0 7px" direction="vertical" />
+      <div class="create-area flex-align-center">
+        <span style="line-height: 22px"
+          >{{ t('visualization.creator') }}:{{ dvInfo.creatorName }}</span
+        >
+        <el-popover show-arrow :offset="8" placement="bottom" width="400" trigger="hover">
+          <template #reference>
+            <el-icon class="info-tips"
+              ><Icon name="dv-info"><dvInfoSvg class="svg-icon" /></Icon
+            ></el-icon>
+          </template>
+          <dv-detail-info></dv-detail-info>
+        </el-popover>
+      </div>
+    </template>
     <div class="canvas-opt-button">
       <template v-if="false">
-        <el-button
-          v-if="!isIframe"
-          :disabled="dvInfo.status === 0"
-          secondary
-          @click="() => useEmitt().emitter.emit('canvasFullscreen')"
-        >
-          <template #icon>
-            <icon name="icon_pc_fullscreen"><icon_pc_fullscreen class="svg-icon" /></icon>
-          </template>
-          {{ t('visualization.fullscreen') }}</el-button
-        >
         <el-button secondary @click="preview()" :disabled="dvInfo.status === 0">
           <template #icon>
             <icon name="icon_pc_outlined"><icon_pc_outlined class="svg-icon" /></icon>
@@ -201,6 +193,27 @@ const initOpenHandler = newWindow => {
           :resource-type="dvInfo.type"
         />
       </template>
+      <el-button
+        @click="executeStore"
+        :style="{ color: favorited ? '#FFC60A' : '', borderColor: favorited ? '#FFC60A' : '' }"
+      >
+        <template #icon>
+          <icon>
+            <component class="svg-icon" :is="favorited ? visualStar : icon_collection_outlined"></component>
+          </icon>
+        </template>
+        {{ favorited ? t('visualization.cancel_store') : t('visualization.store') }}
+      </el-button>
+      <el-button
+        :disabled="dvInfo.status === 0"
+        secondary
+        @click="() => useEmitt().emitter.emit('canvasFullscreen')"
+      >
+        <template #icon>
+          <icon name="icon_pc_fullscreen"><icon_pc_fullscreen class="svg-icon" /></icon>
+        </template>
+        {{ t('visualization.fullscreen') }}</el-button
+      >
       <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
         <template #icon>
           <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
