@@ -256,11 +256,11 @@ const saveCanvasWithCheck = (withPublish = false, status?, callback?) => {
     saveResource({ withPublish, status }, () => {
       // 保存成功后的回调
       if (!withPublish) {
+        // 如果不是发布，且保存成功，则执行发布
+        saveCanvasWithCheck(true, 1)
         if (!status) {
           callback && callback()
         }
-        // 如果不是发布，且保存成功，则执行发布
-        saveCanvasWithCheck(true, 1)
       }
     })
   })

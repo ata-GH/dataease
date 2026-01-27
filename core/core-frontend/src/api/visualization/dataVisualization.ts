@@ -116,6 +116,15 @@ export const storeApi = (data): Promise<IResponse> => {
   return request.post({ url: '/store/execute', data })
 }
 
+// BI的收藏和取消收藏接口
+export const biFavoriteApi = (data): Promise<IResponse> => {
+  return request.post({ url: '/sdar/extend/collection/add', data })
+}
+
+export const biFavoriteCancelApi = (data): Promise<IResponse> => {
+  return request.post({ url: '/sdar/extend/collection/delete', data })
+}
+
 export const storeStatusApi = (id: string): Promise<IResponse> => {
   return request.get({ url: `/store/favorited/${id}` })
 }

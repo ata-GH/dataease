@@ -56,7 +56,8 @@ const resourceForm = reactive({
   manageGroups: [],
   viewOperators: [],
   viewGroups: [],
-  description: ''
+  description: '',
+  assets: 'YES'
 })
 const sourceLabel = computed(() =>
   curCanvasType.value === 'dataV' ? t('work_branch.big_data_screen') : t('work_branch.dashboard')
@@ -207,6 +208,7 @@ const resetForm = () => {
   resourceForm.viewOperators = []
   resourceForm.viewGroups = []
   resourceForm.description = ''
+  resourceForm.assets = 'YES'
 }
 
 const dfs = (arr: BusiTreeNode[]) => {
@@ -368,7 +370,8 @@ const saveResource = () => {
         manageGroups: resourceForm.manageGroups,
         viewOperators: resourceForm.viewOperators,
         viewGroups: resourceForm.viewGroups,
-        description: resourceForm.description
+        description: resourceForm.description,
+        assets: resourceForm.assets
       }
 
       switch (cmd.value) {
@@ -542,6 +545,13 @@ const emits = defineEmits(['finish'])
           v-model="resourceForm.description"
           placeholder="请输入"
         />
+      </el-form-item>
+      <!-- 是否对外展示该资产 -->
+      <el-form-item label="是否对外展示该资产" prop="assets">
+        <el-radio-group v-model="resourceForm.assets">
+          <el-radio label="YES">是</el-radio>
+          <el-radio label="NO">否</el-radio>
+        </el-radio-group>
       </el-form-item>
     </el-form>
     <template #footer>

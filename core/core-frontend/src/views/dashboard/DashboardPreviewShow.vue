@@ -419,7 +419,7 @@ defineExpose({
         </div>
       </template>
       <template v-else-if="hasTreeData && mounted">
-        <empty-background description="请关闭页面重新选择仪表盘" img-type="select">
+        <empty-background description="找不到该仪表盘的数据，请关闭页面重新选择" img-type="select">
           <button class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
         </empty-background>
       </template>

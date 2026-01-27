@@ -15,7 +15,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import DvDetailInfo from '@/views/common/DvDetailInfo.vue'
 import { useEmbedded } from '@/store/modules/embedded'
-import { storeApi, storeStatusApi } from '@/api/visualization/dataVisualization'
+import { storeApi, storeStatusApi, biFavoriteApi, biFavoriteCancelApi } from '@/api/visualization/dataVisualization'
 import { ref, watch, computed, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router_2'
 import ShareVisualHead from '@/views/share/share/ShareVisualHead.vue'
@@ -98,6 +98,12 @@ const executeStore = () => {
   }
   storeApi(param).then(() => {
     storeQuery()
+  })
+  // 同步调用bi的收藏和取消接口
+  const method = favorited.value ? biFavoriteCancelApi : biFavoriteApi
+  method({
+    objId: dvInfo.value.id,
+    objType: 1
   })
 }
 const storeQuery = () => {

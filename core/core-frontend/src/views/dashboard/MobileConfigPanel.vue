@@ -7,7 +7,7 @@ import MobileBackgroundSelector from './MobileBackgroundSelector.vue'
 import ComponentWrapper from '@/components/data-visualization/canvas/ComponentWrapper.vue'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'
 import { useEmbedded } from '@/store/modules/embedded'
-import { canvasSave, findComponentById } from '@/utils/canvasUtils'
+import { canvasSave, findComponentById, findAllViewsId } from '@/utils/canvasUtils'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { backCanvasData } from '@/utils/canvasUtils'
@@ -17,6 +17,7 @@ import mobileHeader from '@/assets/img/mobile-header.png'
 import ComponentStyleEditor from '@/views/common/ComponentStyleEditor.vue'
 import { deepCopy } from '@/utils/utils'
 import { useI18n } from '@/hooks/web/useI18n'
+import { updatePublishStatus } from '@/api/visualization/dataVisualization'
 const { t } = useI18n()
 
 const dvMainStore = dvMainStoreWithOut()
@@ -193,7 +194,20 @@ const hanedleMessage = event => {
 const saveCanvasWithCheckFromMobile = () => {
   snapshotStore.resetStyleChangeTimes()
   canvasSave(() => {
-    ElMessage.success(t('visualization.save_success'))
+    const targetViewIds = []
+    findAllViewsId(componentData.value, targetViewIds)
+    updatePublishStatus({
+      id: dvInfo.value.id,
+      name: dvInfo.value.name,
+      mobileLayout: dvInfo.value.mobileLayout,
+      activeViewIds: targetViewIds,
+      status: 1,
+      type: 'dashboard'
+    }).then(() => {
+      dvMainStore.updateDvInfoCall(1)
+      snapshotStore.initSnapShot()
+      ElMessage.success(t('visualization.save_success'))
+    })
   })
 }
 const loadCanvasData = () => {
