@@ -201,6 +201,7 @@ const initOpenHandler = newWindow => {
       </template>
       <el-button
         @click="executeStore"
+        size="small"
         :style="{ color: favorited ? '#FFC60A' : '', borderColor: favorited ? '#FFC60A' : '' }"
       >
         <template #icon>
@@ -213,6 +214,7 @@ const initOpenHandler = newWindow => {
       <el-button
         :disabled="dvInfo.status === 0"
         secondary
+        size="small"
         @click="() => useEmitt().emitter.emit('canvasFullscreen')"
       >
         <template #icon>
@@ -220,7 +222,7 @@ const initOpenHandler = newWindow => {
         </template>
         {{ t('visualization.fullscreen') }}</el-button
       >
-      <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
+      <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" size="small" @click="dvEdit()">
         <template #icon>
           <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
         </template>
@@ -229,6 +231,7 @@ const initOpenHandler = newWindow => {
       <el-button
         :disabled="dvInfo.status === 0"
         class="custom-icon"
+        size="small"
         @click="reload()"
       >
         <template #icon>
@@ -242,7 +245,7 @@ const initOpenHandler = newWindow => {
         popper-class="pad12"
         trigger="click"
       >
-        <el-button class="custom-icon" :disabled="dvInfo.status === 0">
+        <el-button class="custom-icon" size="small" :disabled="dvInfo.status === 0">
           <template #icon>
             <el-icon size="16"><icon_download_outlined /></el-icon>
           </template>
@@ -290,8 +293,8 @@ const initOpenHandler = newWindow => {
 .preview-head {
   width: 100%;
   min-width: 300px;
-  height: 56px;
-  padding: 16px 24px;
+  height: 40px;
+  padding: 0 24px;
   border-bottom: 1px solid rgba(31, 35, 41, 0.15);
   .canvas-name {
     max-width: 200px;
