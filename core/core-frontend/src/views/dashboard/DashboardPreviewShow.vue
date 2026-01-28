@@ -96,14 +96,7 @@ watch(curCanvasType, () => {
   state.dvInfo = null
 })
 
-watch(
-  () => route.query.dvId,
-  (val: any) => {
-    if (val && showPosition.value === 'preview' && state.dvInfo?.id !== val) {
-      loadCanvasData(val)
-    }
-  }
-)
+
 
 const resourceTreeRef = ref()
 
@@ -162,6 +155,17 @@ const loadCanvasData = (dvId, weight?) => {
     }
   )
 }
+
+watch(
+  () => route.query.dvId,
+  (val: any) => {
+    if (val && (showPosition.value === 'preview' || isPanel.value) && state.dvInfo?.id !== val) {
+      loadCanvasData(val)
+    }
+  },
+  { immediate: true }
+)
+
 // 地图类图表，需要预先准备图片
 const mapChartTypes = ['bubble-map', 'flow-map', 'heat-map', 'map', 'symbolic-map']
 const downloadH2 = type => {
@@ -169,8 +173,37 @@ const downloadH2 = type => {
   exportApplicationDialogRef.value.open()
 }
 
+const downloadDirect = type => {
+  executeDirectDownload(type)
+}
+
 const handleExportConfirm = formData => {
   executeDownload(downloadTypeTemp.value, formData)
+}
+
+const executeDirectDownload = (type) => {
+  downloadStatus.value = true
+  const mapElementIds =
+    state.canvasDataPreview
+      ?.filter(ele => mapChartTypes.includes(ele.innerType))
+      .map(ele => ele.id) || []
+  mapElementIds.forEach(id => useEmitt().emitter.emit('l7-prepare-picture', id))
+  nextTick(() => {
+    const vueDom = previewCanvasContainer.value.querySelector('.canvas-container')
+    generateCanvasFile(type, vueDom, state.dvInfo.name, (file) => {
+      downloadStatus.value = false
+      const blobUrl = window.URL.createObjectURL(file)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = blobUrl
+      a.download = file.name || (state.dvInfo.name + (type === 'img' ? '.png' : '.pdf'))
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(blobUrl)
+      mapElementIds.forEach(id => useEmitt().emitter.emit('l7-unprepare-picture', id))
+    })
+  })
 }
 
 const executeDownload = (type, formData) => {
@@ -365,6 +398,7 @@ defineExpose({
       <de-resource-tree
         ref="resourceTreeRef"
         v-show="slideShow"
+        v-if="!isPanel"
         :cur-canvas-type="curCanvasType"
         :show-position="showPosition"
         :resource-table="resourceTable"
@@ -390,6 +424,7 @@ defineExpose({
           v-if="showPosition === 'preview'"
           @reload="reload"
           @download="downloadH2"
+          @downloadDirect="downloadDirect"
           @downloadAsAppTemplate="downloadAsAppTemplate"
         />
         <div

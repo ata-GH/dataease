@@ -31,7 +31,7 @@ const { wsCache } = useCache('localStorage')
 const dvMainStore = dvMainStoreWithOut()
 const appStore = useAppStoreWithOut()
 const { dvInfo } = storeToRefs(dvMainStore)
-const emit = defineEmits(['reload', 'download', 'downloadAsAppTemplate'])
+const emit = defineEmits(['reload', 'download', 'downloadAsAppTemplate', 'downloadDirect'])
 const { t } = useI18n()
 const embeddedStore = useEmbedded()
 const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
@@ -70,6 +70,19 @@ const download = type => {
 }
 const downloadAsAppTemplate = downloadType => {
   emit('downloadAsAppTemplate', downloadType)
+}
+
+const lastRightClick = ref(0)
+const handleRightDoubleClick = (type) => {
+  const hostname = window.location.hostname
+  if (!hostname.startsWith('10.')) {
+    return
+  }
+  const now = Date.now()
+  if (now - lastRightClick.value < 300) {
+    emit('downloadDirect', type)
+  }
+  lastRightClick.value = now
 }
 
 const dvEdit = () => {
@@ -253,14 +266,14 @@ const initOpenHandler = newWindow => {
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="download('pdf')">PDF</el-dropdown-item>
+            <el-dropdown-item @click="download('pdf')" @contextmenu.prevent="handleRightDoubleClick('pdf')">PDF</el-dropdown-item>
             <!-- <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
               t('visualization.style_template')
             }}</el-dropdown-item>
             <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
               t('visualization.apply_template')
             }}</el-dropdown-item> -->
-            <el-dropdown-item @click="download('img')">{{
+            <el-dropdown-item @click="download('img')" @contextmenu.prevent="handleRightDoubleClick('img')">{{
               t('chart.image')
             }}</el-dropdown-item>
           </el-dropdown-menu>

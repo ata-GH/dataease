@@ -81,7 +81,15 @@ export function download2AppTemplate(downloadType, canvasDom, name, attachParams
 export function downloadCanvas2(type, canvasDom, name, callBack?) {
   // const canvasDom = document.getElementById(canvasId)
   if (canvasDom) {
-    html2canvas(canvasDom)
+    const width = canvasDom.offsetWidth
+    const height = canvasDom.offsetHeight
+    html2canvas(canvasDom, {
+      scale: 1,
+      width,
+      height,
+      useCORS: true,
+      allowTaint: true
+    })
       .then(canvas => {
         const dom = document.body.appendChild(canvas)
         dom.style.display = 'none'
@@ -117,7 +125,15 @@ export function downloadCanvas2(type, canvasDom, name, callBack?) {
 
 export function generateCanvasFile(type, canvasDom, name, callBack) {
   if (canvasDom) {
-    html2canvas(canvasDom)
+    const width = canvasDom.offsetWidth
+    const height = canvasDom.offsetHeight
+    html2canvas(canvasDom, {
+      scale: 1,
+      width,
+      height,
+      useCORS: true,
+      allowTaint: true
+    })
       .then(canvas => {
         const dom = document.body.appendChild(canvas)
         dom.style.display = 'none'
