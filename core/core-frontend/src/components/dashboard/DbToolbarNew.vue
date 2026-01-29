@@ -191,6 +191,7 @@ const resourceOptFinish = param => {
     dvInfo.value.viewOperators = param.viewOperators
     dvInfo.value.viewGroups = param.viewGroups
     dvInfo.value.description = param.description
+    dvInfo.value.type = param.type
     saveCanvasWithCheck(param.withPublish, param.status)
   }
 }

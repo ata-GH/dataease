@@ -7,6 +7,7 @@ import { findResourceAsBase64 } from '@/api/staticResource'
 import FileSaver from 'file-saver'
 import { deepCopy } from '@/utils/utils'
 import { toPng } from 'html-to-image'
+import { domToPng } from 'modern-screenshot'
 const embeddedStore = useEmbedded()
 const dvMainStore = dvMainStoreWithOut()
 const { canvasStyleData, componentData, canvasViewInfo, canvasViewDataInfo, dvInfo } =
@@ -81,15 +82,7 @@ export function download2AppTemplate(downloadType, canvasDom, name, attachParams
 export function downloadCanvas2(type, canvasDom, name, callBack?) {
   // const canvasDom = document.getElementById(canvasId)
   if (canvasDom) {
-    const width = canvasDom.offsetWidth
-    const height = canvasDom.offsetHeight
-    html2canvas(canvasDom, {
-      scale: 1,
-      width,
-      height,
-      useCORS: true,
-      allowTaint: true
-    })
+    html2canvas(canvasDom)
       .then(canvas => {
         const dom = document.body.appendChild(canvas)
         dom.style.display = 'none'
@@ -125,20 +118,8 @@ export function downloadCanvas2(type, canvasDom, name, callBack?) {
 
 export function generateCanvasFile(type, canvasDom, name, callBack) {
   if (canvasDom) {
-    const width = canvasDom.offsetWidth
-    const height = canvasDom.offsetHeight
-    html2canvas(canvasDom, {
-      scale: 1,
-      width,
-      height,
-      useCORS: true,
-      allowTaint: true
-    })
-      .then(canvas => {
-        const dom = document.body.appendChild(canvas)
-        dom.style.display = 'none'
-        document.body.removeChild(dom)
-        const dataUrl = dom.toDataURL('image/png', 1)
+    domToPng(canvasDom, { scale: 3 })
+      .then(dataUrl => {
         if (type === 'img') {
           const blob = dataURLToBlob(dataUrl)
           const file = new File([blob], name + '.png', { type: 'image/png' })

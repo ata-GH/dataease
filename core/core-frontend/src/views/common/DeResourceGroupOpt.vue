@@ -357,6 +357,7 @@ const checkParent = params => {
 }
 
 const saveResource = () => {
+  console.log('仪表盘类型', curCanvasType.value)
   resource.value.validate(async result => {
     if (result) {
       const params: ResourceOrFolder = {
