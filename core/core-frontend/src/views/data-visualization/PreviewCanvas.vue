@@ -20,6 +20,7 @@ import { useRoute } from 'vue-router_2'
 import { filterEnumMapSync } from '@/utils/componentUtils'
 import CanvasOptBar from '@/components/visualization/CanvasOptBar.vue'
 import DvPreview from '@/views/data-visualization/DvPreview.vue'
+import { sdarDashboardLogApi } from '@/api/log'
 const routeWatch = useRoute()
 
 const dvMainStore = dvMainStoreWithOut()
@@ -222,6 +223,7 @@ onMounted(async () => {
     dvMainStore.setCanvasAttachInfo({ taskId, showWatermark })
   }
   if (dvId) {
+    sdarDashboardLogApi({ dvId })
     await loadCanvasDataAsync(dvId, dvType, ignoreParams)
     return
   }
