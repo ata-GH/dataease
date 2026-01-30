@@ -171,7 +171,7 @@ const checkPer = async resourceId => {
   if (!window.DataEaseBi || !resourceId) {
     return true
   }
-  const request = { busiFlag: 'dashboard', resourceTable: 'core' }
+  const request = { busiFlag: 'chart', resourceTable: 'core' }
   await interactiveStore.setInteractive(request)
   return check(wsCache.get('panel-weight'), resourceId, 4)
 }
@@ -278,7 +278,7 @@ const initDashboardCreateMode = async (pid, createType, templateParams) => {
     }
 const initLocalCanvasData = callBack => {
   const { resourceId, opt, sourcePid } = state
-  const busiFlag = opt === 'copy' ? 'dashboard-copy' : 'dashboard'
+  const busiFlag = opt === 'copy' ? 'dashboard-copy' : 'chart'
   initCanvasData(
     resourceId,
     { busiFlag, resourceTable: 'snapshot', source: 'main-edit' },
@@ -399,7 +399,6 @@ onMounted(async () => {
     snapshotStore.clearPersistHistory(resourceId)
   }
   snapshotStore.initSnapShot()
-  console.log(resourceId, 'resourceId')
   if (resourceId) {
     dataInitState.value = false
     const canvasCache = wsCache.get('DE-DV-CATCH-' + resourceId)
@@ -515,7 +514,7 @@ const cancelHidden = item => {
 }
 
 const doRecoverToPublished = () => {
-  recoverToPublished({ id: dvInfo.value.id, type: 'dashboard', name: dvInfo.value.name }).then(
+  recoverToPublished({ id: dvInfo.value.id, type: 'chart', name: dvInfo.value.name }).then(
     () => {
       state.resourceId = dvInfo.value.id
       state.sourcePid = dvInfo.value.pid

@@ -184,9 +184,7 @@ const resourceOptFinish = param => {
     dvInfo.value.dataState = 'ready'
     dvInfo.value.pid = param.pid
     dvInfo.value.name = param.name
-    if (param.type) {
-      dvInfo.value.type = param.type
-    }
+    dvInfo.value.type = param.type
     saveCanvasWithCheck(param.withPublish, param.status, () => {
       param.callback && param.callback()
     })

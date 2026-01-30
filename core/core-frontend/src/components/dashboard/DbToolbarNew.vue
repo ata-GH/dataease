@@ -287,7 +287,7 @@ const saveResource = (checkParams?) => {
         if (appData.value) {
           initCanvasData(
             dvInfo.value.id,
-            { busiFlag: 'dashboard', resourceTable: 'snapshot' },
+            { busiFlag: 'chart', resourceTable: 'snapshot' },
             () => {
               useEmitt().emitter.emit('refresh-dataset-selector')
               useEmitt().emitter.emit('calcData-all')
