@@ -1,7 +1,12 @@
 import request from '@/config/axios'
 import type { BusiTreeRequest } from '@/models/tree/TreeNode'
 import { originNameHandleWithArr } from '@/utils/CalculateFields'
+import { checkViewPermissionApi } from '@/api/auth'
 import { cloneDeep } from 'lodash-es'
+import { ElMessage } from 'element-plus-secondary'
+import { useRouter } from 'vue-router_2'
+
+const router = useRouter()
 export interface ResourceOrFolder {
   name: string
   id?: number | string

@@ -55,7 +55,6 @@ const handleTokenLogin = async (to, next) => {
           userStore.setTime(Date.now())
           const { token, dvId, username, loginType, ...restQuery } = to.query as Record<string, any>
           next({ path: to.path, query: { dvId, ...restQuery }, replace: true })
-          return true
         }
       } else {
         ElMessage.error(result.desc || '登录失败')
@@ -83,7 +82,8 @@ router.beforeEach(async (to, _, next) => {
       await userStore.setUser()
     }
     if (to.path === '/login') {
-      next({ path: '/index' })
+      // next({ path: '/index' })
+      next()
     } else {
       const roleRouters = (await getRoleRouters()) || []
       const routers: any[] = roleRouters as AppCustomRouteRecordRaw[]

@@ -31,6 +31,10 @@ import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapsho
 import { deepCopy, nameTrim } from '@/utils/utils'
 import { ElMessage, ElMessageBox } from 'element-plus-secondary'
 import { guid } from '@/views/visualized/data/dataset/form/util'
+import { checkViewPermissionApi } from '@/api/auth'
+import router from '@/router'
+import mobileRouter from '@/router/mobile'
+
 const dvMainStore = dvMainStoreWithOut()
 const {
   inMobile,
@@ -1116,5 +1120,18 @@ export function syncViewTitle(element) {
       canvasViewInfo.value[element.id].title = element.name
       canvasViewInfo.value[element.id].customStyle.component.title = element.name
     }
+  }
+}
+
+export const checkAndRedirect = async (dvId, callback) => {
+  const resCheck = await checkViewPermissionApi({ dashboardId: dvId })
+  const checkResult = resCheck.data
+  if (checkResult.rspcode === 200) {
+    callback && callback()
+  } else {
+    ElMessage.error(checkResult.desc || '登录失败')
+    const currentRouter = window.location.pathname.includes('mobile.html') ? mobileRouter : router
+    currentRouter.replace({ path: '/login', query: { type: 'noauth' } })
+    return false
   }
 }

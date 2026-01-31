@@ -16,6 +16,10 @@ export const sdarLoginApi = (data) => {
   })
 }
 
+// 判断权限接口
+export const checkViewPermissionApi = (data) =>
+  request.get({ url: `/sdar/rest/dashboard/checkViewPermission/${data.dashboardId}` })
+
 export const fetchGroupListApi = (
   params = { state: 1, numberPerPage: 999999, currentPage: 1 }
 ) => request.get({ url: '/sdar/rest/auth/group/list', params })
