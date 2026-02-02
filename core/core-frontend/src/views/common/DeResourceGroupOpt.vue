@@ -275,7 +275,7 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
       cutTargetTree(state.tData, data.id)
     }
     if (['newLeaf', 'newFolder'].includes(exec)) {
-      resourceForm.pid = [data.id as string]
+      resourceForm.pid = (!data.id || data.id === '0') ? [] : [data.id as string]
       pid.value = data.id
     } else {
       id.value = data.id

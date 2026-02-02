@@ -42,6 +42,17 @@ const showMfa = ref(false)
 const mfaData = ref({ enabled: false, ready: false, uid: '', origin: 0 })
 const loginType = ref('default')
 const showPlatLoginMask = ref(true)
+const isLoginHidden = ref(true)
+const inIframe = ref(self.frameElement && self.frameElement.tagName == 'IFRAME')
+
+const closePage = () => {
+  try {
+    parent.window.postMessage({ type: 'closeBoard', data: {} }, '*')
+  } catch (e) {
+    window.parent?.postMessage({ type: 'closeBoard', data: {} }, '*')
+  }
+}
+
 const checkUsername = value => {
   if (!value) {
     return true
@@ -200,58 +211,69 @@ const loadFail = () => {
     element-loading-background="#F5F6F7"
   />
   <div class="de-mobile-login" v-loading="duringLogin">
-    <img class="mobile-login_bg" :src="mobileLoginBg ? mobileLoginBg : mobileWholeBg" alt="" />
+    <img
+      class="mobile-login_bg"
+      :src="mobileLoginBg ? mobileLoginBg : mobileWholeBg"
+      alt=""
+      @dblclick="isLoginHidden = !isLoginHidden"
+    />
     <div class="mobile-login-content">
-      <img width="120" height="31" :src="mobileLogin ? mobileLogin : mobileDeTop" alt="" />
-      <div class="mobile-login-welcome">
-        {{ loginType === 'ldap' ? t('login.ldap_login') : t('login.account_login') }}
+      <div v-if="isLoginHidden" class="session-expired-view">
+        <div class="expired-text">登录会话已失效，请关闭页面重新登录</div>
+        <button v-if="inIframe" class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
       </div>
-      <van-form @submit="onSubmit">
-        <van-cell-group inset>
-          <van-field
-            v-model="username"
-            name="用户名"
-            :style="{ borderColor: !!usernameError ? '#F54A45' : '#bbbfc4' }"
-            :placeholder="t('login.input_account')"
-            @blur="handleBlur"
-            :class="inputFocus === 'username' && 'input-focus-primary'"
-            @end-validate="usernameEndValidate"
-            @focus="handleFocus('username')"
-            :rules="[{ required: true, message: '请填写用户名' }]"
-          />
-          <div v-if="!!usernameError" class="van-ed-error">
-            {{ usernameError }}
-          </div>
-          <van-field
-            v-model="password"
-            :type="visible ? 'password' : 'text'"
-            :class="inputFocus === 'password' && 'input-focus-primary'"
-            @click-right-icon="clickRightIcon"
-            :style="{ borderColor: !!passwordError ? '#F54A45' : '#bbbfc4' }"
-            @focus="handleFocus('password')"
-            @blur="handleBlur"
-            name="密码"
-            placeholder="请输入密码"
-            :rules="[{ required: true, message: '请填写密码' }]"
-            @end-validate="passwordEndValidate"
-          >
-            <template #right-icon>
-              <el-icon>
-                <Icon v-if="visible" name="icon_invisible_outlined"
-                  ><icon_invisible_outlined class="svg-icon"
-                /></Icon>
-                <Icon v-else name="icon_visible_outlined"
-                  ><icon_visible_outlined class="svg-icon"
-                /></Icon>
-              </el-icon>
-            </template>
-          </van-field>
-          <div v-if="!!passwordError" class="van-ed-error">
-            {{ passwordError }}
-          </div>
-        </van-cell-group>
-        <van-button block type="primary" native-type="submit"> 登录 </van-button>
-      </van-form>
+      <div v-else>
+        <img width="120" height="31" :src="mobileLogin ? mobileLogin : mobileDeTop" alt="" />
+        <div class="mobile-login-welcome">
+          {{ loginType === 'ldap' ? t('login.ldap_login') : t('login.account_login') }}
+        </div>
+        <van-form @submit="onSubmit">
+          <van-cell-group inset>
+            <van-field
+              v-model="username"
+              name="用户名"
+              :style="{ borderColor: !!usernameError ? '#F54A45' : '#bbbfc4' }"
+              :placeholder="t('login.input_account')"
+              @blur="handleBlur"
+              :class="inputFocus === 'username' && 'input-focus-primary'"
+              @end-validate="usernameEndValidate"
+              @focus="handleFocus('username')"
+              :rules="[{ required: true, message: '请填写用户名' }]"
+            />
+            <div v-if="!!usernameError" class="van-ed-error">
+              {{ usernameError }}
+            </div>
+            <van-field
+              v-model="password"
+              :type="visible ? 'password' : 'text'"
+              :class="inputFocus === 'password' && 'input-focus-primary'"
+              @click-right-icon="clickRightIcon"
+              :style="{ borderColor: !!passwordError ? '#F54A45' : '#bbbfc4' }"
+              @focus="handleFocus('password')"
+              @blur="handleBlur"
+              name="密码"
+              placeholder="请输入密码"
+              :rules="[{ required: true, message: '请填写密码' }]"
+              @end-validate="passwordEndValidate"
+            >
+              <template #right-icon>
+                <el-icon>
+                  <Icon v-if="visible" name="icon_invisible_outlined"
+                    ><icon_invisible_outlined class="svg-icon"
+                  /></Icon>
+                  <Icon v-else name="icon_visible_outlined"
+                    ><icon_visible_outlined class="svg-icon"
+                  /></Icon>
+                </el-icon>
+              </template>
+            </van-field>
+            <div v-if="!!passwordError" class="van-ed-error">
+              {{ passwordError }}
+            </div>
+          </van-cell-group>
+          <van-button block type="primary" native-type="submit"> 登录 </van-button>
+        </van-form>
+      </div>
     </div>
     <XpackComponent
       jsname="L2NvbXBvbmVudC9sb2dpbi9Nb2JpbGVIYW5kbGVy"
@@ -307,11 +329,9 @@ const loadFail = () => {
     position: absolute;
     bottom: 0;
     left: 0;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
     overflow: hidden;
     width: 100%;
-    height: 70%;
+    height: 100%;
     padding: 24px 16px;
     z-index: 10;
     --van-cell-group-inset-padding: 0;
@@ -381,5 +401,34 @@ const loadFail = () => {
 }
 .de-mobile-error {
   background: var(--van-toast-background) !important;
+}
+
+.session-expired-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+}
+
+.expired-text {
+  color: #606266;
+  font-size: 14px;
+}
+
+.close-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #fff;
+  color: #606266;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  border-color: #c0c4cc;
+  color: #409eff;
 }
 </style>

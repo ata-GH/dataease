@@ -18,10 +18,12 @@ import { filterEnumMapSync } from '@/utils/componentUtils'
 import CanvasOptBar from '@/components/visualization/CanvasOptBar.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { downloadCanvas2 } from '@/utils/imgUtils'
+import { useCache } from '@/hooks/web/useCache'
 
 const dvMainStore = dvMainStoreWithOut()
 const { t } = useI18n()
 const embeddedStore = useEmbedded()
+const { wsCache } = useCache()
 
 const previewCanvasContainer = ref(null)
 const downloadStatus = ref(false)
@@ -89,7 +91,9 @@ const loadCanvasDataAsync = async (dvId, dvType) => {
   // 添加外部参数
   let attachParam
   await getOuterParamsInfo(dvId).then(rsp => {
-    dvMainStore.setNowPanelOuterParamsInfoV2(rsp.data, dvId)
+    if (rsp) {
+      dvMainStore.setNowPanelOuterParamsInfoV2(rsp.data, dvId)
+    }
   })
 
   // 外部参数（iframe 或者 iframe嵌入）
@@ -162,6 +166,10 @@ onMounted(async () => {
   const dvId = embeddedStore.dvId || router.currentRoute.value.query.dvId
   const { dvType, callBackFlag } = router.currentRoute.value.query
   if (dvId) {
+    if (!wsCache.get('user.token')) {
+      router.push('/login')
+      return
+    }
     loadCanvasDataAsync(dvId, dvType)
     return
   }
