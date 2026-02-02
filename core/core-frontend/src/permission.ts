@@ -28,6 +28,7 @@ const { loadStart, loadDone } = usePageLoading()
 const whiteList = ['/login', '/de-link', '/chart-view', '/admin-login', '/401'] // 不重定向白名单
 const embeddedWindowWhiteList = ['/dvCanvas', '/dashboard', '/preview', '/dataset-embedded-form']
 const embeddedRouteWhiteList = ['/dataset-embedded', '/dataset-form', '/dataset-embedded-form']
+
 const handleTokenLogin = async (to, next) => {
   // 支持通过 URL 携带 token 直接访问并登录
   const getParam = (key: string) => {
@@ -132,7 +133,7 @@ router.beforeEach(async (to, from, next) => {
       await userStore.setUser()
     }
     if (to.path === '/login') {
-      next({ path: '/workbranch/index' })
+      next()
     } else {
       permissionStore.setCurrentPath(to.path)
       if (permissionStore.getIsAddRouters) {

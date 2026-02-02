@@ -55,6 +55,13 @@ const demoTips = computed(() => {
   }
   return appearanceStore.getDemoTipsContent || ''
 })
+
+const expiredText = computed(() => {
+  if (router.currentRoute.value.query.type === 'noauth') {
+    return '您暂无该页面的访问权限，请联系管理员'
+  }
+  return '登录会话已失效，请关闭页面重新登录'
+})
 const state = reactive({
   loginForm: {
     username: '',
@@ -326,9 +333,9 @@ onMounted(async () => {
       </div>
       <div class="login-form-content" v-loading="loading">
         <div v-if="isLoginHidden" class="session-expired-view">
-        <div class="expired-text">登录会话已失效，请关闭页面重新登录</div>
-        <button v-if="inIframe" class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
-      </div>
+          <div class="expired-text">{{ expiredText }}</div>
+          <button class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
+        </div>
         <div v-else class="login-form-center">
           <el-form
             ref="formRef"

@@ -4,7 +4,7 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'
 import router from '@/router'
 import { useEmitt } from '@/hooks/web/useEmitt'
-import { initCanvasData, onInitReady } from '@/utils/canvasUtils'
+import { initCanvasData, onInitReady, checkAndRedirect } from '@/utils/canvasUtils'
 import { queryTargetVisualizationJumpInfo } from '@/api/visualization/linkJump'
 import { Base64 } from 'js-base64'
 import { getOuterParamsInfo } from '@/api/visualization/outerParams'
@@ -223,8 +223,10 @@ onMounted(async () => {
     dvMainStore.setCanvasAttachInfo({ taskId, showWatermark })
   }
   if (dvId) {
-    sdarDashboardLogApi({ dvId })
-    await loadCanvasDataAsync(dvId, dvType, ignoreParams)
+    checkAndRedirect(dvId, async () => {
+      sdarDashboardLogApi({ dvId })
+      await loadCanvasDataAsync(dvId, dvType, ignoreParams)
+    })
     return
   }
   dvMainStore.setEmbeddedCallBack(callBackFlag || 'no')
