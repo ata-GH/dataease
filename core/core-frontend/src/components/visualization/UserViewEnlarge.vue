@@ -192,7 +192,7 @@ import JsPDF from 'jspdf'
 import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { useRoute } from 'vue-router_2'
 const route = useRoute()
-const isPreview = computed(() => !!route.query.resourceId || !!route.query.dvId)
+const isPreview = computed(() => (!!route.query.resourceId || !!route.query.dvId) && !window.location.href.includes('/chartSwift'))
 const downLoading = ref(false)
 const dvMainStore = dvMainStoreWithOut()
 const dialogShow = ref(false)
