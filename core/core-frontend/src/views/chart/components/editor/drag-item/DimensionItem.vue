@@ -488,11 +488,15 @@ onMounted(() => {
                   <el-dropdown-item
                     class="menu-item-padding"
                     v-if="showDateExt"
+                    :disabled="item.dateStyle === 'y_M'"
                     :command="beforeDateStyle('y_W')"
                   >
                     <span
                       class="sub-menu-content"
-                      :class="'y_W' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'y_W' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.y_W') }}
                       <el-icon class="sub-menu-content--icon">
@@ -502,10 +506,17 @@ onMounted(() => {
                       </el-icon>
                     </span>
                   </el-dropdown-item>
-                  <el-dropdown-item class="menu-item-padding" :command="beforeDateStyle('y_M_d')">
+                  <el-dropdown-item
+                    class="menu-item-padding"
+                    :disabled="item.dateStyle === 'y_M'"
+                    :command="beforeDateStyle('y_M_d')"
+                  >
                     <span
                       class="sub-menu-content"
-                      :class="'y_M_d' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'y_M_d' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.y_M_d') }}
                       <el-icon class="sub-menu-content--icon">
@@ -520,12 +531,16 @@ onMounted(() => {
                     v-if="
                       !(chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type))
                     "
+                    :disabled="item.dateStyle === 'y_M'"
                     :command="beforeDateStyle('H_m_s')"
                     divided
                   >
                     <span
                       class="sub-menu-content"
-                      :class="'H_m_s' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'H_m_s' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.H_m_s') }}
                       <el-icon class="sub-menu-content--icon">
@@ -537,6 +552,7 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
+                    :disabled="item.dateStyle === 'y_M'"
                     :command="beforeDateStyle('y_M_d_H')"
                     :divided="
                       chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type)
@@ -544,7 +560,10 @@ onMounted(() => {
                   >
                     <span
                       class="sub-menu-content"
-                      :class="'y_M_d_H' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'y_M_d_H' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.y_M_d_H') }}
                       <el-icon class="sub-menu-content--icon">
@@ -556,6 +575,7 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
+                    :disabled="item.dateStyle === 'y_M'"
                     :command="beforeDateStyle('y_M_d_H_m')"
                     :divided="
                       chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type)
@@ -563,7 +583,10 @@ onMounted(() => {
                   >
                     <span
                       class="sub-menu-content"
-                      :class="'y_M_d_H_m' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'y_M_d_H_m' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.y_M_d_H_m') }}
                       <el-icon class="sub-menu-content--icon">
@@ -575,11 +598,15 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
+                    :disabled="item.dateStyle === 'y_M'"
                     :command="beforeDateStyle('y_M_d_H_m_s')"
                   >
                     <span
                       class="sub-menu-content"
-                      :class="'y_M_d_H_m_s' === item.dateStyle ? 'content-active' : ''"
+                      :class="{
+                        'content-active': 'y_M_d_H_m_s' === item.dateStyle,
+                        'content-disabled': item.dateStyle === 'y_M'
+                      }"
                     >
                       {{ t('chart.y_M_d_H_m_s') }}
                       <el-icon class="sub-menu-content--icon">
@@ -713,6 +740,10 @@ onMounted(() => {
 
 .menu-item-padding {
   padding: 5px 16px;
+}
+.content-disabled {
+  color: var(--ed-text-color-disabled);
+  cursor: not-allowed;
 }
 .item-style {
   position: relative;

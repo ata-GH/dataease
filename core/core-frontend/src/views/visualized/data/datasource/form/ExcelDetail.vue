@@ -292,7 +292,12 @@ const saveExcelDs = (params, successCb, finallyCb) => {
       name: props.param.name,
       type: 'Excel',
       sheets: selectedSheet,
-      editType: 0
+      editType: 0,
+      manageUserIds: params.manageUserIds,
+      manageRoleIds: params.manageRoleIds,
+      viewUserIds: params.viewUserIds,
+      viewRoleIds: params.viewRoleIds,
+      description: params.description
     }
   } else {
     table = {
@@ -300,7 +305,12 @@ const saveExcelDs = (params, successCb, finallyCb) => {
       name: props.param.name,
       type: 'Excel',
       sheets: selectedSheet,
-      editType: props.param.editType ? props.param.editType : 0
+      editType: props.param.editType ? props.param.editType : 0,
+      manageUserIds: params.manageUserIds,
+      manageRoleIds: params.manageRoleIds,
+      viewUserIds: params.viewUserIds,
+      viewRoleIds: params.viewRoleIds,
+      description: params.description
     }
   }
 
@@ -906,6 +916,9 @@ defineExpose({
       }
       &.info-table_height {
         height: calc(100% - 379px);
+        .ed-table--fit {
+          height: 100%;
+        }
       }
     }
   }

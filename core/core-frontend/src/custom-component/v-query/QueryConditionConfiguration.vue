@@ -675,6 +675,7 @@ const duplicateRemoval = arr => {
 }
 
 const setParameters = field => {
+  console.log('field', field)
   const fieldArr = Object.values(curComponent.value.checkedFieldsMap).filter(ele => !!ele)
   curComponent.value.parameters = duplicateRemoval(
     Object.values(field?.fields || {})
@@ -2769,6 +2770,7 @@ defineExpose({
                     </div>
                   </el-option>
                 </el-select>
+                <!-- 数据集中的字段选择 -->
                 <el-select
                   @change="setParameters(field)"
                   @focus="handleDialogClick"
@@ -3082,6 +3084,7 @@ defineExpose({
               </div>
               <div class="value">
                 <template v-if="curComponent.displayType === '7' && !isTimeParameter">
+                  <!-- 时间粒度，类型：时间范围 -->
                   <el-select
                     @change="timeGranularityMultipleChange"
                     :placeholder="t('v_query.the_time_granularity')"
@@ -3095,6 +3098,7 @@ defineExpose({
                   </el-select>
                 </template>
                 <template v-else>
+                  <!-- 时间粒度，类型：时间 -->
                   <el-select
                     @change="timeGranularityChange"
                     :placeholder="t('v_query.the_time_granularity')"

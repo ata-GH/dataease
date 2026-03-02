@@ -51,6 +51,7 @@ import UnionEdit from './UnionEdit.vue'
 import type { FormInstance } from 'element-plus-secondary'
 import type { BusiTreeNode } from '@/models/tree/TreeNode'
 import CreatDsGroup from './CreatDsGroup.vue'
+import CreatDsGroupDataSource from '../../datasource/form/CreatDsGroup.vue'
 import { guid, getFieldName, timeTypes, type DataSource } from './util'
 import { fieldType } from '@/utils/attr'
 import { cancelMap } from '@/config/axios/service'
@@ -70,6 +71,8 @@ import { cloneDeep, debounce } from 'lodash-es'
 import { XpackComponent } from '@/components/plugin'
 import { iconFieldMap } from '@/components/icon-group/field-list'
 import { iconDatasourceMap } from '@/components/icon-group/datasource-list'
+import ExcelDetail from '../../datasource/form/ExcelDetail.vue'
+import type { Param } from '../../datasource/form/ExcelDetail.vue'
 interface DragEvent extends MouseEvent {
   dataTransfer: DataTransfer
 }
@@ -94,10 +97,61 @@ const { push } = useRouter() || {
 }
 const quotaTableHeight = ref(238)
 const creatDsFolder = ref()
+const creatDsFolderDataSource = ref()
 const editCalcField = ref(false)
 const calcEdit = ref()
 const editUnion = ref(false)
 const datasetDrag = ref()
+const excelVisible = ref(false)
+const excel = ref()
+const editDs = ref(false)
+const isSupportSetKey = ref(false)
+const showFinishPage = ref(false)
+const pid = ref('0')
+
+const defaultForm2 = {
+  type: 'Excel',
+  id: '0',
+  editType: 0,
+  name: '',
+  creator: '',
+  configuration: {}
+}
+const form2 = reactive<Param>(cloneDeep(defaultForm2))
+
+const beforeClose = () => {
+  excelVisible.value = false
+}
+
+const complete = (params, successCb, finallyCb) => {
+  excel.value.saveExcelDs(
+    params,
+    () => {
+      pid.value = params.pid
+      successCb()
+    },
+    finallyCb
+  )
+}
+
+const saveDS = () => {
+  excel.value.uploadStatus(false)
+  if (!excel.value.sheetFile?.name) {
+    excel.value.uploadStatus(true)
+    return
+  }
+  const validate = excel.value.submitForm()
+  validate(val => {
+    if (val) {
+      if (editDs.value) {
+        complete(null, null, null)
+      } else {
+        creatDsFolderDataSource.value.createInit('datasource', { id: pid.value }, '', form2.name)
+      }
+    }
+  })
+  return
+}
 const datasetName = ref(t('data_set.unnamed_dataset'))
 // 名称规则与 DbToolbarNew 保持一致：中文、字母、数字、下划线，长度1-50
 const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
@@ -164,6 +218,26 @@ const fieldOptions = [
       {
         value: 'yyyy/MM/dd HH:mm:ss',
         label: 'yyyy/MM/dd HH:mm:ss'
+      },
+      {
+        value: 'yyyyMM',
+        label: 'yyyyMM'
+      },
+      {
+        value: 'yyyy-MM',
+        label: 'yyyy-MM'
+      },
+      {
+        value: 'yyyy/MM',
+        label: 'yyyy/MM'
+      },
+      {
+        value: 'yyyyMMdd',
+        label: 'yyyyMMdd'
+      },
+      {
+        value: 'yyyyMMdd HH:mm:ss',
+        label: 'yyyyMMdd HH:mm:ss'
       },
       {
         value: 'custom',
@@ -1727,6 +1801,27 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
   }
   return iconFieldMap[fieldType[deType]]
 }
+
+const handleShowCreateDataSource = (nodeInfo: Param, id?: string) => {
+  editDs.value = !!nodeInfo
+  showFinishPage.value = false
+  if (!!nodeInfo) {
+    Object.assign(form2, cloneDeep(nodeInfo))
+    pid.value = nodeInfo.pid || '0'
+  } else {
+    Object.assign(form2, cloneDeep(defaultForm2))
+    pid.value = id || '0'
+  }
+
+  excelVisible.value = true
+}
+
+const handleShowFinishPage = ({ id, name, pid }) => {
+  excelVisible.value = false
+  // 更新数据集列表
+  console.log('更新数据集列表')
+  getDatasource(isEdit.value ? 0 : 2)
+}
 </script>
 
 <template>
@@ -1790,6 +1885,7 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
 
           <p class="select-ds">
             {{ t('data_set.select_data_source') }}
+            <el-button link type="primary" size="small" @click="handleShowCreateDataSource(null, null)">新建文件数据源</el-button>
             <span class="left-outlined">
               <el-icon style="color: #1f2329" @click="showLeft = false">
                 <Icon name="icon_left_outlined"><icon_left_outlined class="svg-icon" /></Icon>
@@ -2588,6 +2684,11 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
     @onDatasetSave="saveAndBack"
     ref="creatDsFolder"
   ></creat-ds-group>
+  <creat-ds-group-data-source
+    @handle-show-finish-page="handleShowFinishPage"
+    @finish-ds="complete"
+    ref="creatDsFolderDataSource"
+  ></creat-ds-group-data-source>
   <el-dialog
     modal-class="calc-field-edit-dialog"
     v-model="editCalcField"
@@ -2850,6 +2951,32 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
       <el-button type="primary" @click="confirmGroupField">{{ t('dataset.confirm') }} </el-button>
     </template>
   </el-dialog>
+  <el-dialog
+    v-model="excelVisible"
+    title="新建文件数据源"
+    width="1000px"
+    :close-on-click-modal="false"
+    :append-to-body="true"
+    :before-close="beforeClose"
+  >
+    <div class="datasource-new">
+      <div class="ds-editor" :class="editDs && 'edit-ds'">
+        <excel-detail
+          v-if="excelVisible"
+          :editDs="editDs"
+          :is-supportSetKey="isSupportSetKey"
+          ref="excel"
+          :param="form2"
+        ></excel-detail>
+      </div>
+      <div class="editor-footer">
+        <el-button secondary @click="beforeClose"> {{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="saveDS">{{ t('common.save') }}</el-button>
+      </div>
+    </div>
+  </el-dialog>
+  <CreatDsGroup ref="creatDsFolder" />
+  <CreatDsGroupDataSource ref="creatDsFolderDataSource" @finishDs="complete" @handle-show-finish-page="handleShowFinishPage" />
   <XpackComponent
     jsname="L2NvbXBvbmVudC9lbWJlZGRlZC1pZnJhbWUvTmV3V2luZG93SGFuZGxlcg=="
     @loaded="XpackLoaded"
@@ -3526,6 +3653,65 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
+  }
+}
+.datasource-new {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  position: relative;
+  .ds-editor {
+    width: 100%;
+    height: calc(100% - 64px);
+
+    &.edit-ds {
+      width: 100%;
+    }
+
+    .excel-detail {
+      width: 100%;
+      margin: 0 0 0 30px;
+      justify-content: inherit;
+      .detail-inner {
+        width: 900px;
+        padding-top: 0;
+      }
+    }
+
+    .ds-type-title {
+      width: 100%;
+      padding: 16px 24px;
+      color: #1f2329;
+      font-family: var(--de-custom_font, 'PingFang');
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      border-bottom: 1px solid rgba(31, 35, 41, 0.15);
+    }
+
+    .editor-content {
+      padding: 16px 24px;
+      height: calc(100vh - 278px);
+      overflow-y: auto;
+
+      &.type-title {
+        height: calc(100vh - 221px);
+      }
+    }
+  }
+  .editor-footer {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding-right: 24px;
+    float: left;
+    border-top: 1px solid rgba(31, 35, 41, 0.15);
+    position: relative;
+    z-index: 10;
+    background: #fff;
   }
 }
 </style>

@@ -7,6 +7,7 @@ import { checkRepeat, listDatasources, save, update } from '@/api/datasource'
 import { ElMessage, ElMessageBox, ElMessageBoxOptions } from 'element-plus-secondary'
 import treeSort from '@/utils/treeSortUtils'
 import type { DatasetOrFolder } from '@/api/dataset'
+import { fetchOperatorListApi, fetchGroupListApi } from '@/api/auth'
 import { cloneDeep } from 'lodash-es'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { useCache } from '@/hooks/web/useCache'
@@ -25,6 +26,7 @@ export interface Tree {
   children?: Tree[]
   request: any
 }
+const emits = defineEmits(['finishDs', 'handleShowFinishPage'])
 const { t } = useI18n()
 const { wsCache } = useCache()
 
@@ -44,6 +46,68 @@ const datasetForm = reactive({
   name: ''
 })
 const searchEmpty = ref(false)
+
+// 权限与描述相关状态（仅在 nodeType === 'dataset' 时生效）
+const manageUsers = ref<string[]>([])
+const manageRoles = ref<string[]>([])
+const viewUsers = ref<string[]>([])
+const viewRoles = ref<string[]>([])
+const datasetDesc = ref('')
+const userOptions = ref<any[]>([
+  { id: 'u1', name: '张三' },
+  { id: 'u2', name: '李四' },
+  { id: 'u3', name: '王五' },
+  { id: 'u4', name: '赵六' }
+])
+const roleOptions = ref<any[]>([
+  { id: 'r1', name: '运营组' },
+  { id: 'r2', name: '研发组' },
+  { id: 'r3', name: '市场组' }
+])
+// 缓存完整列表用于本地筛选
+const allUsers = ref<any[]>([])
+const allRoles = ref<any[]>([])
+const loadingUsers = ref(false)
+const loadingRoles = ref(false)
+
+const fetchUsers = async (keyword: string) => {
+  loadingUsers.value = true
+  try {
+    if (!allUsers.value.length) {
+      const res = await fetchOperatorListApi({ numberPerPage: 999999, currentPage: 1 })
+      const data = res?.data
+      allUsers.value = Array.isArray(data) ? data : data?.list || data || []
+    }
+    const kw = (keyword || '').trim().toLowerCase()
+    userOptions.value = !kw
+      ? allUsers.value
+      : allUsers.value.filter(u => {
+          const name = (u.name || u.username || u.nickName || '').toLowerCase()
+          return name.includes(kw)
+        })
+  } finally {
+    loadingUsers.value = false
+  }
+}
+const fetchRoles = async (keyword: string) => {
+  loadingRoles.value = true
+  try {
+    if (!allRoles.value.length) {
+      const res = await fetchGroupListApi({ state: 1, numberPerPage: 999999, currentPage: 1 })
+      const data = res?.data
+      allRoles.value = Array.isArray(data) ? data : data?.list || data || []
+    }
+    const kw = (keyword || '').trim().toLowerCase()
+    roleOptions.value = !kw
+      ? allRoles.value
+      : allRoles.value.filter(r => {
+          const name = (r.name || '').toLowerCase()
+          return name.includes(kw)
+        })
+  } finally {
+    loadingRoles.value = false
+  }
+}
 
 const filterNode = (value: string, data: Tree) => {
   nextTick(() => {
@@ -119,6 +183,12 @@ const filterMethod = (value, data) => {
 }
 const resetForm = () => {
   createDataset.value = false
+  // 清空新加字段
+  manageUsers.value = []
+  manageRoles.value = []
+  viewUsers.value = []
+  viewRoles.value = []
+  datasetDesc.value = ''
 }
 const originResourceTree = shallowRef([])
 
@@ -209,6 +279,9 @@ const createInit = (type, data: Tree, exec, name: string) => {
   setTimeout(() => {
     datasource.value.clearValidate()
   }, 50)
+  // 初始化一次选项列表
+  fetchUsers('')
+  fetchRoles('')
 }
 
 const editeInit = (param: Tree) => {
@@ -247,11 +320,20 @@ const checkPid = pid => {
   return true
 }
 const saveDataset = () => {
+  console.log('保存数据源')
   datasource.value.validate(result => {
     if (result) {
-      const params: Omit<DatasetOrFolder, 'nodeType'> & { nodeType: 'folder' | 'datasource' } = {
+      const params: Omit<DatasetOrFolder, 'nodeType'> & {
+        nodeType: 'folder' | 'datasource'
+      } = {
         nodeType: nodeType.value as 'folder' | 'datasource',
-        name: datasetForm.name.trim()
+        name: datasetForm.name.trim(),
+        // 额外：权限与描述
+        manageUserIds: manageUsers.value,
+        manageRoleIds: manageRoles.value,
+        viewUserIds: viewUsers.value,
+        viewRoleIds: viewRoles.value,
+        description: datasetDesc.value
       }
       switch (cmd.value) {
         case 'move':
@@ -297,7 +379,16 @@ const saveDataset = () => {
           if (res) {
             ElMessageBox.confirm(t('datasource.has_same_ds'), options as ElMessageBoxOptions)
               .then(() => {
-                method({ ...request, name: datasetForm.name, pid: params.pid })
+                method({
+                  ...request,
+                  name: datasetForm.name,
+                  pid: params.pid,
+                  manageUserIds: params.manageUserIds,
+                  manageRoleIds: params.manageRoleIds,
+                  viewUserIds: params.viewUserIds,
+                  viewRoleIds: params.viewRoleIds,
+                  description: params.description
+                })
                   .then(res => {
                     if (res !== undefined) {
                       wsCache.set('ds-new-success', true)
@@ -315,7 +406,16 @@ const saveDataset = () => {
                 createDataset.value = false
               })
           } else {
-            method({ ...request, name: datasetForm.name, pid: params.pid })
+            method({
+              ...request,
+              name: datasetForm.name,
+              pid: params.pid,
+              manageUserIds: params.manageUserIds,
+              manageRoleIds: params.manageRoleIds,
+              viewUserIds: params.viewUserIds,
+              viewRoleIds: params.viewRoleIds,
+              description: params.description
+            })
               .then(res => {
                 if (res !== undefined) {
                   wsCache.set('ds-new-success', true)
@@ -330,8 +430,10 @@ const saveDataset = () => {
           }
         })
         return
+      } else {
+        loading.value = false
       }
-      emits('finish', params, successCb, finallyCb, cmd.value, dsType)
+      emits('finishDs', params, successCb, finallyCb, cmd.value, dsType)
     }
   })
 }
@@ -340,8 +442,6 @@ defineExpose({
   createInit,
   editeInit
 })
-
-const emits = defineEmits(['finish', 'handleShowFinishPage'])
 </script>
 
 <template>
@@ -349,7 +449,7 @@ const emits = defineEmits(['finish', 'handleShowFinishPage'])
     v-loading="loading"
     :title="dialogTitle"
     v-model="createDataset"
-    :width="cmd === 'move' ? '600px' : '420px'"
+    :width="cmd === 'move' ? '600px' : '600px'"
     class="create-dialog"
     :before-close="resetForm"
   >
@@ -364,7 +464,7 @@ const emits = defineEmits(['finish', 'handleShowFinishPage'])
       <el-form-item v-if="showName" :label="labelName" prop="name">
         <el-input :placeholder="placeholder" v-model="datasetForm.name" />
       </el-form-item>
-      <el-form-item v-if="showPid" :label="t('deDataset.folder')" prop="pid">
+      <el-form-item v-show="false" :label="t('deDataset.folder')" prop="pid">
         <el-tree-select
           v-model="datasetForm.pid"
           :data="state.tData"
@@ -384,6 +484,89 @@ const emits = defineEmits(['finish', 'handleShowFinishPage'])
           </template>
         </el-tree-select>
       </el-form-item>
+      <!-- 数据源描述 -->
+      <el-form-item label="数据源描述">
+        <el-input type="textarea" :rows="3" v-model="datasetDesc" placeholder="请输入" />
+      </el-form-item>
+      <!-- 管理权限（用户/群组 多选） 仅在新建/重命名时展示，不在移动时展示 -->
+      <el-row class="ed-form-item" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="管理权限（用户）">
+            <el-select
+              v-model="manageUsers"
+              multiple
+              filterable
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="管理权限（群组）">
+            <el-select
+              v-model="manageRoles"
+              multiple
+              filterable
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 查看权限（用户/群组 多选） -->
+      <el-row class="ed-form-item" :gutter="12">
+        <el-col :span="12">
+          <el-form-item label="查看权限（用户）">
+            <el-select
+              v-model="viewUsers"
+              multiple
+              filterable
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="查看权限（群组）">
+            <el-select
+              v-model="viewRoles"
+              multiple
+              filterable
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <div v-if="cmd === 'move'">
         <el-input style="margin-bottom: 12px" v-model="filterText" clearable>
           <template #prefix>

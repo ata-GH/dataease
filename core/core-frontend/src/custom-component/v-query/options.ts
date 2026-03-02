@@ -4,12 +4,17 @@ import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()
 
 const infoFormat = (obj: ComponentInfo) => {
-  const { id, name, deType, type, datasetId } = obj
+  const { id, name, deType, type, datasetId, dateFormat } = obj
+  let timeGranularity = 'date'
+  console.log('dateFormat', dateFormat)
+  if (['yyyyMM', 'yyyy/MM', 'yyyy-MM'].includes(dateFormat)) {
+    timeGranularity = 'month'
+  }
   return {
     id: guid(),
     name,
     showError: true,
-    timeGranularity: 'date',
+    timeGranularity: timeGranularity,
     timeGranularityMultiple: 'datetimerange',
     field: {
       id,
