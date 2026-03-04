@@ -24,6 +24,7 @@ import icon_succeed_filled from '@/assets/svg/icon_succeed_filled.svg'
 import icon_close_filled from '@/assets/svg/icon_close_filled.svg'
 import icon_replace_outlined from '@/assets/svg/icon_replace_outlined.svg'
 import iconMaybe_outlined from '@/assets/svg/icon-maybe_outlined.svg'
+import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import { computed, h, unref, reactive, ref, shallowRef, nextTick, watch, onMounted } from 'vue'
 import { dsTypes } from '@/views/visualized/data/datasource/form/option'
 import type { TabPaneName, ElMessageBoxOptions } from 'element-plus-secondary'
@@ -1080,6 +1081,11 @@ const mouseleave = () => {
   appStore.setArrowSide(false)
 }
 
+const hideAside = computed(() => {
+  const { from, id } = route.query
+  return from === 'bi' && !!id
+})
+
 const getMenuList = (val: boolean) => {
   return !val
     ? menuList
@@ -1091,16 +1097,27 @@ const getMenuList = (val: boolean) => {
         }
       ].concat(menuList)
 }
+
+const handleCloseIframe = () => {
+  router.replaec({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+}
 </script>
 
 <template>
   <div class="datasource-manage" v-loading="dsLoading">
     <ArrowSide
+      v-if="!hideAside"
       :style="{ left: (sideTreeStatus ? width - 12 : 0) + 'px' }"
       @change-side-tree-status="changeSideTreeStatus"
       :isInside="!sideTreeStatus"
     ></ArrowSide>
     <el-aside
+      v-if="!hideAside"
       @mouseenter="mouseenter"
       @mouseleave="mouseleave"
       class="resource-area"
@@ -1281,6 +1298,11 @@ const getMenuList = (val: boolean) => {
       <template v-else-if="!!nodeInfo.id">
         <div class="datasource-info">
           <div class="info-method">
+            <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe" v-if="hideAside">
+              <Icon name="icon_left_outlined"
+                ><icon_left_outlined class="svg-icon toolbar-icon"
+              /></Icon>
+            </el-icon>
             <el-icon class="icon-border">
               <Icon :static-content="getDsIconType(nodeInfo.type)"
                 ><component class="svg-icon" :is="iconDatasourceMap[nodeInfo.type]"></component
@@ -1289,7 +1311,7 @@ const getMenuList = (val: boolean) => {
             <span :title="nodeInfo.name" class="name ellipsis">
               {{ nodeInfo.name }}
             </span>
-            <el-divider style="margin: 0 12px" direction="vertical" />
+            <!-- <el-divider style="margin: 0 12px" direction="vertical" />
             <span class="create-user">
               {{ t('visualization.create_by') }}:{{ nodeInfo.creator }}
             </span>
@@ -1303,7 +1325,7 @@ const getMenuList = (val: boolean) => {
                 :create-time="infoList.createTime"
                 :creator="infoList.creator"
               ></dataset-detail>
-            </el-popover>
+            </el-popover> -->
             <div class="right-btn flex-align-center">
               <el-button secondary @click="createDataset(null)" v-permission="['dataset']">
                 <template #icon>
@@ -2263,6 +2285,11 @@ const getMenuList = (val: boolean) => {
 
         .ed-icon {
           font-size: 24px;
+          &.back-icon {
+            font-size: 18px;
+            cursor: pointer;
+            margin-right: 8px;
+          }
         }
 
         .name {

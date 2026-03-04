@@ -674,8 +674,13 @@ const duplicateRemoval = arr => {
   return objList
 }
 
+// 当前选择的日期类型的字段的日期格式
+const currentFieldDateType = ref(null)
 const setParameters = field => {
-  console.log('field', field)
+  const currentSelectField = curComponent.value.checkedFieldsMap[field.componentId]
+  const currentDimension = field?.fields?.dimensionList?.find(ele => ele.id === currentSelectField)
+  console.log('选择的字段', currentDimension)
+  currentFieldDateType.value = currentDimension?.dateFormat
   const fieldArr = Object.values(curComponent.value.checkedFieldsMap).filter(ele => !!ele)
   curComponent.value.parameters = duplicateRemoval(
     Object.values(field?.fields || {})
@@ -747,6 +752,23 @@ const setType = () => {
     const field = Object.values(arr?.fields || {})
       .flat()
       .find(ele => checkId === ele.id)
+    console.log('当前选择的日期类型的字段的日期格式', field?.dateFormat)
+    if (field?.dateFormat) {
+      currentFieldDateType.value = field.dateFormat
+      if (
+        ['yyyyMM', 'yyyy-MM', 'yyyy/MM'].includes(field.dateFormat) &&
+        ['date', 'datetime'].includes(curComponent.value.timeGranularity)
+      ) {
+        curComponent.value.timeGranularity = 'month'
+      } else if (
+        !['yyyyMM', 'yyyy-MM', 'yyyy/MM'].includes(field.dateFormat) &&
+        curComponent.value.timeGranularity === 'month'
+      ) {
+        curComponent.value.timeGranularity = 'date'
+      }
+    } else {
+      currentFieldDateType.value = null
+    }
 
     if (field?.deType !== undefined) {
       let displayType = curComponent.value.displayType
@@ -3109,6 +3131,10 @@ defineExpose({
                       :key="ele.value"
                       :label="ele.label"
                       :value="ele.value"
+                      :disabled="
+                        ['yyyyMM', 'yyyy-MM', 'yyyy/MM'].includes(currentFieldDateType) &&
+                        ['date', 'datetime'].includes(ele.value)
+                      "
                     />
                   </el-select>
                 </template>
