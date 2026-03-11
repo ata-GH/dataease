@@ -24,6 +24,7 @@ import MobileConfigPanel from './MobileConfigPanel.vue'
 import CanvasCacheDialog from '@/components/visualization/CanvasCacheDialog.vue'
 import { XpackComponent } from '@/components/plugin'
 import { ElMessage, ElTreeSelect } from 'element-plus-secondary'
+import ComponentWrapper from '@/components/data-visualization/canvas/ComponentWrapper.vue'
 
 // API和工具函数
 import { getDatasetTree } from '@/api/dataset'
@@ -543,11 +544,26 @@ const doRecoverToPublished = () => {
 // 计算ComponentData中的style
 const calcComponentItemStyle = (item) => {
   const styleObj = {
-    'VQuery': { height: '100px', overflowY: 'auto' },
-    'UserView': { flex: 1 }
+    VQuery: { height: '100px', width: '100%', overflowY: 'auto' },
+    UserView: { flex: 1, minHeight: 0, width: '100%' }
   }
-  return styleObj[item.component]
+  return styleObj[item.component] || {}
 }
+
+const calcWrapperStyle = item => {
+  return {
+    ...calcComponentItemStyle(item),
+    position: 'relative'
+  }
+}
+
+const wrapperScale = computed(() => {
+  const currentScale = Number(canvasStyleData.value?.scale)
+  if (!Number.isFinite(currentScale) || currentScale <= 0) {
+    return 100
+  }
+  return Math.max(currentScale, 100)
+})
 
 onUnmounted(() => {
   document.body.style.overflow = ''
@@ -649,7 +665,7 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 90px;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 90px; overflow: hidden;">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"
@@ -661,22 +677,27 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
           :font-family="canvasStyleData.fontFamily"
         ></de-canvas> -->
 
-          
+
           <div class="show-area" ref="showAreaRef">
-            <div v-for="item in componentData" :key="item.id" :style="calcComponentItemStyle(item)">
-              <component
-                :is="findComponent(item.component)"
-                class="component"
-                :id="'component' + item.id"
-                :dv-type="dvInfo.type"
-                :style="getComponentStyle(item.style)"
-                :prop-value="item.propValue"
-                :view="canvasViewInfo[item.id]"
-                :element="item"
-                :request="item.request"
+            <div
+              v-for="(item, index) in componentData"
+              :key="item.id"
+              class="show-item"
+              :style="calcWrapperStyle(item)"
+            >
+              <component-wrapper
+                class="show-item-wrapper"
+                canvas-id="canvas-main"
+                :canvas-style-data="canvasStyleData"
                 :dv-info="dvInfo"
-                :font-family="'inherit'"
-                />
+                :canvas-view-info="canvasViewInfo"
+                :view-info="canvasViewInfo[item.id]"
+                :config="item"
+                :index="index"
+                show-position="canvas"
+                :search-count="0"
+                :scale="wrapperScale"
+              />
             </div>
           </div>
       </main>
@@ -748,10 +769,25 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
       overflow: auto;
       background: #fff;
       .show-area {
-        padding: 0 10px;
         display: flex;
         flex-direction: column;
         flex: 1;
+        min-height: 0;
+        .show-item {
+          position: relative;
+          width: 100%;
+          .show-item-wrapper {
+            width: 100%;
+            height: 100%;
+            display: block;
+          }
+          .wrapper-outer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
       .content {
         flex: 1;
