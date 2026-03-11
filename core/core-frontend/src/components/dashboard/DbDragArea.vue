@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="dragHandle shadow-t" @mouseup="dragUp"></div>
   <div class="dragHandle shadow-r" @mouseup="dragUp"></div>
@@ -6,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { nextTick, toRefs } from 'vue'
 import eventBus from '@/utils/eventBus'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

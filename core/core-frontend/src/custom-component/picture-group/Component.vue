@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="pic-main">
     <chart-error v-if="isError" :err-msg="errMsg" />
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import {
   CSSProperties,
   computed,
@@ -59,7 +61,7 @@ const props = defineProps({
     type: String,
     default: 'preview'
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,

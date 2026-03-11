@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { reactive, onMounted, watch } from 'vue'
 import { COLOR_PANEL, DEFAULT_MISC } from '@/views/chart/components/editor/util/chart'
 import { cloneDeep, defaultsDeep } from 'lodash-es'

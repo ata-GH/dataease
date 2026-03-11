@@ -1,8 +1,10 @@
+<!-- eslint-disable -->
 <template>
   <Board :name="element.innerType"></Board>
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs } from 'vue'
 import Board from '@/components/de-board/Board.vue'
 const props = defineProps({

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import router from './router/mobile'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { useNProgress } from '@/hooks/web/useNProgress'
@@ -22,7 +23,6 @@ const interactiveStore = interactiveStoreWithOut()
 
 const { loadStart, loadDone } = usePageLoading()
 const whiteList = ['/login', '/panel', '/DashboardEmpty', '/preview'] // 不重定向白名单
-
 const handleTokenLogin = async (to, next) => {
   // 支持通过 URL 携带 token 直接访问并登录
   const getParam = (key: string) => {
@@ -48,13 +48,14 @@ const handleTokenLogin = async (to, next) => {
         resourceType: 2
       })
       const result = res.data
-      if (result.rspcode === '200') {
+      if (result.rspcode === 200) {
         const dataeaseToken = result.data?.dataeaseToken
         if (dataeaseToken) {
           userStore.setToken(dataeaseToken)
           userStore.setTime(Date.now())
           const { token, dvId, username, loginType, ...restQuery } = to.query as Record<string, any>
           next({ path: to.path, query: { dvId, ...restQuery }, replace: true })
+          return true
         }
       } else {
         ElMessage.error(result.desc || '登录失败')

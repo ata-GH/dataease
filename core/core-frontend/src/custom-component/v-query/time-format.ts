@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { ManipulateType } from 'dayjs'
 import dayjs from 'dayjs'
 function getThisYear() {

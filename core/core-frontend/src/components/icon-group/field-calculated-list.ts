@@ -1,3 +1,4 @@
+/* eslint-disable */
 import icon_link_calculated_outlined from '@/assets/svg/icon_link-calculated_outlined.svg'
 import icon_link_calculated_outlined_1 from '@/assets/svg/icon_link-calculated_outlined-1.svg'
 import icon_text_calculated_outlined from '@/assets/svg/icon_text-calculated_outlined.svg'

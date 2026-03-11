@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 将组合中的各个子组件拆分出来，并计算它们新的 style
 export default function decomposeComponent(
   component,

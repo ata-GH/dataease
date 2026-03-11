@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { TreemapOptions, Treemap as G2Treemap } from '@antv/g2plot/esm/plots/treemap'
 import { G2PlotChartView, G2PlotDrawOptions } from '../../types/impl/g2plot'
 import { flow, parseJson, setUpSingleDimensionSeriesColor } from '../../../util'

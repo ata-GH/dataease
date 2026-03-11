@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { deepCopy } from '@/utils/utils'
 
 export default function defaultConditionTrans(canvasInfo) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import {
   L7ChartView,

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { hexColorToRGBA, hexToRgba, measureText, parseJson } from '../../util'
 import {
   DEFAULT_BASIC_STYLE,

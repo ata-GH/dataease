@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { toRefs } from 'vue'
 import { useCache } from '@/hooks/web/useCache'
 

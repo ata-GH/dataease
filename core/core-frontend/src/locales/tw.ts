@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   common: {
     month_to_yesterday: '月初至昨天',

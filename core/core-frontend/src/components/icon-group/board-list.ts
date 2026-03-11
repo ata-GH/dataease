@@ -1,3 +1,4 @@
+/* eslint-disable */
 import board_1 from '@/assets/svg/board_1.svg'
 import board_2 from '@/assets/svg/board_2.svg'
 import board_3 from '@/assets/svg/board_3.svg'

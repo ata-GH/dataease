@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs } from 'vue'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 

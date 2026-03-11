@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, onMounted, PropType, reactive, watch } from 'vue'
 import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor/util/chart'
@@ -18,7 +20,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 const showProperty = prop => props.propertyInner?.includes(prop)

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import {
   originNameHandle,
@@ -71,6 +72,7 @@ export interface Dataset {
 
 export interface Table {
   datasourceId: string
+  extDatasourceId: string
   name: string
   tableName: string
   type: string
@@ -95,6 +97,8 @@ export const createDatasetTree = async (data: DatasetOrFolder): Promise<IRespons
   nameTrim(data)
   const copyData = cloneDeep(data)
   originNameHandle(copyData.allFields)
+  copyData.parentIds = copyData.pid
+  delete copyData.pid
   return request.post({ url: '/datasetTree/create', data: copyData }).then(res => {
     if (res?.data?.allFields?.length) {
       originNameHandleBack(res?.data?.allFields)

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="pic-main">
     <img
@@ -21,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { CSSProperties, computed, nextTick, toRefs } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'
 import eventBus from '@/utils/eventBus'

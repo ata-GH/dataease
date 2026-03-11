@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { computed, toRefs } from 'vue'
 import { ElFormItem, ElIcon } from 'element-plus-secondary'

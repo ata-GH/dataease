@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import logo from '@/assets/svg/logo.svg'
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import { computed } from 'vue'

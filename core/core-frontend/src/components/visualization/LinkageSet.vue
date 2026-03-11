@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     ref="enlargeDialog"
@@ -294,6 +295,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { iconFieldMap } from '@/components/icon-group/field-list'
 import { iconChartMap } from '@/components/icon-group/chart-list'
 import datasetOutline from '@/assets/svg/dataset-outline.svg'
@@ -401,7 +403,7 @@ const linkageSetting = curViewId => {
   const targetViewIds = []
   findAllViewsId(componentData.value, targetViewIds)
 
-  // 获取当前仪表板当前图表联动信息
+  // 获取当前仪表盘当前图表联动信息
   const requestInfo = {
     dvId: dvInfo.value.id,
     sourceViewId: curViewId,
@@ -410,7 +412,7 @@ const linkageSetting = curViewId => {
     resourceTable: 'snapshot'
   }
   getViewLinkageGatherArray(requestInfo).then(rsp => {
-    // 获取当前仪表板的图表(去掉当前图表)
+    // 获取当前仪表盘的图表(去掉当前图表)
     curLinkageTargetViewsInfo.value = rsp.data || []
     curLinkageTargetViewsInfo.value.forEach(item => {
       if (item.targetViewId === curViewId) {

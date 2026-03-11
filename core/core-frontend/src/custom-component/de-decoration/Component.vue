@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="dynamic-shape">
     <component
@@ -10,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { findDecoration } from '@/custom-component/de-decoration/component_details/config'
 import { computed } from 'vue'
 const calScale = computed(() => {

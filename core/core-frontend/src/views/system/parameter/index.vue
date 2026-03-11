@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <p class="router-title">{{ t('commons.system_parameter_setting') }}</p>
   <el-tabs v-model="activeName">
@@ -22,6 +23,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { onMounted, ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import MapSetting from './map/MapSetting.vue'

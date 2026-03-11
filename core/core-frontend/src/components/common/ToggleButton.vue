@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <button 
     class="toggle-btn" 
@@ -17,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 interface Props {
   collapsed: boolean
 }

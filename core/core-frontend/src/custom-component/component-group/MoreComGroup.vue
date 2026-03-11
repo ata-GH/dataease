@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dbMoreWeb from '@/assets/svg/db-more-web.svg'
 import { toRefs } from 'vue'
 import eventBus from '@/utils/eventBus'

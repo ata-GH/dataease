@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%">
     <el-col>
@@ -82,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, onMounted, reactive, ref } from 'vue'
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

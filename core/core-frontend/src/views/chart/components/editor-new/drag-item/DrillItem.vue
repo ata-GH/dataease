@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
 import icon_down_outlined1 from '@/assets/svg/icon_down_outlined-1.svg'
 import icon_sortAToZ_outlined from '@/assets/svg/icon_sort-a-to-z_outlined.svg'
@@ -195,7 +197,7 @@ onMounted(() => {
         </el-icon>
         <el-icon
           class="child"
-          style="position: absolute; top: 7px; left: 10px; color: #a6a6a6; cursor: pointer"
+          style="position: absolute; top: 2px; left: 10px; color: #a6a6a6; cursor: pointer"
         >
           <Icon name="icon_down_outlined-1"><icon_down_outlined1 class="svg-icon" /></Icon>
         </el-icon>

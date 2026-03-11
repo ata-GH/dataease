@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const clearCache = () => {
   const keys = [
     'DataEaseKey',

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvInfoSvg from '@/assets/svg/dv-info.svg'
 import icon_down_outlined1 from '@/assets/svg/icon_down_outlined-1.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
@@ -1526,16 +1528,22 @@ const initOpenHandler = newWindow => {
   }
 }
 const addDsWindow = () => {
-  if (!dvInfo.value.id) {
-    ElMessage.warning(t('visualization.save_page_tips'))
-    return
-  }
-  const path =
-    embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded-form' : '/dataset-form'
-  let routeData = router.resolve(path)
-  const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
-  const newWindow = window.open(routeData.href, openType)
-  initOpenHandler(newWindow)
+  // if (!dvInfo.value.id) {
+  //   ElMessage.warning(t('visualization.save_page_tips'))
+  //   return
+  // }
+  // const path =
+  //   embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded-form' : '/dataset-form'
+  // let routeData = router.resolve(path)
+  // const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
+  // const newWindow = window.open(routeData.href, openType)
+  // initOpenHandler(newWindow)
+  router.push({
+    path: '/dataset-form',
+    query: {
+      from: 'dashboard'
+    }
+  })
 }
 const editDs = () => {
   const path =

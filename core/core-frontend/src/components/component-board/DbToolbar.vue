@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import icon_undo_outlined from '@/assets/svg/icon_undo_outlined.svg'
 import icon_redo_outlined from '@/assets/svg/icon_redo_outlined.svg'

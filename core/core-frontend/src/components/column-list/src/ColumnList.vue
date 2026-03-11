@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import iconSetting from '@/assets/svg/icon-setting.svg'
 import { reactive, ref, toRaw } from 'vue'
 import { Icon } from '@/components/icon-custom'

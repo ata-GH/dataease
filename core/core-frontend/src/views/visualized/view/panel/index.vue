@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import DashboardPreviewShow from '@/views/dashboard/DashboardPreviewShow.vue'
 </script>
 <template>

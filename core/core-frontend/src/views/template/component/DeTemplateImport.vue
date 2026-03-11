@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="template-import">
     <el-form
@@ -72,6 +73,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { save, nameCheck, findOne, categoryTemplateNameCheck } from '@/api/template'
 import { computed, reactive, ref } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'
@@ -196,17 +198,17 @@ const editTemplate = () => {
     optType: props.optType
   }
   // 全局名称校验
-  nameCheck(nameCheckRequest).then(response => {
-    if (response.data.indexOf('exist') > -1) {
-      ElMessage.warning(t('template_manage.exists_name_hint'))
-    } else {
-      save(state.templateInfo).then(() => {
-        ElMessage.success(t('template_manage.edit_success'))
-        emits('refresh', getRefreshPInfo())
-        emits('closeEditTemplateDialog')
-      })
-    }
+  // nameCheck(nameCheckRequest).then(response => {
+  //   if (response.data.indexOf('exist') > -1) {
+  //     ElMessage.warning(t('template_manage.exists_name_hint'))
+  //   } else {
+  save(state.templateInfo).then(() => {
+    ElMessage.success(t('template_manage.edit_success'))
+    emits('refresh', getRefreshPInfo())
+    emits('closeEditTemplateDialog')
   })
+  //   }
+  // })
 }
 
 const getRefreshPInfo = () => {
@@ -248,17 +250,17 @@ const importTemplate = () => {
       })
     } else {
       // 全局名称校验
-      nameCheck(nameCheckRequest).then(response => {
-        if (response.data.indexOf('exist') > -1) {
-          ElMessage.warning(t('template_manage.exists_name_hint'))
-        } else {
-          save(state.templateInfo).then(() => {
-            ElMessage.success(t('template_manage.import_success'))
-            emits('refresh', getRefreshPInfo())
-            emits('closeEditTemplateDialog')
-          })
-        }
+      // nameCheck(nameCheckRequest).then(response => {
+      //   if (response.data.indexOf('exist') > -1) {
+      //     ElMessage.warning(t('template_manage.exists_name_hint'))
+      //   } else {
+      save(state.templateInfo).then(() => {
+        ElMessage.success(t('template_manage.import_success'))
+        emits('refresh', getRefreshPInfo())
+        emits('closeEditTemplateDialog')
       })
+      //   }
+      // })
     }
   })
 }

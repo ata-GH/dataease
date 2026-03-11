@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_searchOutline_outlined from '@/assets/svg/icon_search-outline_outlined.svg'
 import { ref, reactive, computed, watch, toRefs, nextTick } from 'vue'
@@ -7,7 +9,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useCache } from '@/hooks/web/useCache'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { BusiTreeNode } from '@/models/tree/TreeNode'
-import { fetchOperatorListApi, fetchGroupListApi } from '@/api/auth'
+import { fetchOperatorListApi, fetchGroupListApi, fetchSourceTreeApi } from '@/api/auth'
 import {
   copyResource,
   dvNameCheck,
@@ -19,7 +21,10 @@ import {
 } from '@/api/visualization/dataVisualization'
 import { ElMessage } from 'element-plus-secondary'
 import { cutTargetTree, filterFreeFolder, nameTrim } from '@/utils/utils'
-import { useRouter } from 'vue-router_2'
+import { useRoute, useRouter } from 'vue-router_2'
+
+const route = useRoute()
+const router = useRouter()
 const props = defineProps({
   curCanvasType: {
     type: String,
@@ -30,7 +35,6 @@ const props = defineProps({
 const { curCanvasType } = toRefs(props)
 const { wsCache } = useCache('localStorage')
 const { t } = useI18n()
-const router = useRouter()
 
 const state = reactive({
   tData: [],
@@ -52,15 +56,15 @@ const resourceForm = reactive({
   pid: [],
   pName: null,
   name: '新建',
-  manageOperators: [],
+  manageOperators: [wsCache.get('user.biuid')],
   manageGroups: [],
-  viewOperators: [],
+  viewOperators: [wsCache.get('user.biuid')],
   viewGroups: [],
   description: '',
   assets: 'YES'
 })
 const sourceLabel = computed(() =>
-  curCanvasType.value === 'dataV' ? t('work_branch.big_data_screen') : t('work_branch.dashboard')
+  curCanvasType.value === 'dataV' ? t('work_branch.big_data_screen') : dashboardTitle
 )
 
 const methodMap = {
@@ -77,15 +81,15 @@ const viewUsers = ref<string[]>([])
 const viewRoles = ref<string[]>([])
 const chartDesc = ref('')
 const userOptions = ref<any[]>([
-  { id: 'u1', name: '张三' },
-  { id: 'u2', name: '李四' },
-  { id: 'u3', name: '王五' },
-  { id: 'u4', name: '赵六' }
+  // { id: 'u1', name: '张三', loginName: 'zhangsan' },
+  // { id: 'u2', name: '李四', loginName: 'lisi' },
+  // { id: 'u3', name: '王五', loginName: 'wangwu' },
+  // { id: 'u4', name: '赵六', loginName: 'zhaoliu' }
 ])
 const roleOptions = ref<any[]>([
-  { id: 'r1', name: '运营组' },
-  { id: 'r2', name: '研发组' },
-  { id: 'r3', name: '市场组' }
+  // { id: 'r1', name: '运营组' },
+  // { id: 'r2', name: '研发组' },
+  // { id: 'r3', name: '市场组' }
 ])
 // 缓存完整列表，用于本地筛选
 const allUsers = ref<any[]>([])
@@ -95,14 +99,14 @@ const loadingRoles = ref(false)
 // 下拉复选显示项：统一映射为 {label, value}
 const userCheckOptions = computed(() =>
   (userOptions.value || []).map(u => ({
-    label: `${u.name || u.username || u.nickName || ''}${u.loginName ? ' (' + u.loginName + ')' : ''}`,
-    value: u.id || u.uid || u.userId
+    label: `${u.name || u.id}${u.loginName ? ' (' + u.loginName + ')' : ''}`,
+    value: u.id
   }))
 )
 const roleCheckOptions = computed(() =>
   (roleOptions.value || []).map(r => ({
-    label: r.name,
-    value: r.id || r.rid
+    label: r.name || r.id,
+    value: r.id
   }))
 )
 // 获取权限用户列表
@@ -111,14 +115,14 @@ const fetchUsers = async (keyword: string) => {
   try {
     if (!allUsers.value.length) {
       const res = await fetchOperatorListApi({ numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allUsers.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allUsers.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     userOptions.value = !kw
       ? allUsers.value
       : allUsers.value.filter(u => {
-          const name = (u.name || u.username || u.nickName || '').toLowerCase()
+          const name = (u.name || '').toLowerCase()
           return name.includes(kw)
         })
   } finally {
@@ -131,8 +135,8 @@ const fetchRoles = async (keyword: string) => {
   try {
     if (!allRoles.value.length) {
       const res = await fetchGroupListApi({ state: 1, numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allRoles.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allRoles.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     roleOptions.value = !kw
@@ -164,14 +168,13 @@ const nameRepeat = value => {
   }
   return nameList.some(name => name === value)
 }
-// 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
-const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
 const nameValidator = (_, value, callback) => {
+  // 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
   if (!value || !NAME_REG.test(value)) {
     callback(new Error('请填写1~50位名称，允许汉字、字母、下划线、数字'))
     return
-  }
-  if (nameRepeat(value)) {
+  } else if (nameRepeat(value)) {
     callback(new Error(t('visualization.name_repeat')))
   } else {
     callback()
@@ -203,12 +206,16 @@ const resetForm = () => {
   resourceForm.pid = []
   resourceDialogShow.value = false
   // 清空权限与描述
-  resourceForm.manageOperators = []
+  resourceForm.manageOperators = [wsCache.get('user.biuid')]
   resourceForm.manageGroups = []
-  resourceForm.viewOperators = []
+  resourceForm.viewOperators = [wsCache.get('user.biuid')]
   resourceForm.viewGroups = []
   resourceForm.description = ''
   resourceForm.assets = 'YES'
+}
+
+const closeDialog = () => {
+  resourceDialogShow.value = false
 }
 
 const dfs = (arr: BusiTreeNode[]) => {
@@ -219,14 +226,17 @@ const dfs = (arr: BusiTreeNode[]) => {
     }
   })
 }
-
+const isDashboard = computed(() => {
+  return !route.path.includes('dashboard-new')
+})
+const dashboardTitle = route.path.includes('dashboard-new') ? '图表' : '仪表盘'
 const getDialogTitle = exec => {
   return {
     newFolder: t('visualization.new_folder'),
     newLeaf:
       props.curCanvasType === 'dataV'
         ? t('visualization.new_screen')
-        : t('visualization.new_dashboard'),
+        : '新建' + dashboardTitle,
     move: t('visualization.move_to'),
     copy: t('visualization.copy') + sourceLabel.value,
     rename: t('visualization.rename'),
@@ -245,7 +255,7 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
     data.leaf || type === 'leaf'
       ? props.curCanvasType === 'dataV'
         ? t('work_branch.big_data_screen')
-        : t('work_branch.dashboard')
+        : dashboardTitle
       : t('visualization.folder')
   placeholder.value = t('visualization.input_name_tips', [placeholderLabel])
   filterText.value = ''
@@ -259,7 +269,11 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
   } else {
     resourceForm.name = data.name
   }
-  queryTreeApi(request).then(res => {
+  // queryTreeApi(request).then(res => {
+  // 仪表盘1，单图表19
+  const objType = window.location.href.includes('dashboard-new') ? 19 : 1
+  fetchSourceTreeApi({ objType }).then(resp => {
+    const res = resp?.data?.data
     filterFreeFolder(res, curCanvasType.value)
     const resultTree = res || []
     dfs(resultTree as unknown as BusiTreeNode[])
@@ -275,10 +289,10 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
       cutTargetTree(state.tData, data.id)
     }
     if (['newLeaf', 'newFolder'].includes(exec)) {
-      resourceForm.pid = (!data.id || data.id === '0') ? [] : [data.id as string]
-      pid.value = data.id
+      resourceForm.pid = []
+      pid.value = ''
     } else {
-      id.value = data.id
+      id.value = ''
     }
   })
   cmd.value = exec
@@ -295,19 +309,18 @@ const optInit = (type, data: BusiTreeNode, exec, parentSelect = false, attachPar
         message: placeholder.value,
         trigger: 'blur'
       },
-      {
-        min: 1,
-        max: 50,
-        message: t('commons.character_length_1_50'),
-        trigger: 'change'
-      },
       { required: true, trigger: 'blur', validator: nameValidator }
     ],
     pid: [
       {
         required: true,
-        message: t('common.please_select'),
-        trigger: 'blur'
+        // message: t('common.please_select'),
+        // trigger: 'blur'
+        validator: (_: any, value: any, callback: any) => {
+          const ok = Array.isArray(value) ? value.length > 0 : !!value
+          ok ? callback() : callback(new Error(t('common.please_select')))
+        },
+        trigger: 'change'
       }
     ]
   }
@@ -330,10 +343,10 @@ const propsTree = {
   isLeaf: node => !node.children?.length
 }
 
-const nodeClick = (data: BusiTreeNode) => {
-  resourceForm.pid = [data.id as string]
-  resourceForm.pName = data.name as string
-}
+// const nodeClick = (data: BusiTreeNode) => {
+//   resourceForm.pid = data.id as string
+//   resourceForm.pName = data.name as string
+// }
 
 const checkParent = params => {
   const pids = Array.isArray(params.pid) ? params.pid : [params.pid]
@@ -351,16 +364,15 @@ const checkParent = params => {
   // 点击后不能选择自身作为父ID
   if (pids.includes(params.id)) {
     ElMessage.warning(t('visualization.select_target_tips'))
-    return
+    return false
   }
   return true
 }
 
 const saveResource = () => {
-  console.log('仪表盘类型', curCanvasType.value)
   resource.value.validate(async result => {
     if (result) {
-      const params: ResourceOrFolder = {
+      const params = {
         nodeType: nodeType.value as 'folder' | 'leaf',
         name: resourceForm.name,
         type: curCanvasType.value,
@@ -372,23 +384,29 @@ const saveResource = () => {
         viewOperators: resourceForm.viewOperators,
         viewGroups: resourceForm.viewGroups,
         description: resourceForm.description,
-        assets: resourceForm.assets
+        assets: resourceForm.assets,
+        pid: [],
+        id: '',
+        parentIds: []
       }
 
       switch (cmd.value) {
         case 'move':
+          // params.pid = resourceForm.pid as string
           params.pid = resourceForm.pid
           params.id = id.value
           break
         case 'copy':
           params.id = id.value
+          // params.pid = resourceForm.pid || pid.value || '0'
           params.pid = (resourceForm.pid && resourceForm.pid.length) ? resourceForm.pid : (pid.value || '0')
           break
         case 'rename':
-          params.pid = pid.value as string
+          params.pid = pid.value
           params.id = id.value
           break
         default:
+          // params.pid = resourceForm.pid || pid.value || '0'
           params.pid = (resourceForm.pid && resourceForm.pid.length) ? resourceForm.pid : (pid.value || '0')
           break
       }
@@ -412,7 +430,6 @@ const saveResource = () => {
             resourceDialogShow.value = false
             emits('finish')
             ElMessage.success(t('visualization.save_success'))
-            resetForm()
             if (cmd.value === 'copy') {
               const path = curCanvasType.value === 'dataV' ? '/dvCanvas' : '/dashboard'
               const query = { opt: 'copy' }
@@ -434,7 +451,9 @@ const saveResource = () => {
 
 defineExpose({
   optInit,
-  editeInit
+  editeInit,
+  resetForm,
+  closeDialog
 })
 
 const emits = defineEmits(['finish'])
@@ -452,7 +471,7 @@ const emits = defineEmits(['finish'])
     <el-form
       v-loading="loading"
       label-position="top"
-      require-asterisk-position="right"
+      require-asterisk-position="left"
       ref="resource"
       :model="resourceForm"
       :rules="resourceFormRules"
@@ -465,7 +484,7 @@ const emits = defineEmits(['finish'])
           v-model="resourceForm.name"
         />
       </el-form-item>
-      <el-form-item :label="t('visualization.belong_folder')" prop="pid">
+      <el-form-item :label="dashboardTitle + '目录'" prop="pid">
         <el-tree-select
           style="width: 100%"
           @keydown.stop
@@ -494,22 +513,52 @@ const emits = defineEmits(['finish'])
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
-              <CheckPopoverSelect
-                v-model="resourceForm.manageUserIds"
-                :options="userCheckOptions"
-                :loading="loadingUsers"
-                placeholder="请选择用户管理权限"
+            <!-- <el-select
+              v-model="resourceForm.manageOperators"
+              multiple
+              filterable
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
               />
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="resourceForm.manageOperators"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
-              <CheckPopoverSelect
-                v-model="resourceForm.manageRoleIds"
-                :options="roleCheckOptions"
-                :loading="loadingRoles"
-                placeholder="请选择群组管理权限"
+            <!-- <el-select
+              v-model="resourceForm.manageGroups"
+              multiple
+              filterable
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
               />
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="resourceForm.manageGroups"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -518,37 +567,70 @@ const emits = defineEmits(['finish'])
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
-              <CheckPopoverSelect
-                v-model="resourceForm.viewUserIds"
-                :options="userCheckOptions"
-                :loading="loadingUsers"
-                placeholder="请选择用户查看权限"
+            <!-- <el-select
+              v-model="resourceForm.viewOperators"
+              multiple
+              filterable
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+            >
+              <el-option
+                v-for="item in userOptions"
+                :key="item.id || item.uid || item.userId"
+                :label="item.name || item.username || item.nickName"
+                :value="item.id || item.uid || item.userId"
               />
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="resourceForm.viewOperators"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
-              <CheckPopoverSelect
-                v-model="resourceForm.viewRoleIds"
-                :options="roleCheckOptions"
-                :loading="loadingRoles"
-                placeholder="请选择群组查看权限"
+            <!-- <el-select
+              v-model="resourceForm.viewGroups"
+              multiple
+              filterable
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+            >
+              <el-option
+                v-for="item in roleOptions"
+                :key="item.id || item.rid"
+                :label="item.name"
+                :value="item.id || item.rid"
               />
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="resourceForm.viewGroups"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>
 
-      <!-- 图表描述 -->
-      <el-form-item label="图表描述">
+      <!-- 描述 -->
+      <el-form-item :label="dashboardTitle + '描述'">
         <el-input
           type="textarea"
+          maxlength="200"
+          show-word-limit
           :rows="3"
           v-model="resourceForm.description"
           placeholder="请输入"
         />
       </el-form-item>
+
       <!-- 是否对外展示该资产 -->
-      <el-form-item label="是否对外展示该资产" prop="assets">
+      <el-form-item v-if="isDashboard" label="是否对外展示该资产" prop="assets">
         <el-radio-group v-model="resourceForm.assets">
           <el-radio label="YES">是</el-radio>
           <el-radio label="NO">否</el-radio>

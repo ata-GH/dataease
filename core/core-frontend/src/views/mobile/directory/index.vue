@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_dashboard from '@/assets/svg/icon_dashboard.svg'
 

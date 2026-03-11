@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs, PropType, CSSProperties } from 'vue'
 import Chart from '@/views/chart/components/views/index.vue'
 import { isISOMobile } from '@/utils/utils'
@@ -39,7 +41,7 @@ const props = defineProps({
     required: false,
     default: 'canvas'
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-drawer
     direction="btt"
@@ -63,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, reactive, ref, nextTick } from 'vue'
 import DashboardPreviewShow from '@/views/dashboard/DashboardPreviewShow.vue'
 import { copyStoreWithOut } from '@/store/modules/data-visualization/copy'

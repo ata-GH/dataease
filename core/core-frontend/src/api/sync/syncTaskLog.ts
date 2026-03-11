@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 
 export const getTaskLogListApi = (current: number, size: number, data: any) => {

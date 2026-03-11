@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <Icon v-once v-if="element.innerType.includes('board')" class-name="de-svg-main"
     ><component class="svg-icon de-svg-main" :is="iconBoardMap[element.innerType]"></component
@@ -6,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import Icon from '@/components/icon-custom/src/Icon.vue'
 import { iconBoardMap } from '@/components/icon-group/board-list'
 import { toRefs } from 'vue'

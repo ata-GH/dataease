@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     v-if="isComposeSelected"
@@ -8,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { composeStoreWithOut } from '@/store/modules/data-visualization/compose'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'

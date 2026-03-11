@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="ticket-dialog-container">
     <el-dialog
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 

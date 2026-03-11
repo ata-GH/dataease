@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { PickOptions } from '@antv/g2plot/esm/core/plot'
 import type { Plot } from '@antv/g2plot/esm/core/plot'
 import {

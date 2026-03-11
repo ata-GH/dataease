@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="testcase-template">
     <div
@@ -23,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { hexColorToRGBA } from '@/views/chart/components/js/util'
 import { storeToRefs } from 'pinia'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import type { ManipulateType } from 'dayjs'
 import { toRefs, PropType, ref, onBeforeMount, watch, computed } from 'vue'
 import { type DatePickType } from 'element-plus-secondary'

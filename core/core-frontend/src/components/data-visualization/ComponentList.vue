@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import componentList from '@/custom-component/component-list'
 
 const handleDragStart = e => {

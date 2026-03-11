@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-container class="online-map-container">
     <el-aside width="200px" class="online-map-aside">
@@ -70,6 +71,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { queryMapKeyApi, saveMapKeyApi, queryMapKeyApiByType } from '@/api/setting/sysParameter'

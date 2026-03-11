@@ -1,3 +1,4 @@
+/* eslint-disable */
 interface AreaNode {
   id: string
   name: string

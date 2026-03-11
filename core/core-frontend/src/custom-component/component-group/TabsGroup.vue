@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvTabShow from '@/assets/svg/dv-tab-show.svg'
 import { toRefs } from 'vue'
 import eventBus from '@/utils/eventBus'

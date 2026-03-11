@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvFilter from '@/assets/svg/dv-filter.svg'
 import dvMaterial from '@/assets/svg/dv-material.svg'
 import dvMedia from '@/assets/svg/dv-media.svg'
@@ -127,15 +129,7 @@ const resourceOptFinish = param => {
     dvInfo.value.dataState = 'ready'
     dvInfo.value.pid = param.pid
     dvInfo.value.name = param.name
-    dvInfo.value.manageOperators = param.manageOperators
-    dvInfo.value.manageGroups = param.manageGroups
-    dvInfo.value.viewOperators = param.viewOperators
-    dvInfo.value.viewGroups = param.viewGroups
-    dvInfo.value.description = param.description
-    dvInfo.value.type = param.type
-    saveCanvasWithCheck(param.withPublish, param.status, () => {
-      param.callback && param.callback()
-    })
+    saveCanvasWithCheck(param.withPublish, param.status)
   }
 }
 

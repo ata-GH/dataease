@@ -1,9 +1,11 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'
 import router from '@/router/mobile'
-import { initCanvasDataMobile, initCanvasData } from '@/utils/canvasUtils'
+import { initCanvasDataMobile, initCanvasData, checkAndRedirect } from '@/utils/canvasUtils'
 import { queryTargetVisualizationJumpInfo } from '@/api/visualization/linkJump'
 import { Base64 } from 'js-base64'
 import { getOuterParamsInfo } from '@/api/visualization/outerParams'
@@ -18,6 +20,7 @@ import { filterEnumMapSync } from '@/utils/componentUtils'
 import CanvasOptBar from '@/components/visualization/CanvasOptBar.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { downloadCanvas2 } from '@/utils/imgUtils'
+import { sdarDashboardLogApi } from '@/api/log'
 import { useCache } from '@/hooks/web/useCache'
 
 const dvMainStore = dvMainStoreWithOut()
@@ -72,7 +75,7 @@ const loadCanvasDataAsync = async (dvId, dvType) => {
       targetDvId: dvId
     }
     try {
-      // 刷新跳转目标仪表板联动信息
+      // 刷新跳转目标仪表盘联动信息
       await queryTargetVisualizationJumpInfo(jumpRequestParam).then(rsp => {
         dvMainStore.setNowTargetPanelJumpInfo(rsp.data)
       })
@@ -91,7 +94,7 @@ const loadCanvasDataAsync = async (dvId, dvType) => {
   // 添加外部参数
   let attachParam
   await getOuterParamsInfo(dvId).then(rsp => {
-    if (rsp) {
+    if (rsp && rsp.data) {
       dvMainStore.setNowPanelOuterParamsInfoV2(rsp.data, dvId)
     }
   })
@@ -148,7 +151,7 @@ const loadCanvasDataAsync = async (dvId, dvType) => {
         state.initState = true
       }
       if (props.publicLinkStatus) {
-        // 设置浏览器title为当前仪表板名称
+        // 设置浏览器title为当前仪表盘名称
         document.title = dvInfo.name
         setTitle(dvInfo.name)
       }
@@ -170,7 +173,11 @@ onMounted(async () => {
       router.push('/login')
       return
     }
-    loadCanvasDataAsync(dvId, dvType)
+    checkAndRedirect(dvId, async () => {
+      // 记录log
+      sdarDashboardLogApi({ dvId })
+      await loadCanvasDataAsync(dvId, dvType)
+    })
     return
   }
   dvMainStore.setEmbeddedCallBack(callBackFlag || 'no')

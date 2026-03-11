@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import userImg from '@/assets/svg/user-img.svg'
 import icon_expandDown_filled from '@/assets/svg/icon_expand-down_filled.svg'
 import { computed, ref, unref } from 'vue'

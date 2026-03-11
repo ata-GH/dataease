@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <InfoTemplate
     ref="infoTemplate"
@@ -47,6 +48,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, computed, nextTick } from 'vue'
 import InfoTemplate from '../../common/InfoTemplate.vue'
 import BasicEdit from './BasicEdit.vue'

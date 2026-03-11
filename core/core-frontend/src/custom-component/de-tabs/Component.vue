@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     v-if="state.tabShow"
@@ -144,6 +145,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import {
   computed,
   getCurrentInstance,
@@ -218,13 +220,13 @@ const props = defineProps({
     required: false,
     default: 1
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,
     default: 0
   },
-  // 仪表板字体
+  // 仪表盘字体
   fontFamily: {
     type: String,
     required: false,

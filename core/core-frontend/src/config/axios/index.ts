@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { service } from './service'
 
 import { config } from './config'

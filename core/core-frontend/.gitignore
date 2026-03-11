@@ -1,0 +1,17 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.vscode
+.idea/*
+pub
+deploy.sh
+src/Packages/*
+stats.html
+.env
+.env.advanced
+scripts/n9e_locale.json
+src/plus
+*.zip
+.stylelintcache

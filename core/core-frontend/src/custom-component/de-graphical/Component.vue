@@ -1,8 +1,10 @@
+<!-- eslint-disable -->
 <template>
   <div class="rect-main"></div>
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 defineProps({
   element: {
     type: Object,

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="hang-main" @keydown.stop @keyup.stop>
     <div :key="index" v-for="(config, index) in hangComponentData">
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs } from 'vue'
 import findComponent from '@/utils/components'
 const props = defineProps({

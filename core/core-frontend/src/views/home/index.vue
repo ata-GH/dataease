@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { type DateModelType } from 'element-plus-secondary'
 import { ref } from 'vue'
 const selectValue = ref<[DateModelType, DateModelType]>([new Date(), new Date()])

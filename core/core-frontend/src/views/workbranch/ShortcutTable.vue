@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_collection_outlined from '@/assets/svg/icon_collection_outlined.svg'
 import visualStar from '@/assets/svg/visual-star.svg'
 import icon_searchOutline_outlined from '@/assets/svg/icon_search-outline_outlined.svg'

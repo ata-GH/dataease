@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default async function runAnimation($el, animations = []) {
   const play = animation =>
     new Promise<void>(resolve => {

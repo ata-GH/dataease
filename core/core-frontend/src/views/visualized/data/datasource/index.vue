@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_down_outlined1 from '@/assets/svg/icon_down_outlined-1.svg'
 import icon_down_outlined from '@/assets/svg/icon_down_outlined.svg'
 import icon_copy_filled from '@/assets/svg/icon_copy_filled.svg'
@@ -1077,14 +1079,14 @@ const mouseenter = () => {
   appStore.setArrowSide(true)
 }
 
-const mouseleave = () => {
-  appStore.setArrowSide(false)
-}
-
 const hideAside = computed(() => {
   const { from, id } = route.query
   return from === 'bi' && !!id
 })
+
+const mouseleave = () => {
+  appStore.setArrowSide(false)
+}
 
 const getMenuList = (val: boolean) => {
   return !val
@@ -1097,9 +1099,8 @@ const getMenuList = (val: boolean) => {
         }
       ].concat(menuList)
 }
-
 const handleCloseIframe = () => {
-  router.replaec({
+  router.replace({
     path: '/loading'
   })
   nextTick(() => {
@@ -1218,9 +1219,9 @@ const handleCloseIframe = () => {
             <template #default="{ node, data }">
               <span class="custom-tree-node" style="position: relative">
                 <el-icon :class="data.leaf && 'icon-border'" style="font-size: 18px">
-                  <Icon :static-content="getDsIcon(data)"
-                    ><component class="svg-icon" :is="getDsIconName(data)"></component
-                  ></Icon>
+                  <Icon :static-content="getDsIcon(data)">
+                    <component class="svg-icon" :is="getDsIconName(data)"></component>
+                  </Icon>
                 </el-icon>
                 <el-icon
                   style="position: absolute; top: 10px; left: 10px; font-size: 12px"
@@ -1233,8 +1234,7 @@ const handleCloseIframe = () => {
                   class="label-tooltip ellipsis"
                   :class="data.type === 'Excel' && 'excel'"
                   v-if="data.extraFlag > -1"
-                  >{{ node.label }}</span
-                >
+                  >{{ node.label }}</span>
                 <el-tooltip
                   effect="dark"
                   v-else
@@ -1245,8 +1245,7 @@ const handleCloseIframe = () => {
                     :title="node.label"
                     class="label-tooltip ellipsis"
                     :class="data.type === 'Excel' && 'excel'"
-                    >{{ node.label }}</span
-                  >
+                    >{{ node.label }}</span>
                 </el-tooltip>
                 <div class="icon-more" v-if="data.weight >= 7">
                   <handle-more
@@ -1268,8 +1267,8 @@ const handleCloseIframe = () => {
                     @handle-command="
                       cmd => operation(cmd, data, data.leaf ? 'datasource' : 'folder')
                     "
-                    :menu-list="getMenuList(!['Excel'].includes(data.type) && data.leaf)"
-                  ></handle-more>
+                    :menu-list="getMenuList(!['Excel'].includes(data.type) && data.leaf)">
+                  </handle-more>
                 </div>
               </span>
             </template>
@@ -1291,27 +1290,27 @@ const handleCloseIframe = () => {
             <template #icon>
               <Icon name="icon_add_outlined"><icon_add_outlined class="svg-icon" /></Icon>
             </template>
-            {{ t('datasource.create') }}</el-button
-          >
+            {{ t('datasource.create') }}</el-button>
+          <button class="close-btn" @click="handleCloseIframe" aria-label="关闭">关闭</button>
         </empty-background>
       </template>
       <template v-else-if="!!nodeInfo.id">
         <div class="datasource-info">
           <div class="info-method">
-            <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe" v-if="hideAside">
+            <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe">
               <Icon name="icon_left_outlined"
                 ><icon_left_outlined class="svg-icon toolbar-icon"
               /></Icon>
             </el-icon>
             <el-icon class="icon-border">
-              <Icon :static-content="getDsIconType(nodeInfo.type)"
-                ><component class="svg-icon" :is="iconDatasourceMap[nodeInfo.type]"></component
-              ></Icon>
+              <Icon :static-content="getDsIconType(nodeInfo.type)">
+                <component class="svg-icon" :is="iconDatasourceMap[nodeInfo.type]"></component>
+              </Icon>
             </el-icon>
             <span :title="nodeInfo.name" class="name ellipsis">
               {{ nodeInfo.name }}
             </span>
-            <!-- <el-divider style="margin: 0 12px" direction="vertical" />
+            <el-divider style=" display: none; margin: 0 12px;" direction="vertical" />
             <span class="create-user">
               {{ t('visualization.create_by') }}:{{ nodeInfo.creator }}
             </span>
@@ -1325,7 +1324,7 @@ const handleCloseIframe = () => {
                 :create-time="infoList.createTime"
                 :creator="infoList.creator"
               ></dataset-detail>
-            </el-popover> -->
+            </el-popover>
             <div class="right-btn flex-align-center">
               <el-button secondary @click="createDataset(null)" v-permission="['dataset']">
                 <template #icon>
@@ -1340,9 +1339,7 @@ const handleCloseIframe = () => {
                 secondary
                 @click="validateDS"
               >
-                {{ t('datasource.validate') }}</el-button
-              >
-
+                {{ t('datasource.validate') }}</el-button>
               <template v-if="nodeInfo.type === 'Excel'">
                 <el-upload
                   v-if="nodeInfo.weight >= 7"
@@ -2282,14 +2279,13 @@ const handleCloseIframe = () => {
         font-family: var(--de-custom_font, 'PingFang');
         font-size: 16px;
         font-weight: 500;
-
+        .back-icon {
+          margin-right: 10px;
+          font-size: 20px;
+          cursor: pointer;
+        }
         .ed-icon {
           font-size: 24px;
-          &.back-icon {
-            font-size: 18px;
-            cursor: pointer;
-            margin-right: 8px;
-          }
         }
 
         .name {
@@ -2298,6 +2294,7 @@ const handleCloseIframe = () => {
         }
 
         .create-user {
+          display: none;
           font-size: 14px;
           font-weight: 400;
           line-height: 22px;
@@ -2424,5 +2421,14 @@ const handleCloseIframe = () => {
     margin: 4px 0 24px 0;
     color: var(--deTextPrimary, #1f2329);
   }
+}
+.close-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #fff;
+  color: #606266;
+  cursor: pointer;
 }
 </style>

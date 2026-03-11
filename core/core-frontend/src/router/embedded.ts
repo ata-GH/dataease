@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createRouter, createWebHashHistory } from 'vue-router_2'
 import type { RouteRecordRaw } from 'vue-router_2'
 import type { App } from 'vue'

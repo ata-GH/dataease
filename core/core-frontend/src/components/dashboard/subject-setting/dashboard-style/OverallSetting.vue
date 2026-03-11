@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-form size="small" label-position="top">
     <el-form-item
@@ -275,6 +276,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()

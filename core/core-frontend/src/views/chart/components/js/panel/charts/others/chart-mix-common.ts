@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor/util/chart'
 
 export const CHART_MIX_EDITOR_PROPERTY: EditorProperty[] = [

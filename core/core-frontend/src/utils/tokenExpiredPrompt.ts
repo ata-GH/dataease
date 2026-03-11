@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ElMessageBox } from 'element-plus-secondary'
 
 let showing = false

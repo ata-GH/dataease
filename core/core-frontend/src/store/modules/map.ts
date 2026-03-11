@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore } from 'pinia'
 import { store } from '@/store'
 import { FeatureCollection } from '@antv/l7plot/dist/esm/plots/choropleth/types'

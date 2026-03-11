@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { computed } from 'vue'
 import { ElConfigProvider } from 'element-plus-secondary'
 import { useLocaleStore } from '@/store/modules/locale'

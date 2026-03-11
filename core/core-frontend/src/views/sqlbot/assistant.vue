@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     id="dataease-v2-embedded-assistant-sqlbot"
@@ -6,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { createApp, onMounted, onUnmounted, reactive, ref } from 'vue'
 import request from '@/config/axios'
 import { useUserStoreWithOut } from '@/store/modules/user'

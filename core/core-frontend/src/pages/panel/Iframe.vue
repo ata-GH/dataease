@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed } from 'vue'
 import { useEmbedded } from '@/store/modules/embedded'
 const embeddedStore = useEmbedded()

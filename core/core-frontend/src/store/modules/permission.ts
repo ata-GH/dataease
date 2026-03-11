@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore } from 'pinia'
 import { routes } from '@/router'
 

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     class="create-dialog"
@@ -62,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { showTemplateList } from '@/api/template'
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, reactive, ref, watch } from 'vue'

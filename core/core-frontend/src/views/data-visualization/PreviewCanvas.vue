@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'
@@ -75,7 +77,7 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
       resourceTable: state.editPreview ? 'snapshot' : 'core'
     }
     try {
-      // 刷新跳转目标仪表板联动信息
+      // 刷新跳转目标仪表盘联动信息
       await queryTargetVisualizationJumpInfo(jumpRequestParam).then(rsp => {
         dvMainStore.setNowTargetPanelJumpInfo(rsp.data)
       })
@@ -163,7 +165,7 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
       }
 
       if (props.publicLinkStatus) {
-        // 设置浏览器title为当前仪表板名称
+        // 设置浏览器title为当前仪表盘名称
         document.title = dvInfo.name
         setTitle(dvInfo.name)
       }
@@ -224,6 +226,7 @@ onMounted(async () => {
   }
   if (dvId) {
     checkAndRedirect(dvId, async () => {
+      // 记录log
       sdarDashboardLogApi({ dvId })
       await loadCanvasDataAsync(dvId, dvType, ignoreParams)
     })

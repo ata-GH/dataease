@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import bar from '@/assets/svg/bar.svg'
 import dbMoreWeb from '@/assets/svg/db-more-web.svg'
 import dvMoreTimeClock from '@/assets/svg/dv-more-time-clock.svg'

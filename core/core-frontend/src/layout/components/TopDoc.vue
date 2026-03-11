@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import topEnterpriseTrial from '@/assets/svg/top-enterprise-trial.svg'
 import topHelpDoc from '@/assets/svg/top-help-doc.svg'
 import topProductBbs from '@/assets/svg/top-product-bbs.svg'

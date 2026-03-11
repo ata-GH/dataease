@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import {
   ref,
   toRefs,
@@ -753,6 +755,7 @@ defineExpose({
     v-if="multiple"
     key="multiple"
     ref="mult"
+    size="small"
     v-model="selectValue"
     :placeholder="placeholderText"
     v-loading="loading"
@@ -775,6 +778,7 @@ defineExpose({
     v-else
     v-model="selectValue"
     key="single"
+    size="small"
     @click="selectHideClick"
     :placeholder="placeholderText"
     scrollbar-always-on

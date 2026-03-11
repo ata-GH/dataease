@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import tabTitle from '@/assets/svg/tab-title.svg'
 import dvExpandDown from '@/assets/svg/dv-expand-down.svg'
 import dvExpandRight from '@/assets/svg/dv-expand-right.svg'

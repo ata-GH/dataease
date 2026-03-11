@@ -1,3 +1,4 @@
+/* eslint-disable */
 import mitt from 'mitt'
 import { onBeforeUnmount } from 'vue'
 

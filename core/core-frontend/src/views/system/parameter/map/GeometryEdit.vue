@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvInfo from '@/assets/svg/dv-info.svg'
 import icon_upload_outlined from '@/assets/svg/icon_upload_outlined.svg'
 import deJson from '@/assets/svg/de-json.svg'

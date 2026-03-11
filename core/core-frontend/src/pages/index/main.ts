@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createApp } from 'vue'
 import '@/style/index.less'
 import 'normalize.css/normalize.css'
@@ -14,25 +15,44 @@ import { setupCustomComponent } from '@/custom-component'
 import { installDirective } from '@/directive'
 import '@/utils/DateUtil'
 import '@/permission'
-import WebSocketPlugin from '../../websocket'
+// import WebSocketPlugin from '../../websocket'
 
 // 支持父页面通过 postMessage 控制子页面路由跳转
 window.addEventListener('message', (event: MessageEvent<any>) => {
   const data = event?.data
-  const { path, params } = data || {}
-  try {
-    if (data?.type === 'navigate' && path) {
-      router.push({ path, query: params })
-      return
+  if (data?.type === 'navigate') {
+    const { path, params } = data?.data
+    console.log('dataeaseIframe', path, params)
+    function extractPathFromUrl(url) {
+      if (!url) return '';
+      // 如果包含 #
+      if (url.includes('#')) {
+        const hashPart = url.split('#')[1] || '';
+        return hashPart.startsWith('/') ? hashPart : '/' + hashPart;
+      }
+      // 如果没有 #，直接返回
+      //（例如父应用已经传的是 /xxx/yyy）
+      return url.startsWith('/') ? url : '/' + url;
     }
-    // 当父页面通知 iframe 已关闭时，跳转到 Loading 页
-    if (data?.type === 'iframeClosed') {
-      router.push({ path: '/loading' })
-      return
+    try {
+      router.push({
+        path: extractPathFromUrl(path),
+        query: params
+      })
+    } catch (e) {
+      console.error('[postMessage navigate] failed', e)
     }
-  } catch (e) {
-    console.error('[postMessage navigate] failed', e)
   }
+})
+router.isReady().then(() => {
+  // 明确通知父窗口iframe加载完毕
+  console.log('IFRAME_READY')
+  window.parent.postMessage(
+    {
+      type: 'IFRAME_READY'
+    },
+    '*'
+  )
 })
 const setupAll = async () => {
   const app = createApp(App)
@@ -43,7 +63,7 @@ const setupAll = async () => {
   setupElementPlus(app)
   setupCustomComponent(app)
   setupElementPlusIcons(app)
-  app.use(WebSocketPlugin)
+  // app.use(WebSocketPlugin)
   app.mount('#app')
 }
 

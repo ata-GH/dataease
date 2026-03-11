@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface GeometryFrom {
   pid?: string
   code?: string

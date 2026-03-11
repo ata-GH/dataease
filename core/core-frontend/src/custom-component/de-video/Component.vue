@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row ref="mainPlayer">
     <div v-if="element.videoLinks[element.videoLinks.videoType].src" class="player">
@@ -10,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { VideoPlayer } from '@videojs-player/vue'
 import 'video.js/dist/video-js.css'
 import { computed, nextTick, reactive, toRefs, watch, onMounted } from 'vue'

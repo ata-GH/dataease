@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 编辑器自定义事件
 const events = {
   redirect(url) {

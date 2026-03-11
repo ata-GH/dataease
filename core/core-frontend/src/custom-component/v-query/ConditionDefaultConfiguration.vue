@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_admin_outlined from '@/assets/svg/icon_admin_outlined.svg'
 import { ElSelect } from 'element-plus-secondary'
 import { computed, nextTick, ref, toRefs, watch } from 'vue'

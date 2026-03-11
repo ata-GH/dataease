@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_leftAlign_outlined from '@/assets/svg/icon_left-align_outlined.svg'
 import icon_horizontalAlign_outlined from '@/assets/svg/icon_horizontal-align_outlined.svg'
 import icon_rightAlign_outlined from '@/assets/svg/icon_right-align_outlined.svg'

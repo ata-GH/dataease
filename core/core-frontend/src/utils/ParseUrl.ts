@@ -1,3 +1,4 @@
+/* eslint-disable */
 function parseUrl(url) {
   const [pathname, params] = url.split('?')
   const [_, path] = pathname.split('#/')

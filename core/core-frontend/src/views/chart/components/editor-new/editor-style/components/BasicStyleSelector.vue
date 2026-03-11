@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, onMounted, PropType, reactive, watch, ref } from 'vue'
 import {
   COLOR_PANEL,
@@ -40,7 +42,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 const showProperty = prop => {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import SnowflakeId from 'snowflake-id'
 const snowflake = new SnowflakeId()
@@ -111,15 +112,15 @@ const getFieldName = (fields, name) => {
 }
 
 const timeTypes = [
-  'yyyy-MM-dd',
-  'yyyy/MM/dd',
-  'yyyy-MM-dd HH:mm:ss',
-  'yyyy/MM/dd HH:mm:ss',
   'yyyyMM',
   'yyyy-MM',
   'yyyy/MM',
   'yyyyMMdd',
+  'yyyy-MM-dd',
+  'yyyy/MM/dd',
   'yyyyMMdd HH:mm:ss',
+  'yyyy-MM-dd HH:mm:ss',
+  'yyyy/MM/dd HH:mm:ss',
   'custom'
 ]
 

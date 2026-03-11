@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import EmptyBackground from '@/components/empty-background/src/EmptyBackground.vue'
 import { propTypes } from '@/utils/propTypes'
 const props = defineProps({

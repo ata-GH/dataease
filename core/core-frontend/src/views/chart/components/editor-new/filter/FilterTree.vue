@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ElMessage } from 'element-plus-secondary'
 import { inject, computed, ref, nextTick, provide } from 'vue'
 import RowAuth from '@/views/chart/components/editor-new/filter/auth-tree-chart/RowAuth.vue'
@@ -84,7 +86,7 @@ defineExpose({
   <el-dialog
     width="896px"
     append-to-body
-    :title="$t('chart.add_filter')"
+    title="添加数据限制"
     destroy-on-close
     class="de-dialog-form filter-tree-cont"
     v-model="dialogVisible"

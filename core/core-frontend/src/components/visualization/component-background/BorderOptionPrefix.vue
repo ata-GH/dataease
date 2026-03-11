@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="img-option-prefix">
     <Icon
@@ -11,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { iconBoardMap } from '@/components/icon-group/board-list'
 import { toRefs } from 'vue'
 import { Icon } from '@/components/icon-custom'

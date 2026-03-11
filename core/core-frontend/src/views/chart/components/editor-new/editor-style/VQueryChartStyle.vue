@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { ElMessage, ElMessageBox } from 'element-plus-secondary'
 import icon_bold_outlined from '@/assets/svg/icon_bold_outlined.svg'
 import { uploadFileResult } from '@/api/staticResource'

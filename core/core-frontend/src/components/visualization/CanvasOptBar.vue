@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     v-if="existLinkage && (!dvMainStore.mobileInPc || isMobile())"
@@ -17,6 +18,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import dvBarUnLinkage from '@/assets/svg/dv-bar-unLinkage.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { computed } from 'vue'

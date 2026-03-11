@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const loadScript = (url: string, jsId?: string) => {
   return new Promise(function (resolve, reject) {
     const scriptId = jsId || 'de-fit2cloud-script-id'

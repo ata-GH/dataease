@@ -1,9 +1,11 @@
+<!-- eslint-disable -->
 <template>
   <div class="de-tinymce-container_alarm ed-textarea__inner">
     <editor class="de-tinymce-content_alarm" v-model="myValue" :id="tinymceId" :init="init" />
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, toRefs, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { formatDataEaseBi } from '@/utils/url'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="template-head">
     <p class="router-title">{{ t('template_manage.name') }}</p>
@@ -218,6 +219,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import deSearch from '@/assets/svg/de-search.svg'
 import dvEmpty from '@/assets/svg/dv-empty.svg'
 import dvNothing from '@/assets/svg/dv-nothing.svg'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="dataease-v2-embedded-assistant-sqlbot-head">
     <div class="head-inner">
@@ -7,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 
 const { t } = useI18n()

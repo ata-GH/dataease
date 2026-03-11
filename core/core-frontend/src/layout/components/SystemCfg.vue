@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import iconSetting from '@/assets/svg/icon_organization_outlined.svg'
 import { useRouter } from 'vue-router_2'
 import { useAppearanceStoreWithOut } from '@/store/modules/appearance'

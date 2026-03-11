@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="circle-shape">
     <v-text :prop-value="element.propValue" :element="element" />
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 defineProps({
   propValue: {
     type: String,

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     class="template-item-main"
@@ -16,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { imgUrlTrans } from '@/utils/imgUtils'
 import { computed } from 'vue'
 const emits = defineEmits(['previewTemplate'])

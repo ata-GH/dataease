@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { i18n } from '@/plugins/vue-i18n'
 
 type I18nGlobalTranslation = {

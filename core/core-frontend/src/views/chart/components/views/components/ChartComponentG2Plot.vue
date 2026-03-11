@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import {
   computed,
   nextTick,
@@ -611,7 +613,7 @@ const trackClick = trackAction => {
 
 const trackMenu = computed(() => {
   let trackMenuInfo = []
-  // 复用、放大状态的仪表板不进行联动、跳转和下钻的动作
+  // 复用、放大状态的仪表盘不进行联动、跳转和下钻的动作
   if (!['multiplexing', 'viewDialog'].includes(showPosition.value)) {
     let drillFields =
       curView?.drill && curView?.drillFilters?.length

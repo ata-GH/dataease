@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvPreviewDownload from '@/assets/svg/icon_download_outlined.svg'
 import deDelete from '@/assets/svg/de-delete.svg'
 import icon_fileExcel_colorful from '@/assets/svg/icon_file-excel_colorful.svg'

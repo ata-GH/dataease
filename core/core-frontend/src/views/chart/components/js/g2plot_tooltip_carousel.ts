@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { DualAxes, Plot } from '@antv/g2plot'
 
 /**

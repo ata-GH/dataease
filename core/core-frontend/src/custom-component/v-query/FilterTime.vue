@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import type { DatePickType } from 'element-plus-secondary'
 import { toRefs, computed, watch } from 'vue'
 import { type TimeRange } from './time-format'

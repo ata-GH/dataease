@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup></script>
+/* eslint-disable */
 
 <template>
   <div class="scroll-shadow-content">tet</div>

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'

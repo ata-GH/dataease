@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { interactiveStoreWithOut } from '@/store/modules/interactive'
 const interactiveStore = interactiveStoreWithOut()
 const flagArray = ['panel', 'screen', 'dataset', 'datasource']

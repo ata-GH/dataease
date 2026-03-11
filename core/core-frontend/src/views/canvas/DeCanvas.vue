@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { findNewComponentFromList } from '@/custom-component/component-list' // 左侧列表数据
 import { computed, nextTick, onMounted, reactive, ref, toRefs, onBeforeUnmount, watch } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -40,7 +42,7 @@ const props = defineProps({
     required: false,
     default: 1
   },
-  // 仪表板字体
+  // 仪表盘字体
   fontFamily: {
     type: String,
     required: false,
@@ -74,10 +76,10 @@ const state = reactive({
   curScrollTop: 0
 })
 
-//仪表板矩阵信息适配，
+//仪表盘矩阵信息适配，
 const baseWidth = ref(0)
 const baseHeight = ref(0)
-const renderState = ref(false) // 仪表板默认
+const renderState = ref(false) // 仪表盘默认
 const baseMarginLeft = ref(0)
 const baseMarginTop = ref(0)
 const cyGridster = ref(null)

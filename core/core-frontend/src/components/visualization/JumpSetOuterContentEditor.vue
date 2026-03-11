@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <code-mirror
     :quotaMap="props.linkJumpInfoArray.map(ele => ele.sourceFieldName)"
@@ -8,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { onBeforeUnmount, reactive, ref, toRefs } from 'vue'
 import CodeMirror from '@/views/visualized/data/dataset/form/CodeMirror.vue'
 const myCm = ref(null)

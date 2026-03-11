@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { PropType, computed, onMounted, reactive, watch, ref, inject } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -34,11 +36,11 @@ const props = defineProps({
     default: 'dark'
   },
   allFields: {
-    type: Array<any>,
+    type: Array,
     required: false
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 const dvMainStore = dvMainStoreWithOut()

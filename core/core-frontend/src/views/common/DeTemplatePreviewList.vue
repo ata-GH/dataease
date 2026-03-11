@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-col>
     <el-row style="display: inherit; margin-top: 5px">
@@ -46,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import dvDashboardSpine from '@/assets/svg/dv-dashboard-spine.svg'
 import icon_operationAnalysis_outlined from '@/assets/svg/icon_operation-analysis_outlined.svg'

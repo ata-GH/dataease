@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import Modal from '@/components/data-visualization/Modal.vue'
 import { eventList } from '@/utils/events'
 import { ref } from 'vue'

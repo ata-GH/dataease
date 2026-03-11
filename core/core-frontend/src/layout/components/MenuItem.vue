@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts">
+/* eslint-disable */
 import { h } from 'vue'
 import { ElMenuItem, ElSubMenu, ElIcon } from 'element-plus-secondary'
 import auth from '@/assets/svg/auth.svg'

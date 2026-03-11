@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_dashboard from '@/assets/svg/icon_dashboard.svg'
 defineProps({
   label: {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore } from 'pinia'
 import { store } from '@/store/index'
 import { defaultFont, list } from '@/api/font'

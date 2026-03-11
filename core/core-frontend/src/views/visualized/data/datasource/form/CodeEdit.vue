@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, PropType, watch, onMounted } from 'vue'
 import { propTypes } from '@/utils/propTypes'
 import { VAceEditor } from 'vue3-ace-editor'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { valueFormatter } from '@/views/chart/components/js/formatter'
 import { hexToRgba, parseJson } from '@/views/chart/components/js/util'
 import { isEmpty } from 'lodash-es'

@@ -1095,3 +1095,68 @@ export interface ResourceOrFolder {
 
 *文档生成时间: 2024年*
 *基于 DataEase 前端 API 文件自动生成*
+
+### 模拟登录
+```javascript
+// 使用异步函数处理POST请求和本地存储
+(async function() {
+    try {
+        // 1. 发送POST请求到登录接口
+        const response = await fetch('http://10.149.245.148:8100/de2api/login/analysisLogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: "test",
+                name: "测试账号",
+                projectId: "17343",
+                extUserId: "6ffef073263454d0b0a241fd0d8043ad"
+            })
+        });
+
+        // 检查响应状态
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // 2. 解析JSON响应，从data字段获取token和exp
+        const result = await response.json();
+        const { token, exp } = result.data;
+
+        // 3. 统一的数据结构构建函数
+        function createStorageObject(value) {
+            return {
+                c: Date.now(),              // 当前时间戳
+                e: 253402300799000,         // 固定值
+                v: value                    // 主要数据（token字符串或exp值）
+            };
+        }
+
+        // 4. 为token和exp分别创建存储对象
+        // 注意：token按照您之前的格式，用双引号包裹
+        const tokenStorageObject = createStorageObject(`"${token}"`);
+        const expStorageObject = createStorageObject(exp); // exp直接使用原始值
+
+        // 5. 将两个对象作为独立的键存入localStorage
+        localStorage.setItem('user.token', JSON.stringify(tokenStorageObject));
+        localStorage.setItem('user.exp', JSON.stringify(expStorageObject));
+
+        console.log('登录成功！Token和Exp已按照统一结构存储。');
+        console.log('user.token 数据:', tokenStorageObject);
+        console.log('user.exp 数据:', expStorageObject);
+        
+    } catch (error) {
+        console.error('操作失败:', error);
+    }
+})();
+
+// 验证存储结果的函数
+function checkStorage() {
+    const storedToken = JSON.parse(localStorage.getItem('user.token') || 'null');
+    const storedExp = JSON.parse(localStorage.getItem('user.exp') || 'null');
+    console.log('localStorage中 user.token 的值:', storedToken);
+    console.log('localStorage中 user.exp 的值:', storedExp);
+    return { token: storedToken, exp: storedExp };
+}
+```

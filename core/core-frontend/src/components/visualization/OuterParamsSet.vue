@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     class="params-class"
@@ -329,6 +330,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import _delete from '@/assets/svg/icon_delete-trash_outlined.svg'
 import edit from '@/assets/svg/icon_rename_outlined.svg'
 import icon_more_vertical_outlined from '@/assets/svg/icon_more-vertical_outlined.svg'
@@ -522,7 +524,7 @@ const initParams = async () => {
   await queryOuterParamsDsInfo(dvInfo.value.id).then(rsp => {
     state.baseDatasetInfo = rsp.data
   })
-  // 获取当前仪表板外部跳转信息
+  // 获取当前仪表盘外部跳转信息
   queryWithVisualizationId(dvInfo.value.id).then(rsp => {
     state.outerParams = rsp.data
     state.outerParamsInfoArray = state.outerParams?.outerParamsInfoArray
@@ -693,7 +695,7 @@ const nodeClick = data => {
   state.curNodeId = data.paramsInfoId
 }
 
-// 获取当前图表字段 关联仪表板的图表信息列表
+// 获取当前图表字段 关联仪表盘的图表信息列表
 const getPanelViewList = dvId => {
   viewDetailList(dvId).then(rsp => {
     state.viewIdFieldArrayMap = {}

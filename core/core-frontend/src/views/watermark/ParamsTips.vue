@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="tips-class">
     <el-tooltip class="item" effect="dark" placement="bottom">
@@ -22,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()
 </script>

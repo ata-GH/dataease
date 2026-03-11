@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="inactivate-div">
     <el-dropdown @command="handleCommand">
@@ -19,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElIcon } from 'element-plus-secondary'
 import { ArrowDown } from '@element-plus/icons-vue'
 

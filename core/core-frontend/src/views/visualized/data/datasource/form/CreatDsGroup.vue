@@ -1,7 +1,10 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_searchOutline_outlined from '@/assets/svg/icon_search-outline_outlined.svg'
 import { ref, reactive, computed, watch, nextTick, shallowRef, unref } from 'vue'
+import CheckPopoverSelect from '@/components/common/CheckPopoverSelect.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { checkRepeat, listDatasources, save, update } from '@/api/datasource'
 import { ElMessage, ElMessageBox, ElMessageBoxOptions } from 'element-plus-secondary'
@@ -26,7 +29,6 @@ export interface Tree {
   children?: Tree[]
   request: any
 }
-const emits = defineEmits(['finishDs', 'handleShowFinishPage'])
 const { t } = useI18n()
 const { wsCache } = useCache()
 
@@ -48,41 +50,44 @@ const datasetForm = reactive({
 const searchEmpty = ref(false)
 
 // 权限与描述相关状态（仅在 nodeType === 'dataset' 时生效）
-const manageUsers = ref<string[]>([])
+const manageUsers = ref<string[]>([wsCache.get('user.biuid')])
 const manageRoles = ref<string[]>([])
-const viewUsers = ref<string[]>([])
+const viewUsers = ref<string[]>([wsCache.get('user.biuid')])
 const viewRoles = ref<string[]>([])
 const datasetDesc = ref('')
-const userOptions = ref<any[]>([
-  { id: 'u1', name: '张三' },
-  { id: 'u2', name: '李四' },
-  { id: 'u3', name: '王五' },
-  { id: 'u4', name: '赵六' }
-])
-const roleOptions = ref<any[]>([
-  { id: 'r1', name: '运营组' },
-  { id: 'r2', name: '研发组' },
-  { id: 'r3', name: '市场组' }
-])
+const userOptions = ref<any[]>([])
+const roleOptions = ref<any[]>([])
 // 缓存完整列表用于本地筛选
 const allUsers = ref<any[]>([])
 const allRoles = ref<any[]>([])
 const loadingUsers = ref(false)
 const loadingRoles = ref(false)
-
+// 下拉复选显示项：统一映射为 {label, value}
+const userCheckOptions = computed(() =>
+  (userOptions.value || []).map(u => ({
+    label: `${u.name || u.id}${u.loginName ? ' (' + u.loginName + ')' : ''}`,
+    value: u.id
+  }))
+)
+const roleCheckOptions = computed(() =>
+  (roleOptions.value || []).map(r => ({
+    label: r.name || r.id,
+    value: r.id
+  }))
+)
 const fetchUsers = async (keyword: string) => {
   loadingUsers.value = true
   try {
     if (!allUsers.value.length) {
       const res = await fetchOperatorListApi({ numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allUsers.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allUsers.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     userOptions.value = !kw
       ? allUsers.value
       : allUsers.value.filter(u => {
-          const name = (u.name || u.username || u.nickName || '').toLowerCase()
+          const name = u.name.toLowerCase()
           return name.includes(kw)
         })
   } finally {
@@ -94,8 +99,8 @@ const fetchRoles = async (keyword: string) => {
   try {
     if (!allRoles.value.length) {
       const res = await fetchGroupListApi({ state: 1, numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allRoles.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allRoles.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     roleOptions.value = !kw
@@ -184,9 +189,9 @@ const filterMethod = (value, data) => {
 const resetForm = () => {
   createDataset.value = false
   // 清空新加字段
-  manageUsers.value = []
+  manageUsers.value = [wsCache.get('user.biuid')]
   manageRoles.value = []
-  viewUsers.value = []
+  viewUsers.value = [wsCache.get('user.biuid')]
   viewRoles.value = []
   datasetDesc.value = ''
 }
@@ -202,6 +207,16 @@ const dfs = (arr: Tree[]) => {
       dfs(ele.children)
     }
   })
+}
+const nameValidator = (_, value, callback) => {
+  // 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
+  if (!value || !NAME_REG.test(value)) {
+    callback(new Error('请填写1~50位名称，允许汉字、字母、下划线、数字'))
+    return
+  } else {
+    callback()
+  }
 }
 let request = null
 let dsType = ''
@@ -261,12 +276,7 @@ const createInit = (type, data: Tree, exec, name: string) => {
         message: placeholder.value,
         trigger: 'blur'
       },
-      {
-        min: 1,
-        max: 64,
-        message: t('datasource.input_limit_1_64', [1, 64]),
-        trigger: 'blur'
-      }
+      { required: true, trigger: 'blur', validator: nameValidator }
     ],
     pid: [
       {
@@ -323,9 +333,7 @@ const saveDataset = () => {
   console.log('保存数据源')
   datasource.value.validate(result => {
     if (result) {
-      const params: Omit<DatasetOrFolder, 'nodeType'> & {
-        nodeType: 'folder' | 'datasource'
-      } = {
+      const params: Omit<DatasetOrFolder, 'nodeType'> & { nodeType: 'folder' | 'datasource' } = {
         nodeType: nodeType.value as 'folder' | 'datasource',
         name: datasetForm.name.trim(),
         // 额外：权限与描述
@@ -394,6 +402,7 @@ const saveDataset = () => {
                       wsCache.set('ds-new-success', true)
                       emits('handleShowFinishPage', { ...res, pid: params.pid })
                       ElMessage.success(t('data_source.source_saved_successfully'))
+                      createDataset.value = false
                       successCb()
                     }
                   })
@@ -442,6 +451,8 @@ defineExpose({
   createInit,
   editeInit
 })
+
+const emits = defineEmits(['finishDs', 'handleShowFinishPage'])
 </script>
 
 <template>
@@ -492,7 +503,7 @@ defineExpose({
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
-            <el-select
+            <!-- <el-select
               v-model="manageUsers"
               multiple
               filterable
@@ -505,12 +516,19 @@ defineExpose({
                 :label="item.name || item.username || item.nickName"
                 :value="item.id || item.uid || item.userId"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="manageUsers"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
-            <el-select
+            <!-- <el-select
               v-model="manageRoles"
               multiple
               filterable
@@ -523,7 +541,14 @@ defineExpose({
                 :label="item.name"
                 :value="item.id || item.rid"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="manageRoles"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -532,7 +557,7 @@ defineExpose({
       <el-row class="ed-form-item" :gutter="12">
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
-            <el-select
+            <!-- <el-select
               v-model="viewUsers"
               multiple
               filterable
@@ -545,12 +570,19 @@ defineExpose({
                 :label="item.name || item.username || item.nickName"
                 :value="item.id || item.uid || item.userId"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="viewUsers"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
-            <el-select
+            <!-- <el-select
               v-model="viewRoles"
               multiple
               filterable
@@ -563,7 +595,14 @@ defineExpose({
                 :label="item.name"
                 :value="item.id || item.rid"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="viewRoles"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>

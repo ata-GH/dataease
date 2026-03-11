@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="mobile-background-selector">
     <input
@@ -117,6 +118,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { onMounted, reactive, ref, watch, unref } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'

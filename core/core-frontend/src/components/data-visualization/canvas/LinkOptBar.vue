@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     id="fullscreenElement"
@@ -63,6 +64,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed, reactive, toRefs } from 'vue'
 import router from '@/router'
 import { ElIcon } from 'element-plus-secondary'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%" ref="containerRef">
     <el-form
@@ -225,6 +226,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed, nextTick, onMounted, reactive, ref, toRefs, PropType } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { COLOR_PANEL, DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor/util/chart'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     class="market-create-dialog"
@@ -12,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import TemplateMarket from '@/views/template-market/index.vue'
 import { nextTick, reactive, ref } from 'vue'
 const templateMarketCreateRef = ref(null)

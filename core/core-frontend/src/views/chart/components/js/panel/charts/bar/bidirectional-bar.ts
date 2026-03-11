@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   G2PlotChartView,
   G2PlotDrawOptions

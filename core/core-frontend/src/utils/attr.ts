@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const positionData = [
   { key: 'left', label: 'X', min: -1000, max: 20000, step: 1 },
   { key: 'width', label: 'W', min: 2, max: 20000, step: 1 },

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { cloneDeep } from 'lodash-es'
 import componentList, {
   ACTION_SELECTION,
@@ -131,7 +132,7 @@ export function findNewComponent(componentName, innerType, staticMap?) {
 export function commonHandleDragStart(e, dvModel) {
   const componentInfo = e.target.dataset.id
   if (dvModel === 'dashboard') {
-    // 仪表板使用组件消息传输方式
+    // 仪表盘使用组件消息传输方式
     eventBus.emit('handleDragStartMoveIn-canvas-main', componentInfo)
   } else {
     // 大屏使用组件消息传输方式
@@ -140,7 +141,7 @@ export function commonHandleDragStart(e, dvModel) {
 }
 export function commonHandleDragEnd(e, dvModel) {
   if (dvModel === 'dashboard') {
-    // 仪表板结束消息传输方式(用来清理未移入的组件)
+    // 仪表盘结束消息传输方式(用来清理未移入的组件)
     eventBus.emit('handleDragEnd-canvas-main', e)
   }
 }
@@ -263,7 +264,7 @@ export function historyItemAdaptor(
   if (componentItem.component === 'UserView') {
     componentItem.actionSelection = componentItem.actionSelection || deepCopy(ACTION_SELECTION)
   }
-  // 2 为基础版本 此处需要增加仪表板矩阵密度
+  // 2 为基础版本 此处需要增加仪表盘矩阵密度
   if ((!canvasVersion || canvasVersion === 2) && canvasInfo?.type === 'dashboard') {
     matrixAdaptor(componentItem)
   }
@@ -351,7 +352,7 @@ export function historyAdaptor(
   })
 }
 
-// 重置仪表板、大屏中的其他组件
+// 重置仪表盘、大屏中的其他组件
 export function refreshOtherComponent(dvId, busiFlag) {
   // 富文本 跑马灯组件进行刷新
   const refreshComponentList = componentData.value.filter(
@@ -412,6 +413,9 @@ export function initCanvasDataPrepare(dvId, params, callBack) {
   }
   attachInfo['resourceTable'] = params.resourceTable ? params.resourceTable : 'core'
   method(dvId, busiFlagCustom, attachInfo).then(res => {
+    if (!res || !res.data) {
+      return false
+    }
     const canvasInfo = res.data
     const watermarkInfo = {
       ...canvasInfo.watermarkInfo,
@@ -635,13 +639,6 @@ export async function canvasSave(callBack) {
 }
 
 export async function canvasSaveWithParams(params, callBack) {
-  // 点击保存后，清理新建页面的本地缓存与历史（null 键）
-  try {
-    wsCache.delete('DE-DV-CATCH-null')
-    wsCache.delete('DE-DV-HISTORY-null')
-  } catch (e) {
-    // ignore
-  }
   dvMainStore.removeGroupArea()
   const componentDataToSave = cloneDeep(componentData.value)
   componentDataToSave.forEach(item => {
@@ -697,7 +694,6 @@ export async function canvasSaveWithParams(params, callBack) {
     })
   }
   method(canvasInfo).then(res => {
-    console.log('保存接口', res)
     if (method === updateCanvas) {
       // saveCanvas 为初次保存 状态为0 updateCanvas为二次保存状态为2 当存在传入状态时，则修改对应的传入状态
       const status = params?.status ? params?.status : res.data?.status
@@ -969,7 +965,7 @@ export async function decompressionPre(params, callBack) {
       const appData = deTemplateDataTemp['appData']
       const sourceCanvasStyle = JSON.parse(deTemplateDataTemp['canvasStyleData'])
       sourceComponentData.forEach(componentItem => {
-        // 2 为基础版本 此处需要增加仪表板矩阵密度
+        // 2 为基础版本 此处需要增加仪表盘矩阵密度
         if (
           (!deTemplateDataTemp.version || deTemplateDataTemp.version === 2) &&
           deTemplateDataTemp.type === 'dashboard'
@@ -1035,7 +1031,7 @@ export function trackBarStyleCheck(element, trackbarStyle, _scale, trackMenuNumb
   }
 }
 
-// 优化仪表板图层排序 根据所处的Y轴位置预先进行排序再渲染矩阵 防止出现串位
+// 优化仪表盘图层排序 根据所处的Y轴位置预先进行排序再渲染矩阵 防止出现串位
 export function componentPreSort(componentData) {
   if (componentData && Array.isArray(componentData)) {
     componentData.sort((c1, c2) => c1.y - c2.y)
@@ -1131,7 +1127,11 @@ export const checkAndRedirect = async (dvId, callback) => {
   } else {
     ElMessage.error(checkResult.desc || '登录失败')
     const currentRouter = window.location.pathname.includes('mobile.html') ? mobileRouter : router
-    currentRouter.replace({ path: '/login', query: { type: 'noauth' } })
+    if (checkResult.rspcode === 401) {
+      currentRouter.replace({ path: '/login' })
+    } else {
+      currentRouter.replace({ path: '/login', query: { type: 'noauth' } })
+    }
     return false
   }
 }

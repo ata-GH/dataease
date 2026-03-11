@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import icon_right_outlined from '@/assets/svg/icon_right_outlined.svg'
@@ -65,6 +67,9 @@ import {
   saveDatasetTree,
   barInfoApi
 } from '@/api/dataset'
+import {
+  isShowFinishPage
+} from '@/api/datasource'
 import type { Table } from '@/api/dataset'
 import DatasetUnion from './DatasetUnion.vue'
 import { cloneDeep, debounce } from 'lodash-es'
@@ -73,6 +78,7 @@ import { iconFieldMap } from '@/components/icon-group/field-list'
 import { iconDatasourceMap } from '@/components/icon-group/datasource-list'
 import ExcelDetail from '../../datasource/form/ExcelDetail.vue'
 import type { Param } from '../../datasource/form/ExcelDetail.vue'
+import watermark from '@/utils/waterMark'
 interface DragEvent extends MouseEvent {
   dataTransfer: DataTransfer
 }
@@ -108,7 +114,7 @@ const editDs = ref(false)
 const isSupportSetKey = ref(false)
 const showFinishPage = ref(false)
 const pid = ref('0')
-
+const isFullscreen = ref(false)
 const defaultForm2 = {
   type: 'Excel',
   id: '0',
@@ -118,9 +124,20 @@ const defaultForm2 = {
   configuration: {}
 }
 const form2 = reactive<Param>(cloneDeep(defaultForm2))
-
+const handleCloseIframe = () => {
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+}
 const beforeClose = () => {
-  excelVisible.value = false
+  if (route.query.dialog === 'datasource') {
+    handleCloseIframe()
+  } else {
+    excelVisible.value = false
+  }
 }
 
 const complete = (params, successCb, finallyCb) => {
@@ -153,10 +170,6 @@ const saveDS = () => {
   return
 }
 const datasetName = ref(t('data_set.unnamed_dataset'))
-// 名称规则与 DbToolbarNew 保持一致：中文、字母、数字、下划线，长度1-50
-const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
-// 记录编辑前的名称，用于校验失败时还原
-const prevDatasetName = ref(datasetName.value)
 const tabActive = ref('preview')
 const activeName = ref('')
 const dataSource = ref('')
@@ -204,22 +217,6 @@ const fieldOptions = [
     value: 1,
     children: [
       {
-        value: 'yyyy-MM-dd',
-        label: 'yyyy-MM-dd'
-      },
-      {
-        value: 'yyyy/MM/dd',
-        label: 'yyyy/MM/dd'
-      },
-      {
-        value: 'yyyy-MM-dd HH:mm:ss',
-        label: 'yyyy-MM-dd HH:mm:ss'
-      },
-      {
-        value: 'yyyy/MM/dd HH:mm:ss',
-        label: 'yyyy/MM/dd HH:mm:ss'
-      },
-      {
         value: 'yyyyMM',
         label: 'yyyyMM'
       },
@@ -236,8 +233,24 @@ const fieldOptions = [
         label: 'yyyyMMdd'
       },
       {
+        value: 'yyyy-MM-dd',
+        label: 'yyyy-MM-dd'
+      },
+      {
+        value: 'yyyy/MM/dd',
+        label: 'yyyy/MM/dd'
+      },
+      {
         value: 'yyyyMMdd HH:mm:ss',
         label: 'yyyyMMdd HH:mm:ss'
+      },
+      {
+        value: 'yyyy-MM-dd HH:mm:ss',
+        label: 'yyyy-MM-dd HH:mm:ss'
+      },
+      {
+        value: 'yyyy/MM/dd HH:mm:ss',
+        label: 'yyyy/MM/dd HH:mm:ss'
       },
       {
         value: 'custom',
@@ -282,6 +295,7 @@ const fieldRules = {
 
 const sqlNode = reactive<Table>({
   datasourceId: '',
+  extDatasourceId: '',
   name: '',
   tableName: t('data_set.custom_sql'),
   type: 'sql'
@@ -335,25 +349,35 @@ const dfsChild = arr => {
 const getDsName = (id: string) => {
   return dfsName(state.dataSourceList, id)
 }
-
+const router = useRouter()
 const pushDataset = () => {
-  wsCache.set(`dataset-info-id`, nodeInfo.id)
-  if (appStore.isDataEaseBi) {
-    embeddedStore.clearState()
-    useEmitt().emitter.emit('changeCurrentComponent', 'Dataset')
-    return
-  }
-  const routeName = embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded' : 'dataset'
-  if (!!history.state.back && !appStore.getIsIframe) {
-    history.back()
+  if (route.query.from && route.query.from === 'dashboard') {
+    router.back()
   } else {
-    push({
-      name: routeName,
-      params: {
-        id: nodeInfo.id
-      }
+    var eventnData = {type: 'closeBoard', data: {}};
+    parent.window.postMessage(eventnData, '*')
+    wsCache.set(`dataset-info-id`, nodeInfo.id)
+    if (appStore.isDataEaseBi) {
+      embeddedStore.clearState()
+      useEmitt().emitter.emit('changeCurrentComponent', 'Dataset')
+      return
+    }
+    router.push({
+      path: '/loading'
     })
   }
+  
+  // const routeName = embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded' : 'dataset'
+  // if (!!history.state.back && !appStore.getIsIframe) {
+  //   history.back()
+  // } else {
+  //   push({
+  //     name: routeName,
+  //     params: {
+  //       id: nodeInfo.id
+  //     }
+  //   })
+  // }
 }
 
 const backToMain = () => {
@@ -442,6 +466,7 @@ const editeSave = () => {
   const union = []
   loading.value = true
   dfsNodeList(union, datasetDrag.value.getNodeList())
+  console.log('union', union)
   saveDatasetTree({
     ...nodeInfo,
     name: datasetName.value,
@@ -452,9 +477,10 @@ const editeSave = () => {
   })
     .then(() => {
       isUpdate = false
-      ElMessage.success(t('data_set.saved_successfully'))
       if (willBack) {
         pushDataset()
+      } else {
+        ElMessage.success(t('data_set.saved_successfully'))
       }
     })
     .finally(() => {
@@ -767,6 +793,8 @@ const dsChange = (val: string) => {
     .then(res => {
       tableList = res || []
       datasourceTableData.value = [...tableList]
+      sqlNode.extDatasourceId = tableList[0]?.extDatasourceId
+      sqlNode.datasourceId = tableList[0]?.datasourceId
     })
     .finally(() => {
       dsLoading.value = false
@@ -1410,13 +1438,20 @@ const handleResize = debounce(() => {
 }, 60)
 let willBack = false
 const saveAndBack = () => {
-  if (!willBack) return
-  pushDataset()
+  if (willBack) {
+    pushDataset()
+  } else {
+    ElMessage.success(t('data_set.saved_successfully'))
+  }
 }
 
 let p = null
 const XpackLoaded = () => p(true)
 onMounted(async () => {
+  if (route.query.dialog === 'datasource') {
+    isFullscreen.value = true
+    handleShowCreateDataSource(null, null)
+  }
   isEdit.value = false
   await new Promise(r => (p = r))
   await initEdite()
@@ -1494,6 +1529,7 @@ const datasetSave = () => {
   }
   let union = []
   dfsNodeList(union, datasetDrag.value.getNodeList())
+  console.log('union', union)
   const pid = appStore.getIsDataEaseBi ? embeddedStore.datasetPid : route.query.pid || nodeInfo.pid
   if (!union.length) {
     ElMessage.error(t('data_set.dataset_cannot_be'))
@@ -1691,15 +1727,7 @@ const dfsUnion = (arr, list) => {
       dfsUnion(children, ele.childrenDs)
     }
     const { unionToParent, currentDsFields, currentDs } = ele
-    const {
-      tableName,
-      type,
-      datasourceId,
-      extDatasourceId,
-      id,
-      info,
-      sqlVariableDetails
-    } = currentDs || {}
+    const { tableName, type, datasourceId, extDatasourceId, id, info, sqlVariableDetails } = currentDs || {}
     const { unionType, unionFields } = unionToParent || {}
     arr.push({
       sqlVariableDetails,
@@ -1716,6 +1744,8 @@ const dfsUnion = (arr, list) => {
     })
   })
 }
+// 记录编辑前的名称，用于校验失败时还原
+const prevDatasetName = ref(datasetName.value)
 const handleClick = () => {
   showInput.value = true
   // 进入编辑时记录当前名称
@@ -1752,19 +1782,26 @@ const finish = res => {
     name
   }
   allfields.value = res.allFields || []
+  isUpdate = false
 }
 
+// const errorTips = ref('')
+
 const handleDatasetName = () => {
-  const val = datasetName.value.trim()
-  if (!NAME_REG.test(val)) {
-    // 与 DbToolbarNew 保持一致的提示并还原为编辑前的值
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
+  // if (datasetName.value.trim().length < 1) {
+  //   errorTips.value = t('datasource.input_limit_1_64', [1, 64])
+  // }
+  if (!NAME_REG.test(datasetName.value.trim())) {
+    // errorTips.value = '请填写1~50位名称，允许汉字、字母、下划线、数字'
     ElMessage.warning('请填写1~50位名称，允许汉字、字母、下划线、数字')
     datasetName.value = prevDatasetName.value
     showInput.value = true
-    return
+  } else {
+    datasetName.value = datasetName.value.trim()
+    showInput.value = false
   }
-  datasetName.value = val
-  showInput.value = false
+  // showInput.value = !!errorTips.value
 }
 
 const treeProps = {
@@ -1804,7 +1841,6 @@ const getIconNameCalc = (deType, extField, dimension = false) => {
 
 const handleShowCreateDataSource = (nodeInfo: Param, id?: string) => {
   editDs.value = !!nodeInfo
-  showFinishPage.value = false
   if (!!nodeInfo) {
     Object.assign(form2, cloneDeep(nodeInfo))
     pid.value = nodeInfo.pid || '0'
@@ -1817,15 +1853,45 @@ const handleShowCreateDataSource = (nodeInfo: Param, id?: string) => {
 }
 
 const handleShowFinishPage = ({ id, name, pid }) => {
-  excelVisible.value = false
-  // 更新数据集列表
-  console.log('更新数据集列表')
-  getDatasource(isEdit.value ? 0 : 2)
+  if (route.query.dialog === 'datasource') {
+    handleCloseIframe()
+  } else {
+    excelVisible.value = false
+    // 更新数据集列表
+    console.log('更新数据集列表')
+    getDatasource(isEdit.value ? 0 : 2)
+  }
 }
+useEmitt().emitter.on('showFinishPage', handleShowFinishPage)
+
+const addWatermark = () => {
+  const name = localStorage.getItem('userName') || '未获取到用户'
+  const phone = localStorage.getItem('securityPhone') || '未获取到手机号'
+  const project = localStorage.getItem('lastProjectIdName') || '未获取到项目名称'
+  const waterMarkData = {
+    name,
+    phone,
+    project
+  }
+  watermark('watermark', {
+    ...waterMarkData,
+    isCopyable: false,
+    fontSize: 13, // 字体大小
+    color: 'rgba(150, 150, 150, 0.4)', // 颜色
+    rotate: 0, // 旋转角度
+    width: 400, // 水印单元宽度（适配多行文本）
+    height: 400 // 水印单元高度
+  })
+}
+
+onMounted(() => {
+  addWatermark()
+})
+
 </script>
 
 <template>
-  <div class="de-dataset-form" v-loading="loading">
+  <div class="de-dataset-form watermark" v-loading="loading">
     <div class="top">
       <span class="name">
         <el-icon @click="backToMain">
@@ -1838,7 +1904,6 @@ const handleShowFinishPage = ({ id, name, pid }) => {
             v-model="datasetName"
             @blur="handleDatasetName"
           />
-          <!-- <div class="ed-form-item__error" v-if="errorTips">{{ errorTips }}</div> -->
         </template>
         <template v-else>
           <span @click="handleClick" class="dataset-name ellipsis" style="margin-left: 12px">{{
@@ -2844,9 +2909,9 @@ const handleShowFinishPage = ({ id, name, pid }) => {
                       :label="item"
                       :disabled="disabledEnum(item, domain.text)"
                       :value="item"
-                    /> </el-select
-                ></el-form-item>
-
+                    />
+                  </el-select>
+                </el-form-item>
                 <div
                   class="group-fields_num"
                   v-else-if="[2, 3, 4].includes(currentGroupField.deTypeOrigin)"
@@ -2871,8 +2936,9 @@ const handleShowFinishPage = ({ id, name, pid }) => {
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
-                      /> </el-select
-                  ></el-form-item>
+                      />
+                    </el-select>
+                  </el-form-item>
                   <div class="name">
                     {{ t('dataset.field_value') }}
                   </div>
@@ -2883,8 +2949,9 @@ const handleShowFinishPage = ({ id, name, pid }) => {
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
-                      /> </el-select
-                  ></el-form-item>
+                      />
+                    </el-select>
+                  </el-form-item>
                   <el-form-item
                     :key="index + 'max'"
                     prop="max"
@@ -2914,20 +2981,20 @@ const handleShowFinishPage = ({ id, name, pid }) => {
                     :end-placeholder="t('commons.date.end_date')"
                     :start-placeholder="t('commons.date.start_date')"
                     v-model="domain.time"
-                    type="daterange" /></el-form-item
-              ></el-form>
-
+                    type="daterange" />
+                  </el-form-item>
+                </el-form>
               <el-button
                 class="variable_del"
                 text
                 v-if="currentGroupField.groupList.length !== 1"
-                @click="removeGroupFields(index)"
-              >
+                @click="removeGroupFields(index)">
                 <template #icon>
                   <Icon><icon_deleteTrash_outlined class="svg-icon" /></Icon>
                 </template>
-              </el-button></div
-          ></el-scrollbar>
+              </el-button>
+            </div>
+          </el-scrollbar>
         </div>
       </el-form-item>
       <el-button style="margin-top: -20px" @click="addGroupFields" text>
@@ -2954,10 +3021,12 @@ const handleShowFinishPage = ({ id, name, pid }) => {
   <el-dialog
     v-model="excelVisible"
     title="新建文件数据源"
-    width="1000px"
+    :width="isFullscreen ? '100%' : '1000px'"
+    :fullscreen="isFullscreen"
     :close-on-click-modal="false"
     :append-to-body="true"
     :before-close="beforeClose"
+    :style="{ overflow: isFullscreen ? 'hidden' : 'inherit' }"
   >
     <div class="datasource-new">
       <div class="ds-editor" :class="editDs && 'edit-ds'">
@@ -3669,11 +3738,12 @@ const handleShowFinishPage = ({ id, name, pid }) => {
     }
 
     .excel-detail {
-      width: 100%;
+      width: 95%;
       margin: 0 0 0 30px;
       justify-content: inherit;
       .detail-inner {
-        width: 900px;
+        width: 100%;
+        max-width: 1800px;
         padding-top: 0;
       }
     }

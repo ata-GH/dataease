@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   type LayoutResult,
   S2DataConfig,

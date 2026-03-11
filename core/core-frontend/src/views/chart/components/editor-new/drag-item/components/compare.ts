@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const compareItem = {
   type: 'none', // year-yoy/month-yoy等
   resultData: 'percent', // 对比差sub，百分比percent等

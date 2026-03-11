@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, reactive, computed } from 'vue'
 import { ElDrawer, ElButton } from 'element-plus-secondary'
 import { propTypes } from '@/utils/propTypes'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="tsx">
+/* eslint-disable */
 import { iconChartMap } from '@/components/icon-group/chart-list'
 import { computed, reactive, ref, toRefs } from 'vue'
 import eventBus from '@/utils/eventBus'

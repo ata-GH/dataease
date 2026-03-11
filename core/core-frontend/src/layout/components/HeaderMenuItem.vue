@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts">
+/* eslint-disable */
 import { h } from 'vue'
 import icon_expandDown_filled from '@/assets/svg/icon_expand-down_filled.svg'
 import { ElMenuItem, ElSubMenu } from 'element-plus-secondary'

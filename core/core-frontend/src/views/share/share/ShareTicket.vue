@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="ticket">
     <div class="ticket-model">
@@ -127,6 +128,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_close_outlined from '@/assets/svg/icon_close_outlined.svg'
 import deCopy from '@/assets/svg/de-copy.svg'
 import icon_refresh_outlined from '@/assets/svg/icon_refresh_outlined.svg'

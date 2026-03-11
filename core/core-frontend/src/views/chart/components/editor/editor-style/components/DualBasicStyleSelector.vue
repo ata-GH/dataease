@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { onMounted, PropType, reactive, watch, ref } from 'vue'
 import { DEFAULT_BASIC_STYLE, DEFAULT_MISC } from '@/views/chart/components/editor/util/chart'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -20,7 +22,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 

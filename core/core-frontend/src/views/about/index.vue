@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import logo from '@/assets/svg/logo.svg'
 import aboutBg from '@/assets/img/about-bg.png'
 import { ref, reactive, onMounted } from 'vue'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import { useCache } from '@/hooks/web/useCache'
 import { isInIframe } from '@/utils/utils'

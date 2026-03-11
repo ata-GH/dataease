@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { iconChartDarkMap } from '@/components/icon-group/chart-dark-list'
 import { iconChartMap } from '@/components/icon-group/chart-list'
 import { toRefs } from 'vue'

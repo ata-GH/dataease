@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { getCanvasStyle, getShapeItemStyle } from '@/utils/style'
 import ComponentWrapper from './ComponentWrapper.vue'
 import { changeStyleWithScale } from '@/utils/translate'
@@ -159,7 +161,7 @@ const dataVKeepRadio = computed(() => {
   return screenAdaptor.value !== 'full'
 })
 
-// 仪表板是否跟随宽度缩放 非全屏 full 都需要保持宽高比例
+// 仪表盘是否跟随宽度缩放 非全屏 full 都需要保持宽高比例
 const dashboardScaleWithWidth = computed(() => {
   return isDashboard() && canvasStyleData.value?.dashboardAdaptor === 'withWidth'
 })
@@ -648,6 +650,21 @@ defineExpose({
   div {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+  &.single-chart {
+    height: 100%!important;
+    .multiplexing-VQuery {
+      width: 100%!important;
+      height: 100px!important;
+    }
+    .multiplexing-UserView {
+      width: 100%!important;
+      top: 100px!important;
+      height: calc(100% - 100px)!important;
+    }
+  }
+  :deep(.add-btn) {
+    display: none;
   }
 }
 

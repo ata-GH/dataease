@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvBatch from '@/assets/svg/dv-batch.svg'
 import dvDashboard from '@/assets/svg/dv-dashboard.svg'
 import dvHidden from '@/assets/svg/dv-hidden.svg'
@@ -36,7 +38,6 @@ import TextGroup from '@/custom-component/component-group/TextGroup.vue'
 import ComponentButton from '@/components/visualization/ComponentButton.vue'
 import ComponentButtonLabel from '@/components/visualization/ComponentButtonLabel.vue'
 import MultiplexingCanvas from '@/views/common/MultiplexingCanvas.vue'
-import { useRouter } from 'vue-router_2'
 import { useI18n } from '@/hooks/web/useI18n'
 import { getPanelAllLinkageInfo, saveLinkage } from '@/api/visualization/linkage'
 import { queryVisualizationJumpInfo } from '@/api/visualization/linkJump'
@@ -59,6 +60,7 @@ import DeFullscreen from '@/components/visualization/common/DeFullscreen.vue'
 import DeAppApply from '@/views/common/DeAppApply.vue'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { updatePublishStatus } from '@/api/visualization/dataVisualization'
+import { useRouter } from 'vue-router_2'
 const { t } = useI18n()
 const router = useRouter()
 const dvMainStore = dvMainStoreWithOut()
@@ -182,8 +184,13 @@ const queryList = computed(() => {
 const resourceOptFinish = param => {
   if (param && param.opt === 'newLeaf') {
     dvInfo.value.dataState = 'ready'
-    dvInfo.value.pid = param.pid
+    dvInfo.value.parentIds = param.pid
     dvInfo.value.name = param.name
+    dvInfo.value.manageOperators = param.manageOperators
+    dvInfo.value.manageGroups = param.manageGroups
+    dvInfo.value.viewOperators = param.viewOperators
+    dvInfo.value.viewGroups = param.viewGroups
+    dvInfo.value.description = param.description
     dvInfo.value.type = param.type
     saveCanvasWithCheck(param.withPublish, param.status, () => {
       param.callback && param.callback()
@@ -347,7 +354,7 @@ const backToMain = () => {
 }
 const embeddedStore = useEmbedded()
 
-const backHandler = (url: string) => {
+const backHandler = (url?: string) => {
   if (isEmbedded.value) {
     embeddedStore.clearState()
     useEmitt().emitter.emit('changeCurrentComponent', 'DashboardPanel')
@@ -366,11 +373,18 @@ const backHandler = (url: string) => {
   }
   wsCache.delete('DE-DV-CATCH-' + dvInfo.value.id)
   wsCache.set('db-info-id', dvInfo.value.id)
-  if (!!history.state.back) {
-    history.back()
-  } else {
-    window.open(url, '_self')
-  }
+  // 返回loading页，关闭iframe
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+  // if (!!history.state.back) {
+  //   history.back()
+  // } else {
+  //   window.open(url, '_self')
+  // }
 }
 
 const multiplexingCanvasOpen = () => {
@@ -546,6 +560,20 @@ const initOpenHandler = newWindow => {
     openHandler.value.invokeMethod(pm)
   }
 }
+const handleCloseIframe = () => {
+  if (styleChangeTimes.value > 0) {
+    ElMessageBox.confirm(t('components.sure_to_exit'), {
+      confirmButtonType: 'primary',
+      type: 'warning',
+      autofocus: false,
+      showClose: false
+    }).then(() => {
+      backHandler()
+    })
+  } else {
+    backHandler()
+  }
+}
 </script>
 
 <template>
@@ -560,7 +588,7 @@ const initOpenHandler = newWindow => {
         <div class="middle-area"></div>
       </template>
       <template v-else>
-        <el-icon v-if="!batchOptStatus" class="custom-el-icon back-icon" @click="backToMain()">
+        <el-icon v-if="!batchOptStatus" class="custom-el-icon back-icon" @click="handleCloseIframe()">
           <Icon name="icon_left_outlined"
             ><icon_left_outlined class="svg-icon toolbar-icon"
           /></Icon>
@@ -858,6 +886,7 @@ const initOpenHandler = newWindow => {
     <Teleport v-if="nameEdit" :to="'#canvas-name'">
       <input
         @change="onDvNameChange"
+        maxlength="50"
         ref="nameInput"
         v-model="inputName"
         @blur="closeEditCanvasName"

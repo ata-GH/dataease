@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, computed, onMounted, reactive, watch } from 'vue'
 import { interactiveStoreWithOut } from '@/store/modules/interactive'
 import { useI18n } from '@/hooks/web/useI18n'

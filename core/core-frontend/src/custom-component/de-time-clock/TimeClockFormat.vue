@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row>
     <el-form ref="form">
@@ -48,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive, toRefs } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()

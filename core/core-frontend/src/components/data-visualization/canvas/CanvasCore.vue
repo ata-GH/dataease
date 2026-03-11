@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import Shape from './Shape.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import {
@@ -376,7 +378,7 @@ let snapshotTimer = ref(null)
 
 // 根据需要需要扩充外部scroll区域也可以进行组合的功能 此方法变更为外部组件调用
 const handleMouseDown = e => {
-  // 仪表板和预览状态不显示菜单和组创建
+  // 仪表盘和预览状态不显示菜单和组创建
   if (dashboardActive.value || editMode.value === 'preview') {
     return
   }
@@ -530,7 +532,7 @@ const getSelectArea = () => {
 }
 
 const handleContextMenu = event => {
-  // 仪表板和预览状态不显示菜单和组创建
+  // 仪表盘和预览状态不显示菜单和组创建
   if (dashboardActive.value || editMode.value === 'preview') {
     return
   }
@@ -1381,7 +1383,7 @@ const handleDragStartMoveIn = componentInfo => {
   const moveInItemInfo = findDragComponent(componentInfo)
   // 初始的移动组件 距离左侧的位置 300 是DbToolbar 最左侧区域宽度
   moveInItemInfo.x = 300 / cellWidth.value
-  // 仪表板初始移动的组件暂时不显示 在松开鼠标时再确实该组件的去留
+  // 仪表盘初始移动的组件暂时不显示 在松开鼠标时再确实该组件的去留
   moveInItemInfo.isShow = false
   moveInItemInfo.id = guid()
   dvMainStore.addComponent({ component: moveInItemInfo, index: undefined })

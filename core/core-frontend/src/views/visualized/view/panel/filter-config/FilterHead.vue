@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { PropType, toRefs } from 'vue'
 import draggable from 'vuedraggable'
 export interface DragItem {

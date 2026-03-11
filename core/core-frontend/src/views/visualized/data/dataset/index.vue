@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_copy_filled from '@/assets/svg/icon_copy_filled.svg'
 import icon_dataset from '@/assets/svg/icon_dataset.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
@@ -19,6 +21,7 @@ import icon_dashboard_outlined from '@/assets/svg/icon_dashboard_outlined.svg'
 import icon_operationAnalysis_outlined from '@/assets/svg/icon_operation-analysis_outlined.svg'
 import icon_download_outlined from '@/assets/svg/icon_download_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
+import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
 import {
   ref,
@@ -30,7 +33,8 @@ import {
   nextTick,
   unref,
   h,
-  provide
+  provide,
+  onMounted
 } from 'vue'
 import ArrowSide from '@/views/common/DeResourceArrow.vue'
 import { useEmbedded } from '@/store/modules/embedded'
@@ -83,6 +87,7 @@ import { useCache } from '@/hooks/web/useCache'
 import { RefreshLeft } from '@element-plus/icons-vue'
 import { iconFieldMap } from '@/components/icon-group/field-list'
 import { exportPermission, isFreeFolder } from '@/utils/utils'
+import watermark from '@/utils/waterMark'
 const { t } = useI18n()
 const interactiveStore = interactiveStoreWithOut()
 const { wsCache } = useCache()
@@ -347,11 +352,13 @@ const dfsDatasetTree = (ds, id) => {
 }
 
 onBeforeMount(() => {
-  const paramId = wsCache.get('dataset-info-id') || route.params.id
+  // const paramId = wsCache.get('dataset-info-id') || route.params.id
+  // nodeInfo.id = (paramId as string) || (route.query.id as string) || ''
+  // wsCache.delete('dataset-info-id')
+  // wsCache.delete('db-info-id')
+  // wsCache.delete('dv-info-id')
+  const paramId = route.query.id
   nodeInfo.id = (paramId as string) || (route.query.id as string) || ''
-  wsCache.delete('dataset-info-id')
-  wsCache.delete('db-info-id')
-  wsCache.delete('dv-info-id')
   loadInit()
   getData()
   getLimit()
@@ -802,10 +809,42 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
   ElMessage.warning(t('free.save_error'))
   return false
 }, 300)
+
+const handleCloseIframe = () => {
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+}
+
+const addWatermark = () => {
+  const name = localStorage.getItem('userName') || '未获取到用户'
+  const phone = localStorage.getItem('securityPhone') || '未获取到手机号'
+  const project = localStorage.getItem('lastProjectIdName') || '未获取到项目名称'
+  const waterMarkData = {
+    name,
+    phone,
+    project
+  }
+  watermark('watermark', {
+    ...waterMarkData,
+    isCopyable: false,
+    fontSize: 13, // 字体大小
+    color: 'rgba(150, 150, 150, 0.4)', // 颜色
+    rotate: 0, // 旋转角度
+    width: 400, // 水印单元宽度（适配多行文本）
+    height: 400 // 水印单元高度
+  })
+}
+onMounted(() => {
+  addWatermark()
+})
 </script>
 
 <template>
-  <div class="dataset-manage" :class="isIframe && 'de-100vh'" v-loading="dtLoading">
+  <div class="dataset-manage watermark" :class="isIframe && 'de-100vh'" v-loading="dtLoading">
     <ArrowSide
       :style="{ left: (sideTreeStatus ? width - 12 : 0) + 'px' }"
       @change-side-tree-status="changeSideTreeStatus"
@@ -817,7 +856,7 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
       @mouseleave="mouseleave"
       :class="{ retract: !sideTreeStatus }"
       ref="node"
-      :style="{ width: width + 'px' }"
+      :style="{ width: width + 'px', display: 'none' }"
     >
       <ArrowSide
         :isInside="!sideTreeStatus"
@@ -972,15 +1011,20 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
       <template v-else-if="!!nodeInfo.id">
         <div class="dataset-info">
           <div class="info-method">
+            <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe">
+              <Icon name="icon_left_outlined"
+                ><icon_left_outlined class="svg-icon toolbar-icon"
+              /></Icon>
+            </el-icon>
             <span :title="nodeInfo.name" class="dataset-name ellipsis">{{ nodeInfo.name }}</span>
-            <el-divider style="margin: 0 12px" direction="vertical" />
-            <span class="create-user">
+            <el-divider style="display: none; margin: 0 12px;" direction="vertical" />
+            <span class="create-user" style="display: none;">
               {{ t('visualization.create_by') }}:{{ nodeInfo.creator }}
             </span>
 
             <el-popover show-arrow :offset="8" placement="bottom" width="290" trigger="hover">
               <template #reference>
-                <el-icon size="16px" class="create-user">
+                <el-icon size="16px" class="create-user" style="display: none;">
                   <Icon name="icon_info_outlined"><icon_info_outlined class="svg-icon" /></Icon>
                 </el-icon>
               </template>
@@ -1433,5 +1477,11 @@ const proxyAllowDrop = throttle((arg1, arg2) => {
       display: inline-flex;
     }
   }
+}
+.custom-el-icon {
+  margin-right: 15px;
+  color: var(--ed-color-text-primary, #1F2329);
+  cursor: pointer;
+  vertical-align: -0.2em;
 }
 </style>

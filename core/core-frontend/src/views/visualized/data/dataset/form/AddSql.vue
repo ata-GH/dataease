@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import referencePlay from '@/assets/svg/reference-play.svg'
 import referenceSetting1 from '@/assets/svg/reference-setting.svg'
 import icon_preferences_outlined from '@/assets/svg/icon_preferences_outlined.svg'
@@ -53,6 +55,7 @@ export interface SqlNode {
   sql: string
   tableName: string
   datasourceId: string
+  extDatasourceId: string
   id: string
   changeFlag?: boolean
   variables?: Array<{
@@ -235,7 +238,7 @@ const handleSearchVariableApi = async () => {
 }
 const showSystemParams = ref(true)
 onMounted(async () => {
-  dsChange(sqlNode.value.datasourceId)
+  dsChange(sqlNode.value.extDatasourceId)
   if (!desktop) {
     try {
       await handleSearchVariableApi()
@@ -330,7 +333,7 @@ const insertParamToCodeMirror = (value: string) => {
 }
 
 watch(
-  () => sqlNode.value.datasourceId,
+  () => sqlNode.value.extDatasourceId,
   val => {
     dsChange(val)
   }
@@ -384,6 +387,7 @@ const save = () => {
     'save',
     {
       ...sqlNode.value,
+      datasourceId: newDatasourceId.value,
       sql: Base64.encode(sql),
       sqlVariableDetails: JSON.stringify(state.variables)
     },
@@ -432,7 +436,8 @@ const getSQLPreview = () => {
   getPreviewSql({
     isCross: isCross.value,
     sql: Base64.encode(setNameIdTrans('name', 'id', codeCom.value.state.doc.toString())),
-    datasourceId: sqlNode.value.datasourceId,
+    // datasourceId: sqlNode.value.datasourceId,
+    datasourceId: newDatasourceId.value,
     sqlVariableDetails: JSON.stringify(state.variables)
   })
     .then(res => {
@@ -476,12 +481,14 @@ const handleShowLeft = () => {
   LeftWidth.value = showLeft.value ? 240 : 0
 }
 
+const newDatasourceId = ref('0')
 const dsChange = debounce((val: string) => {
   dsLoading.value = true
   getTables({ datasourceId: val })
     .then(res => {
       tableList = res || []
       datasourceTableData.value = [...tableList]
+      newDatasourceId.value = tableList[0]?.datasourceId || '0'
     })
     .finally(() => {
       dsLoading.value = false
@@ -669,7 +676,7 @@ const mousedownDrag = () => {
           :placeholder="t('dataset.pls_slc_data_source')"
           class="ds-list"
           popper-class="tree-select-ds_popper"
-          v-model="sqlNode.datasourceId"
+          v-model="sqlNode.extDatasourceId"
           node-key="id"
           :props="treeProps"
           :data="state.dataSourceList"

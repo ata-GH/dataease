@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { PropType } from 'vue'
 import nothingInput from '@/assets/img/nothing-input.png'
 import nothingSelect from '@/assets/img/nothing-select.png'

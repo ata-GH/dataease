@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-popover ref="popover" width="400" trigger="click">
     <el-row>
@@ -49,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive, ref, toRefs, watch } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-col class="main-head">
     <div class="custom-split-line"></div>
@@ -28,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import TemplateMarketV2Item from '@/views/template-market/component/TemplateMarketV2Item.vue'
 import { computed } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

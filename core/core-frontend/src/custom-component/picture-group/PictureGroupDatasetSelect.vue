@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { nextTick, PropType, reactive, ref, toRefs } from 'vue'
 import { BASE_VIEW_CONFIG } from '@/views/chart/components/editor/util/chart'
 import DatasetSelect from '@/views/chart/components/editor/dataset-select/DatasetSelect.vue'

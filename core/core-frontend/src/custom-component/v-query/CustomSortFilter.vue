@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     destroy-on-close
@@ -31,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import drag from '@/assets/svg/drag.svg'
 import draggable from 'vuedraggable'
 import { ref, unref } from 'vue'

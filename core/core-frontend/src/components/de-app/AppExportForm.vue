@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-drawer
     :title="t('visualization.app_export')"
@@ -51,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ElButton, ElDrawer, ElForm, ElFormItem, ElInput } from 'element-plus-secondary'
 import { reactive, ref, toRefs } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

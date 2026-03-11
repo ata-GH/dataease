@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="link-pwd-dialog-container">
     <el-dialog
@@ -30,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { ref, reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 

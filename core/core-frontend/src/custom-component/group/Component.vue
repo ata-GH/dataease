@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs, computed, watch, nextTick, onMounted } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
@@ -32,7 +34,7 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,

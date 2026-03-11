@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="not-support">请注意，数据大屏不支持在移动端查阅！</div>
 </template>

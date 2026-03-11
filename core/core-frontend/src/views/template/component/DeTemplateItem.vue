@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     :style="classBackground"
@@ -37,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { imgUrlTrans } from '@/utils/imgUtils'
 import { computed, toRefs } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

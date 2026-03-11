@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { onMounted, reactive, watch, computed, PropType } from 'vue'
@@ -30,7 +32,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 

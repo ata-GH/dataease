@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts">
+/* eslint-disable */
 import icon_down_outlined from '@/assets/svg/icon_down_outlined.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
 export default {

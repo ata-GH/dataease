@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvBatch from '@/assets/svg/dv-batch.svg'
 import dvDashboard from '@/assets/svg/dv-dashboard.svg'
 import dvHidden from '@/assets/svg/dv-hidden.svg'
@@ -58,6 +60,9 @@ import DeFullscreen from '@/components/visualization/common/DeFullscreen.vue'
 import DeAppApply from '@/views/common/DeAppApply.vue'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { updatePublishStatus } from '@/api/visualization/dataVisualization'
+import { useRouter, useRoute } from 'vue-router_2'
+const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
 const dvMainStore = dvMainStoreWithOut()
 const snapshotStore = snapshotStoreWithOut()
@@ -83,8 +88,6 @@ const fullScreeRef = ref(null)
 let nameEdit = ref(false)
 let inputName = ref('')
 let nameInput = ref(null)
-// 与 DeResourceGroupOpt 保持一致：中文、字母、数字、下划线，长度1-50
-const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
 const state = reactive({
   preBatchComponentData: [],
   preBatchCanvasViewInfo: {}
@@ -119,12 +122,18 @@ const closeEditCanvasName = () => {
   if (inputName.value.trim() === dvInfo.value.name) {
     return
   }
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
   const val = inputName.value.trim()
   if (!NAME_REG.test(val)) {
     ElMessage.warning('请填写1~50位名称，允许汉字、字母、下划线、数字')
     editCanvasName()
     return
   }
+  // if (inputName.value.trim().length > 64 || inputName.value.trim().length < 1) {
+  //   ElMessage.warning(t('components.length_1_64_characters'))
+  //   editCanvasName()
+  //   return
+  // }
   dvInfo.value.name = inputName.value
   inputName.value = ''
 }
@@ -184,7 +193,7 @@ const queryList = computed(() => {
 const resourceOptFinish = param => {
   if (param && param.opt === 'newLeaf') {
     dvInfo.value.dataState = 'ready'
-    dvInfo.value.pid = param.pid
+    dvInfo.value.parentIds = param.pid
     dvInfo.value.name = param.name
     dvInfo.value.manageOperators = param.manageOperators
     dvInfo.value.manageGroups = param.manageGroups
@@ -210,7 +219,7 @@ const publishStatusChange = status => {
     mobileLayout: dvInfo.value.mobileLayout,
     activeViewIds: targetViewIds,
     status,
-    type: 'dashboard'
+    type: 'chart'
   }).then(() => {
     dvMainStore.updateDvInfoCall(status)
     if (status) {
@@ -253,14 +262,14 @@ const saveCanvasWithCheck = (withPublish = false, status?) => {
         resourceAppOpt.value.init(params)
       })
     } else {
-      const params = { name: dvInfo.value.name, leaf: true, id: dvInfo.value.pid || '0' }
+      const params = { name: dvInfo.value.name, leaf: true, id: dvInfo.value.pid || '' }
       resourceGroupOpt.value.optInit('leaf', params, 'newLeaf', true, { withPublish, status })
       return
     }
   }
-  checkCanvasChangePre(() => {
-    saveResource({ withPublish, status })
-  })
+  // checkCanvasChangePre(() => {
+  saveResource({ withPublish, status })
+  // })
 }
 
 const saveResource = (checkParams?) => {
@@ -271,7 +280,10 @@ const saveResource = (checkParams?) => {
       useEmitt().emitter.emit(`updateQueryCriteria${ele.id}`)
     })
     try {
-      canvasSaveWithParams(checkParams, () => {
+      canvasSaveWithParams(checkParams, (res) => {
+        if (res.code === 0) {
+          resourceGroupOpt.value?.closeDialog()
+        }
         snapshotStore.resetStyleChangeTimes()
         let url = window.location.href
         url = url.replace(/(#\/[^?]*)(?:\?[^#]*)?/, `$1?resourceId=${dvInfo.value.id}`)
@@ -368,6 +380,8 @@ onMounted(() => {
   eventBus.on('preview', previewInner)
   eventBus.on('save', saveCanvasWithCheck)
   eventBus.on('clearCanvas', clearCanvas)
+  // 处理页面加载直接是编辑模式
+  edit()
 })
 onBeforeUnmount(() => {
   eventBus.off('preview', previewInner)
@@ -521,29 +535,8 @@ const saveLinkageSetting = () => {
 const onDvNameChange = () => {
   snapshotStore.recordSnapshotCache('onDvNameChange')
 }
-
-// 输入时即时限制为允许字符，并裁剪至50长度
-const limitNameInput = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  const raw = target?.value ?? ''
-  // 只保留中文、字母、数字、下划线
-  const sanitized = raw.replace(/[^\u4E00-\u9FA5A-Za-z0-9_]/g, '')
-  inputName.value = sanitized.slice(0, 50)
-}
 const appStore = useAppStoreWithOut()
 const isEmbedded = computed(() => appStore.getIsDataEaseBi || appStore.getIsIframe)
-
-const showBackIcon = computed(() => {
-  const hash = window.location.hash || ''
-  let queryString = ''
-  if (hash.includes('?')) {
-    queryString = hash.substring(hash.indexOf('?') + 1)
-  } else {
-    queryString = window.location.search ? window.location.search.substring(1) : ''
-  }
-  const params = new URLSearchParams(queryString)
-  return params.get('mode') === 'edit'
-})
 
 const openHandler = ref(null)
 const initOpenHandler = newWindow => {
@@ -584,12 +577,26 @@ const copySql = async () => {
     ElMessage.error(t('common.copy_failed') || '复制失败')
   }
 }
+
+const handleCloseIframe = () => {
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+}
 </script>
 
 <template>
   <div class="toolbar-main">
     <div class="toolbar">
       <template v-if="editMode === 'preview'">
+        <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe">
+          <Icon name="icon_left_outlined"
+            ><icon_left_outlined class="svg-icon toolbar-icon"
+          /></Icon>
+        </el-icon>
         <div class="left-area">
           <span id="canvas-name" class="name-area" style="height: 100%; padding: 10px">
             {{ dvInfo.name }}
@@ -598,7 +605,7 @@ const copySql = async () => {
         <div class="middle-area"></div>
       </template>
       <template v-else>
-        <el-icon v-if="!batchOptStatus && showBackIcon" class="custom-el-icon back-icon" @click="backToMain()">
+        <el-icon class="custom-el-icon back-icon" @click="handleCloseIframe">
           <Icon name="icon_left_outlined"
             ><icon_left_outlined class="svg-icon toolbar-icon"
           /></Icon>
@@ -631,14 +638,14 @@ const copySql = async () => {
               </el-icon>
             </el-tooltip>
 
-            <el-tooltip effect="dark" content="查看SQL" placement="bottom">
+            <!-- <el-tooltip effect="dark" content="查看SQL" placement="bottom">
               <el-icon
                 class="toolbar-hover-icon opt-icon-redo"
                 @click="showSql()"
               >
                 <img src="/svg/ic_sql_search.svg" class="svg-icon" alt="SQL" style="margin-top: 4px;" />
               </el-icon>
-            </el-tooltip>
+            </el-tooltip> -->
           </div>
         </div>
         <div class="left-area" v-if="batchOptStatus">
@@ -839,9 +846,9 @@ const copySql = async () => {
     <Teleport v-if="nameEdit" :to="'#canvas-name'">
       <input
         @change="onDvNameChange"
+        maxlength="50"
         ref="nameInput"
         v-model="inputName"
-        @input="limitNameInput"
         @blur="closeEditCanvasName"
       />
     </Teleport>
@@ -935,6 +942,7 @@ const copySql = async () => {
       font-size: 16px;
       width: auto;
       max-width: 300px;
+      min-width: 120px;
       overflow: hidden;
       cursor: pointer;
       input {

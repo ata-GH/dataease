@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     ref="canvasCacheDialogRef"
@@ -30,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import warnTree from '@/assets/svg/warn-tree.svg'
 import { ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

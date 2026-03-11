@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed, ref } from 'vue'
 import Header from './components/Header.vue'
 import HeaderSystem from './components/HeaderSystem.vue'

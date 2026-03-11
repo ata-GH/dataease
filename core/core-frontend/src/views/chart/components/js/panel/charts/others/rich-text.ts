@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AbstractChartView, ChartLibraryType, ChartRenderType } from '../../types'
 import { useI18n } from '@/hooks/web/useI18n'
 

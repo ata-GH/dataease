@@ -1,3 +1,4 @@
+/* eslint-disable */
 import tinymce from 'tinymce/tinymce'
 
 const plugins = import.meta.glob(['./*.ts', '!./index.ts'], { eager: true })

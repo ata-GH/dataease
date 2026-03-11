@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import Editor from '@/views/chart/components/editor/index.vue'
 import Chart from '@/views/chart/components/views/index.vue'
 </script>

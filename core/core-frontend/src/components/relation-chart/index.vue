@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, reactive, nextTick } from 'vue'
 import { XpackComponent } from '@/components/plugin'
 import { cloneDeep } from 'lodash-es'

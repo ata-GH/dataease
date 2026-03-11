@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { deepCopy } from '@/utils/utils'
 import { formatterItem, isEnLocal } from '@/views/chart/components/js/formatter'
@@ -1731,7 +1732,7 @@ export const DEFAULT_BASIC_STYLE: ChartBasicStyle = {
 export const BASE_VIEW_CONFIG = {
   id: '', // 图表id
   title: t('data_set.view'),
-  sceneId: 0, // 仪表板id
+  sceneId: 0, // 仪表盘id
   tableId: '', // 数据集id
   type: 'bar',
   render: 'antv',

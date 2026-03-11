@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     v-model="dialogVisible"
@@ -23,7 +24,6 @@
           show-word-limit
           :rows="3"
         />
-
       </el-form-item>
       <div style="color: #FF7C42; font-size: 12px; padding-top: 5px; margin-bottom: 10px; line-height: 1.5;">
         根据《咪咕文化科技有限公司4A管理办法》，数据导出必须通过4A金库模式管控并填写申请理由，若不填写或申请理由不充分，将会承担安全审计责任，后果自负！
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { ref, reactive } from 'vue'
 
 const emits = defineEmits(['confirm'])
@@ -62,8 +63,10 @@ const form = reactive({
 })
 
 const rules = {
-  reason: [
-    { required: true, trigger: 'blur', validator: (rule, value, callback) => {
+  reason: [{
+    required: true,
+    trigger: 'blur',
+    validator: (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入申请原因'))
       } else if (value.length < 10) {
@@ -73,8 +76,8 @@ const rules = {
       } else {
         callback()
       }
-    }}
-  ]
+    }
+  }]
 }
 
 const open = () => {

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref } from 'vue'
 import type Node from 'element-plus-secondary/es/components/tree/src/model/node'
 import { propTypes } from '@/utils/propTypes'

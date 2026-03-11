@@ -1,16 +1,12 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import type { BusiTreeRequest } from '@/models/tree/TreeNode'
 import { originNameHandleWithArr } from '@/utils/CalculateFields'
-import { checkViewPermissionApi } from '@/api/auth'
 import { cloneDeep } from 'lodash-es'
-import { ElMessage } from 'element-plus-secondary'
-import { useRouter } from 'vue-router_2'
-
-const router = useRouter()
 export interface ResourceOrFolder {
   name: string
   id?: number | string
-  pid?: number | string | string[]
+  pid?: number | string | Array<number | string>
   nodeType: 'folder' | 'leaf'
   type: string
   mobileLayout: boolean
@@ -121,17 +117,17 @@ export const storeApi = (data): Promise<IResponse> => {
   return request.post({ url: '/store/execute', data })
 }
 
+export const storeStatusApi = (id: string): Promise<IResponse> => {
+  return request.get({ url: `/store/favorited/${id}` })
+}
+
 // BI的收藏和取消收藏接口
 export const biFavoriteApi = (data): Promise<IResponse> => {
-  return request.post({ url: '/sdar/extend/collection/add', data })
+  return request.post({ url: '/sdar/rest/extend/collection/add', data })
 }
 
 export const biFavoriteCancelApi = (data): Promise<IResponse> => {
-  return request.post({ url: '/sdar/extend/collection/delete', data })
-}
-
-export const storeStatusApi = (id: string): Promise<IResponse> => {
-  return request.get({ url: `/store/favorited/${id}` })
+  return request.post({ url: '/sdar/rest/extend/collection/delete', data })
 }
 
 export const decompression = async data =>

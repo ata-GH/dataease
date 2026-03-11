@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { propTypes } from '@/utils/propTypes'
 
 const props = defineProps({

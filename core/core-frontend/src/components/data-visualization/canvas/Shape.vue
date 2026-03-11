@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     class="shape"
@@ -128,6 +129,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import mobileCheckbox from '@/assets/svg/mobile-checkbox.svg'
 import replaceOutlined from '@/assets/svg/icon_replace_outlined.svg'
 import dvLock from '@/assets/svg/dv-lock.svg'
@@ -138,19 +140,19 @@ import calculateComponentPositionAndSize, {
 import { mod360 } from '@/utils/translate'
 import { deepCopy } from '@/utils/utils'
 import { computed, nextTick, onMounted, ref, toRefs, reactive } from 'vue'
+import { ElMessage } from 'element-plus-secondary'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'
 import { contextmenuStoreWithOut } from '@/store/modules/data-visualization/contextmenu'
 import { composeStoreWithOut } from '@/store/modules/data-visualization/compose'
 import { storeToRefs } from 'pinia'
-import { imgUrlTrans, generateCanvasFile } from '@/utils/imgUtils'
+import { generateCanvasFile, imgUrlTrans } from '@/utils/imgUtils'
 import { submitExportFiles } from '@/api/chart'
-import { ElMessage } from 'element-plus-secondary'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 import ComponentEditBar from '@/components/visualization/ComponentEditBar.vue'
-import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import ComposeShow from '@/components/data-visualization/canvas/ComposeShow.vue'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import dvHidden from '@/assets/svg/dv-hidden.svg'
 import { groupSizeStyleAdaptor, groupStyleRevert, tabInnerStyleRevert } from '@/utils/style'
 import {
@@ -601,8 +603,8 @@ const handleMouseDownOnShape = e => {
     pos['top'] = top
     pos['left'] = left
     // 非主画布非分组画布的情况 需要检测是否从Tab中移除组件(向左移除30px 或者向右移除30px 向左移除30px)
-    // 因为仪表板中组件向下移动可能只是为了挤占空间 不一定是为了移出 这里无法判断明确意图 暂时支不支持向下移出
-    // 大屏和仪表板暂时做位置算法区分 仪表板暂时使用curX 因为缩放的影响 大屏使用 tab位置 + 组件位置（相对内部画布）+初始触发点
+    // 因为仪表盘中组件向下移动可能只是为了挤占空间 不一定是为了移出 这里无法判断明确意图 暂时支不支持向下移出
+    // 大屏和仪表盘暂时做位置算法区分 仪表盘暂时使用curX 因为缩放的影响 大屏使用 tab位置 + 组件位置（相对内部画布）+初始触发点
     // 如果组件在tab中且tab在Group中 不允许移入移出 pTabGroupFlag = true
     if (
       !pTabGroupFlag &&
@@ -631,9 +633,9 @@ const handleMouseDownOnShape = e => {
       dvMainStore.setTabMoveOutComponentId(null)
       contentDisplay.value = true
     }
-    // 仪表板进行Tab碰撞检查
+    // 仪表盘进行Tab碰撞检查
     tabMoveInCheck()
-    // 仪表板模式 会造成移动现象 当检测组件正在碰撞有效区内或者移入有效区内 则周边组件不进行移动
+    // 仪表盘模式 会造成移动现象 当检测组件正在碰撞有效区内或者移入有效区内 则周边组件不进行移动
     if (
       dashboardActive.value &&
       (isFirst || (!tabMoveInActiveId.value && !tabCollisionActiveId.value))
@@ -833,7 +835,7 @@ const handleMouseDownOnPoint = (point, e) => {
     calculateRadioComponentPositionAndSize(point, style, symmetricPoint)
 
     dvMainStore.setShapeStyle(style, areaData.value.components, 'resize', baseGroupComponentsRadio)
-    // 矩阵逻辑 如果当前是仪表板（矩阵模式）则要进行矩阵重排
+    // 矩阵逻辑 如果当前是仪表盘（矩阵模式）则要进行矩阵重排
     dashboardActive.value && emit('onResizing', moveEvent)
     element.value['resizing'] = true
     //如果当前组件是Group分组或者Tab 则要进行内部组件深度计算
@@ -1148,9 +1150,13 @@ const htmlToImage = () => {
     ElMessage.error(t('chart.field_is_empty_export_error'))
     return
   }
+  const viewInfo = dvMainStore.getViewDetails(element.value.id)
+  if (!viewInfo || (viewInfo && viewInfo.sceneId === 0)) {
+    ElMessage.error('请先保存仪表盘才能导出')
+    return
+  }
   exportApplicationDialogRef.value.open()
 }
-
 const getChartExcelTitle = (preFix, viewTitle) => {
   const now = new Date()
   const pad = n => n.toString().padStart(2, '0')
@@ -1267,6 +1273,9 @@ onMounted(() => {
   height: 100%;
   position: relative;
   background-size: 100% 100% !important;
+  :deep(.add-btn) {
+    display: none;
+  }
 }
 
 .shape-selected {

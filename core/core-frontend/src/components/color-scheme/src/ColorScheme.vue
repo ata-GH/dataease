@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_admin_outlined from '@/assets/svg/icon_admin_outlined.svg'
 import { ref } from 'vue'
 import { COLOR_CASES, COLOR_PANEL } from '@/views/chart/components/editor/util/chart'

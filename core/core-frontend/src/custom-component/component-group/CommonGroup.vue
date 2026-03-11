@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="tsx">
+/* eslint-disable */
 import { reactive, ref } from 'vue'
 import eventBus from '@/utils/eventBus'
 import Icon from '@/components/icon-custom/src/Icon.vue'

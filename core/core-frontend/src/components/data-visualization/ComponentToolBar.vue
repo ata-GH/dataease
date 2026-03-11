@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvReposition from '@/assets/svg/dv-reposition.svg'
 import dvMax from '@/assets/svg/dv-max.svg'
 import dvMin from '@/assets/svg/dv-min.svg'

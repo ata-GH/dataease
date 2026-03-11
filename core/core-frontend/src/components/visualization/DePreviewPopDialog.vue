@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     ref="previewPopDialog"
@@ -24,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, reactive, ref } from 'vue'
 import { useEmbedded } from '@/store/modules/embedded'
 import { XpackComponent } from '@/components/plugin'

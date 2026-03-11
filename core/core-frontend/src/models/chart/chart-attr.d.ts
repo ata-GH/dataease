@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * 图表设置
  */

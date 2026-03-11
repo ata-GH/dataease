@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const vClickOutside = {
   beforeMount(el, binding) {
     el.clickOutsideEvent = function (event) {

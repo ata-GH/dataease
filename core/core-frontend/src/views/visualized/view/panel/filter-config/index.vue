@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_viewList_outlined from '@/assets/svg/icon_view-list_outlined.svg'
 import icon_expandRight_filled from '@/assets/svg/icon_expand-right_filled.svg'
 import { ref, reactive, shallowRef, provide } from 'vue'

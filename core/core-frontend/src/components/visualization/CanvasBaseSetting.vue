@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%" ref="bgForm">
     <el-form size="small" label-position="top" style="width: 100%; margin-bottom: 16px">
@@ -80,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

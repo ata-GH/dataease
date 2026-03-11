@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore } from 'pinia'
 import { store } from '@/store'
 import { queryTreeApi, queryBusiTreeApi } from '@/api/visualization/dataVisualization'

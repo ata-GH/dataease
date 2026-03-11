@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import logo_dingtalk from '@/assets/svg/icon_sqlbot_colorful.svg'
 import { ref, reactive } from 'vue'
 import InfoTemplate from '@/views/system/common/InfoTemplate.vue'

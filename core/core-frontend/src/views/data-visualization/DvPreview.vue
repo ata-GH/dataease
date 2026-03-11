@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'

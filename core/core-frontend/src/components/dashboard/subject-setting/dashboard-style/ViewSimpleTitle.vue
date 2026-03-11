@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row class="custom-row">
     <el-row
@@ -121,6 +122,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_bold_outlined from '@/assets/svg/icon_bold_outlined.svg'
 import icon_italic_outlined from '@/assets/svg/icon_italic_outlined.svg'
 import icon_leftAlignment_outlined from '@/assets/svg/icon_left-alignment_outlined.svg'

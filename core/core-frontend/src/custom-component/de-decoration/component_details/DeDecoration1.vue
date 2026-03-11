@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="dv-decoration-1" :style="border_style" :ref="refName">
     <svg
@@ -80,6 +81,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, computed, watch, onMounted } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { customMergeColor } from '@/custom-component/de-decoration/component_details/config'

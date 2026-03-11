@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="tsx">
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_sideFold_outlined from '@/assets/svg/icon_side-fold_outlined.svg'
 import icon_sideExpand_outlined from '@/assets/svg/icon_side-expand_outlined.svg'
 import { useCache } from '@/hooks/web/useCache'

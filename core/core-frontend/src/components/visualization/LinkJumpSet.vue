@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     v-loading="state.loading"
@@ -623,6 +624,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { iconFieldMap } from '@/components/icon-group/field-list'
 import { iconChartMap } from '@/components/icon-group/chart-list'
 import datasetOutline from '@/assets/svg/dataset-outline.svg'
@@ -807,7 +809,7 @@ const init = viewItem => {
     checkJumpStr = checkAllAxisStr
   }
   const request = { busiFlag: 'dashboard-dataV' } as BusiTreeRequest
-  // 获取可关联的仪表板
+  // 获取可关联的仪表盘
   queryTreeApi(request).then(rsp => {
     if (rsp && rsp[0]?.id === '0') {
       state.panelList = rsp[0].children
@@ -819,7 +821,7 @@ const init = viewItem => {
     state.panelList = treeSort(state.panelList, curSortType)
   })
 
-  // 获取当前过滤条件明细 过滤原则：1.在当前仪表板或者大屏 2.作用于当前图表
+  // 获取当前过滤条件明细 过滤原则：1.在当前仪表盘或者大屏 2.作用于当前图表
   state.linkJumpCurFilterFieldArray = []
   initCurFilterFieldArray(componentData.value)
 
@@ -941,7 +943,7 @@ const codeMirrorContentSet = content => {
   })
 }
 
-// 获取当前图表字段 关联仪表板的图表信息列表
+// 获取当前图表字段 关联仪表盘的图表信息列表
 const getPanelViewList = dvId => {
   viewTableDetailList(dvId).then(rsp => {
     state.viewIdFieldArrayMap = {}

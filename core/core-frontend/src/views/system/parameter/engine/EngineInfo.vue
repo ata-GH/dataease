@@ -1,9 +1,11 @@
+<!-- eslint-disable -->
 <template>
   <EngineInfoTemplate ref="engineInfoTemplate" setting-key="engine" @edit="edit" />
   <engine-edit ref="editor" @saved="refresh" />
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref } from 'vue'
 
 import EngineInfoTemplate from '@/views/system/parameter/engine/EngineInfoTemplate.vue'

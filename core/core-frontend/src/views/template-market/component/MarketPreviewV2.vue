@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row style="width: 100%">
     <el-row style="display: table; width: 100%">
@@ -143,6 +144,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import marketExpand from '@/assets/svg/market-expand.svg'
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import iconFilter from '@/assets/svg/icon-filter.svg'

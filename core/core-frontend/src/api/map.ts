@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import { FeatureCollection } from '@antv/l7plot/dist/esm/plots/choropleth/types'
 

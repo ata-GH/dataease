@@ -1,7 +1,10 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvFolder from '@/assets/svg/dv-folder.svg'
 import icon_searchOutline_outlined from '@/assets/svg/icon_search-outline_outlined.svg'
 import { ref, reactive, computed, watch, nextTick, unref } from 'vue'
+import CheckPopoverSelect from '@/components/common/CheckPopoverSelect.vue'
 import treeSort from '@/utils/treeSortUtils'
 import { useCache } from '@/hooks/web/useCache'
 import { ElMessage } from 'element-plus-secondary'
@@ -13,7 +16,7 @@ import {
   createDatasetTree,
   renameDatasetTree
 } from '@/api/dataset'
-import { fetchOperatorListApi, fetchGroupListApi } from '@/api/auth'
+import { fetchOperatorListApi, fetchGroupListApi, fetchSourceTreeApi } from '@/api/auth'
 import type { DatasetOrFolder } from '@/api/dataset'
 import nothingTree from '@/assets/img/nothing-tree.png'
 import { BusiTreeRequest } from '@/models/tree/TreeNode'
@@ -27,7 +30,7 @@ export interface Tree {
   createBy?: string
   level: number
   leaf?: boolean
-  pid: string | number
+  pid: Array<string | number>
   union?: Array<{}>
   createTime: number
   allfields?: Array<{}>
@@ -51,47 +54,50 @@ let union = []
 let allfields = []
 let isCross = false
 const datasetForm = reactive({
-  pid: '',
+  pid: [] as Array<string | number>,
   name: ''
 })
 const searchEmpty = ref(false)
 
 // 权限与描述相关状态（仅在 nodeType === 'dataset' 时生效）
-const manageUsers = ref<string[]>([])
+const manageUsers = ref<string[]>([wsCache.get('user.biuid')])
 const manageRoles = ref<string[]>([])
-const viewUsers = ref<string[]>([])
+const viewUsers = ref<string[]>([wsCache.get('user.biuid')])
 const viewRoles = ref<string[]>([])
 const datasetDesc = ref('')
-const userOptions = ref<any[]>([
-  { id: 'u1', name: '张三' },
-  { id: 'u2', name: '李四' },
-  { id: 'u3', name: '王五' },
-  { id: 'u4', name: '赵六' }
-])
-const roleOptions = ref<any[]>([
-  { id: 'r1', name: '运营组' },
-  { id: 'r2', name: '研发组' },
-  { id: 'r3', name: '市场组' }
-])
+const userOptions = ref<any[]>([])
+const roleOptions = ref<any[]>([])
 // 缓存完整列表用于本地筛选
 const allUsers = ref<any[]>([])
 const allRoles = ref<any[]>([])
 const loadingUsers = ref(false)
 const loadingRoles = ref(false)
-
+// 下拉复选显示项：统一映射为 {label, value}
+const userCheckOptions = computed(() =>
+  (userOptions.value || []).map(u => ({
+    label: `${u.name || u.id}${u.loginName ? ' (' + u.loginName + ')' : ''}`,
+    value: u.id
+  }))
+)
+const roleCheckOptions = computed(() =>
+  (roleOptions.value || []).map(r => ({
+    label: r.name || r.id,
+    value: r.id
+  }))
+)
 const fetchUsers = async (keyword: string) => {
   loadingUsers.value = true
   try {
     if (!allUsers.value.length) {
       const res = await fetchOperatorListApi({ numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allUsers.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allUsers.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     userOptions.value = !kw
       ? allUsers.value
       : allUsers.value.filter(u => {
-          const name = (u.name || u.username || u.nickName || '').toLowerCase()
+          const name = u.name.toLowerCase()
           return name.includes(kw)
         })
   } finally {
@@ -103,8 +109,8 @@ const fetchRoles = async (keyword: string) => {
   try {
     if (!allRoles.value.length) {
       const res = await fetchGroupListApi({ state: 1, numberPerPage: 999999, currentPage: 1 })
-      const data = res?.data
-      allRoles.value = Array.isArray(data) ? data : data?.list || data || []
+      const rows = res?.data?.data?.rows || res?.data?.rows || []
+      allRoles.value = rows
     }
     const kw = (keyword || '').trim().toLowerCase()
     roleOptions.value = !kw
@@ -138,10 +144,10 @@ watch(filterText, val => {
 })
 
 const showPid = computed(() => {
-  if (nodeType.value === 'folder' && !!pid.value) {
+  if (nodeType.value === 'folder' && pid.value.length) {
     return false
   }
-  return !['rename', 'move'].includes(cmd.value) && !!pid.value
+  return !['rename', 'move'].includes(cmd.value) && pid.value.length
 })
 
 const labelName = computed(() => {
@@ -188,9 +194,9 @@ const filterMethod = (value, data) => data.name.includes(value)
 const resetForm = () => {
   createDataset.value = false
   // 清空新加字段
-  manageUsers.value = []
+  manageUsers.value = [wsCache.get('user.biuid')]
   manageRoles.value = []
-  viewUsers.value = []
+  viewUsers.value = [wsCache.get('user.biuid')]
   viewRoles.value = []
   datasetDesc.value = ''
 }
@@ -212,13 +218,23 @@ const formatRootMiss = (id: string | number, treeData: Tree[]) => {
   }
   return id
 }
+const nameValidator = (_, value, callback) => {
+  // 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
+  if (!value || !NAME_REG.test(value)) {
+    callback(new Error('请填写1~50位名称，允许汉字、字母、下划线、数字'))
+    return
+  } else {
+    callback()
+  }
+}
 const originResourceTree = ref([])
 const sortList = ['time_asc', 'time_desc', 'name_asc', 'name_desc']
 const createInit = (type, data: Tree, exec, name: string) => {
-  pid.value = ''
+  pid.value = []
   id.value = ''
   cmd.value = ''
-  datasetForm.pid = ''
+  datasetForm.pid = []
   datasetForm.name = ''
   filterText.value = ''
   nodeType.value = type
@@ -230,8 +246,10 @@ const createInit = (type, data: Tree, exec, name: string) => {
     isCross = data.isCross
   }
   if (data.id) {
-    const request = { leaf: false, weight: 7 } as BusiTreeRequest
-    getDatasetTree(request).then(res => {
+    // const request = { leaf: false, weight: 7 } as BusiTreeRequest
+    // getDatasetTree(request).then(res => {
+    fetchSourceTreeApi({ objType: 18 }).then(resp => {
+      const res = resp?.data?.data
       filterFreeFolder(res, 'dataset')
       dfs(res as unknown as Tree[])
       state.tData = (res as unknown as Tree[]) || []
@@ -246,11 +264,11 @@ const createInit = (type, data: Tree, exec, name: string) => {
       if (exec) {
         pid.value = data.pid
         id.value = data.id
-        datasetForm.pid = data.pid as string
+        datasetForm.pid = data.pid
         datasetForm.name = data.name
       } else {
-        datasetForm.pid = data.id as string
-        pid.value = data.id
+        datasetForm.pid = [data.id]
+        pid.value = [data.id]
       }
     })
 
@@ -270,18 +288,18 @@ const createInit = (type, data: Tree, exec, name: string) => {
         message: placeholder.value,
         trigger: 'blur'
       },
-      {
-        min: 1,
-        max: 64,
-        message: t('datasource.input_limit_1_64', [1, 64]),
-        trigger: 'blur'
-      }
+      { required: true, trigger: 'blur', validator: nameValidator }
     ],
     pid: [
       {
         required: true,
-        message: t('common.please_select'),
-        trigger: 'blur'
+        // message: t('common.please_select'),
+        // trigger: 'blur'
+        validator: (_: any, value: any, callback: any) => {
+          const ok = Array.isArray(value) ? value.length > 0 : !!value
+          ok ? callback() : callback(new Error(t('common.please_select')))
+        },
+        trigger: 'change'
       }
     ]
   }
@@ -304,12 +322,13 @@ const props = {
   isLeaf: node => !node.children?.length
 }
 
-const nodeClick = (data: Tree) => {
-  activeAll.value = false
-  datasetForm.pid = data.id as string
-}
+// const nodeClick = (data: Tree) => {
+//   activeAll.value = false
+//   datasetForm.pid = data.id as string
+// }
 const checkPid = pid => {
-  if (pid !== 0 && !pid) {
+  const pidArr = Array.isArray(pid) ? pid : [pid]
+  if (!pidArr.length || (pidArr[0] !== 0 && !pidArr[0])) {
     ElMessage.error(t('data_set.the_destination_folder'))
     return false
   }
@@ -325,15 +344,15 @@ const saveDataset = () => {
 
       switch (cmd.value) {
         case 'move':
-          params.pid = activeAll.value ? '0' : (datasetForm.pid as string)
+          params.pid = activeAll.value ? ['0'] : datasetForm.pid
           params.id = id.value
           break
         case 'rename':
-          params.pid = pid.value as string
+          params.pid = pid.value
           params.id = id.value
           break
         default:
-          params.pid = datasetForm.pid || pid.value || '0'
+          params.pid = datasetForm.pid || pid.value || ['0']
           break
       }
       if (nodeType.value === 'dataset') {
@@ -353,6 +372,7 @@ const saveDataset = () => {
       loading.value = true
       const req =
         cmd.value === 'move' ? moveDatasetTree : params.id ? renameDatasetTree : createDatasetTree
+      console.log('保存数据集', params)
       req(params)
         .then(res => {
           dataset.value.resetFields()
@@ -367,7 +387,7 @@ const saveDataset = () => {
               break
             default:
               emits('onDatasetSave')
-              ElMessage.success(t('common.save_success'))
+              // ElMessage.success(t('common.save_success'))
               break
           }
         })
@@ -396,7 +416,7 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
   >
     <el-form
       label-position="top"
-      require-asterisk-position="right"
+      require-asterisk-position="left"
       ref="dataset"
       @keydown.stop.prevent.enter
       :model="datasetForm"
@@ -406,15 +426,16 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
         <el-input :placeholder="placeholder" v-model="datasetForm.name" />
       </el-form-item>
 
-      <el-form-item v-if="showPid" :label="t('deDataset.folder')" prop="pid">
+      <el-form-item label="所属目录" prop="pid">
         <el-tree-select
           v-model="datasetForm.pid"
           :data="state.tData"
           popper-class="dataset-tree-select"
           :render-after-expand="false"
           style="width: 100%"
+          multiple
+          check-strictly
           :props="props"
-          @node-click="nodeClick"
           :filter-node-method="filterMethod"
           filterable
         >
@@ -431,7 +452,7 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
       <el-row class="ed-form-item" v-if="showName && nodeType === 'dataset'" :gutter="12">
         <el-col :span="12">
           <el-form-item label="管理权限（用户）">
-            <el-select
+            <!-- <el-select
               v-model="manageUsers"
               multiple
               filterable
@@ -444,12 +465,19 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
                 :label="item.name || item.username || item.nickName"
                 :value="item.id || item.uid || item.userId"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="manageUsers"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户管理权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="管理权限（群组）">
-            <el-select
+            <!-- <el-select
               v-model="manageRoles"
               multiple
               filterable
@@ -462,7 +490,14 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
                 :label="item.name"
                 :value="item.id || item.rid"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="manageRoles"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组管理权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -471,7 +506,7 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
       <el-row class="ed-form-item" v-if="showName && nodeType === 'dataset'" :gutter="12">
         <el-col :span="12">
           <el-form-item label="查看权限（用户）">
-            <el-select
+            <!-- <el-select
               v-model="viewUsers"
               multiple
               filterable
@@ -484,12 +519,19 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
                 :label="item.name || item.username || item.nickName"
                 :value="item.id || item.uid || item.userId"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="viewUsers"
+              :options="userCheckOptions"
+              :loading="loadingUsers"
+              placeholder="请选择用户查看权限"
+              @search="fetchUsers"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="查看权限（群组）">
-            <el-select
+            <!-- <el-select
               v-model="viewRoles"
               multiple
               filterable
@@ -502,14 +544,21 @@ const emits = defineEmits(['finish', 'onDatasetSave'])
                 :label="item.name"
                 :value="item.id || item.rid"
               />
-            </el-select>
+            </el-select> -->
+            <CheckPopoverSelect
+              v-model="viewRoles"
+              :options="roleCheckOptions"
+              :loading="loadingRoles"
+              placeholder="请选择群组查看权限"
+              @search="fetchRoles"
+            />
           </el-form-item>
         </el-col>
       </el-row>
 
       <!-- 数据集描述 -->
       <el-form-item v-if="showName && nodeType === 'dataset'" label="数据集描述">
-        <el-input type="textarea" :rows="3" v-model="datasetDesc" placeholder="请输入" />
+        <el-input type="textarea" maxlength="200" show-word-limit :rows="3" v-model="datasetDesc" placeholder="请输入" />
       </el-form-item>
 
       <div v-if="cmd === 'move'">

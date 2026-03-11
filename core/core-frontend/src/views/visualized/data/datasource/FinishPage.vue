@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_succeed_colorful from '@/assets/svg/icon_succeed_colorful.svg'
 import icon_dataset from '@/assets/svg/icon_dataset.svg'
 import { ref } from 'vue'

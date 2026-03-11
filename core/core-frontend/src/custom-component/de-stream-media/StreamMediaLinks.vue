@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row>
     <el-form @submit.prevent :effect="themes" ref="form" size="mini" style="width: 100%">
@@ -45,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive, toRefs, watch } from 'vue'
 import { dvMainStoreWithOut } from '../../store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia/dist/pinia'

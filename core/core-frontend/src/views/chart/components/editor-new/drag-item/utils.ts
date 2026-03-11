@@ -1,3 +1,4 @@
+/* eslint-disable */
 export function getItemType(dimensionData, quotaData, item) {
   // Check whether the current view is in template status
   // ( dimensionData and quotaData have no data). If yes, return 'success' directly

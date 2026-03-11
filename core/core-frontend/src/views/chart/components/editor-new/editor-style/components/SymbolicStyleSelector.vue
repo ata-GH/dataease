@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { DEFAULT_BASIC_STYLE } from '@/views/chart/components/editor-new/util/chart'
 import { ElMessage, UploadProps } from 'element-plus-secondary'

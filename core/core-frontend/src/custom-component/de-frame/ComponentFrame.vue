@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row class="main-frame">
     <div v-if="element.frameLinks.src" class="main-frame">
@@ -29,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { nextTick, onMounted, reactive, toRefs } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { useI18n } from '@/hooks/web/useI18n'

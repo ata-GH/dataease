@@ -1,3 +1,4 @@
+/* eslint-disable */
 Date.prototype['format'] = function (fmt) {
   fmt = fmt || 'yyyy-MM-dd hh:mm:ss'
   const o = {

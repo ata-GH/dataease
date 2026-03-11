@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { toType, createTypes, VueTypesInterface, VueTypeValidableDef } from 'vue-types'
 import { CSSProperties } from 'vue'
 

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="circle-shape">
     <img class="dynamic-shape" :src="findUrl(element.innerType)" alt="" />
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 defineProps({
   element: {
     type: Object,

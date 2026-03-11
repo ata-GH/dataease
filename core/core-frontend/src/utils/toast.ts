@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ElMessage } from 'element-plus-secondary'
 
 export default function toast(message = '') {

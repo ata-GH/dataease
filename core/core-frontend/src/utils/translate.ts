@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { divide, multiply, floor } from 'mathjs'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'

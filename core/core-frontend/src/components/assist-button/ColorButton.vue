@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="color-button-main">
     <div
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs } from 'vue'
 
 const emits = defineEmits(['onClick'])

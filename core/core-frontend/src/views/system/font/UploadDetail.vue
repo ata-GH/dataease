@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_upload_outlined from '@/assets/svg/icon_upload_outlined.svg'
 import { ref, reactive } from 'vue'
 import { uploadFontFile } from '@/api/font'

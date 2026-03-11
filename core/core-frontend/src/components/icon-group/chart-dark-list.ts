@@ -1,3 +1,4 @@
+/* eslint-disable */
 import areaDark from '@/assets/svg/area-dark.svg'
 import areaStackDark from '@/assets/svg/area-stack-dark.svg'
 import barDark from '@/assets/svg/bar-dark.svg'

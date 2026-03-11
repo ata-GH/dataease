@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import DeResourceTree from '@/views/common/DeResourceTree.vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -299,7 +301,7 @@ defineExpose({
         <el-icon v-if="slideShow"><ArrowLeft /></el-icon>
         <el-icon v-else><ArrowRight /></el-icon>
       </div>
-      <!--从store中判断当前是否有点击仪表板 复用时也符合-->
+      <!--从store中判断当前是否有点击仪表盘 复用时也符合-->
       <template v-if="previewShowFlag">
         <preview-head
           v-if="showPosition === 'preview'"

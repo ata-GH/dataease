@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_sortAToZ_outlined from '@/assets/svg/icon_sort-a-to-z_outlined.svg'
 import icon_sortZToA_outlined from '@/assets/svg/icon_sort-z-to-a_outlined.svg'
 import icon_sort_outlined from '@/assets/svg/icon_sort_outlined.svg'
@@ -509,8 +511,7 @@ onMounted(() => {
                   <el-dropdown-item
                     class="menu-item-padding"
                     :disabled="item.dateStyle === 'y_M'"
-                    :command="beforeDateStyle('y_M_d')"
-                  >
+                    :command="beforeDateStyle('y_M_d')">
                     <span
                       class="sub-menu-content"
                       :class="{

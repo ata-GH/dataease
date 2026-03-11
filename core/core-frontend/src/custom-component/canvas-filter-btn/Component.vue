@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <!-- IconSlider.vue -->
 <template>
   <el-tooltip :offset="22" effect="dark" placement="left" :content="t('visualization.query')">
@@ -22,6 +23,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed, ref } from 'vue'
 import { ElTooltip } from 'element-plus-secondary'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

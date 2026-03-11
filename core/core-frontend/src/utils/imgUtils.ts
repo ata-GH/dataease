@@ -1,3 +1,4 @@
+/* eslint-disable */
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -39,7 +40,15 @@ export function imgUrlTrans(url) {
 export function download2AppTemplate(downloadType, canvasDom, name, attachParams, callBack?) {
   try {
     findStaticSource(function (staticResource) {
-      html2canvas(canvasDom).then(canvas => {
+      const width = canvasDom.offsetWidth
+      const height = canvasDom.offsetHeight
+      html2canvas(canvasDom, {
+        scale: 1,
+        width,
+        height,
+        useCORS: true,
+        allowTaint: true
+      }).then(canvas => {
         const canvasViewDataTemplate = deepCopy(canvasViewInfo.value)
         Object.keys(canvasViewDataTemplate).forEach(viewId => {
           canvasViewDataTemplate[viewId].data = canvasViewDataInfo.value[viewId]
@@ -82,7 +91,15 @@ export function download2AppTemplate(downloadType, canvasDom, name, attachParams
 export function downloadCanvas2(type, canvasDom, name, callBack?) {
   // const canvasDom = document.getElementById(canvasId)
   if (canvasDom) {
-    html2canvas(canvasDom)
+    const width = canvasDom.offsetWidth
+    const height = canvasDom.offsetHeight
+    html2canvas(canvasDom, {
+      scale: 1,
+      width,
+      height,
+      useCORS: true,
+      allowTaint: true
+    })
       .then(canvas => {
         const dom = document.body.appendChild(canvas)
         dom.style.display = 'none'

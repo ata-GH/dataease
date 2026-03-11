@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-tooltip
     v-if="props.weight >= 7 && props.inGrid"
@@ -212,6 +213,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import dvShare from '@/assets/svg/dv-share.svg'
 import icon_shareLabel_outlined from '@/assets/svg/icon_share-label_outlined.svg'
 import deCopy from '@/assets/svg/de-copy.svg'

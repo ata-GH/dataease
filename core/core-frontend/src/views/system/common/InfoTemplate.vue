@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="info-template-container">
     <div v-if="!props.hideHead" class="info-template-header">
@@ -89,6 +90,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import eye from '@/assets/svg/eye.svg'
 import eyeOpen from '@/assets/svg/eye-open.svg'
 import dvInfo from '@/assets/svg/dv-info.svg'

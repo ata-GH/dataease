@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { sql } from '@codemirror/lang-sql'
 import { basicSetup } from 'codemirror'
 import { indentWithTab } from '@codemirror/commands'

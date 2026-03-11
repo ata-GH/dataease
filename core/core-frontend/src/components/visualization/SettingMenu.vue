@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div>
     <div style="width: 100%">
@@ -144,6 +145,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { getViewLinkageGather } from '@/api/visualization/linkage'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -315,7 +317,7 @@ const linkageSetting = () => {
     .filter(item => item.type === 'view' && item.propValue && item.propValue.viewId)
     .map(item => item.propValue.viewId)
 
-  // 获取当前仪表板当前图表联动信息
+  // 获取当前仪表盘当前图表联动信息
   const requestInfo = {
     panelId: dvInfo.value.id,
     sourceViewId: curComponent.value.propValue.viewId,

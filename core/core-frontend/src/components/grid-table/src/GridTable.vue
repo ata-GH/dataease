@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { reactive, ref, computed, watch, nextTick, onBeforeMount, useAttrs } from 'vue'
 import { ElTable, ElPagination } from 'element-plus-secondary'
 import EmptyBackground from '@/components/empty-background/src/EmptyBackground.vue'

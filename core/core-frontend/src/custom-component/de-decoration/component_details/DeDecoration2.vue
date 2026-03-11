@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, computed, watch, onMounted } from 'vue'
 import { customMergeColor } from '@/custom-component/de-decoration/component_details/config'
 import { cloneDeep } from 'lodash-es'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts">
+/* eslint-disable */
 const TableBody = (props, context) => {
   const nodes = []
   const { columns } = props

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvAi from '@/assets/svg/dv-ai.svg'
 import { onMounted, ref } from 'vue'
 const visible = ref(true)

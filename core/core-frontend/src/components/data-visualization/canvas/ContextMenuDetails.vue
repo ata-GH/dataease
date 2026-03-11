@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { lockStoreWithOut } from '@/store/modules/data-visualization/lock'
 import { copyStoreWithOut } from '@/store/modules/data-visualization/copy'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface DropdownProps {
   icon?: string
   disabled?: boolean

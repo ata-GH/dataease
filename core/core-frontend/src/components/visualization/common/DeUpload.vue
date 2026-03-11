@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="avatar-uploader-container" :class="`img-area_${themes}`">
     <el-upload
@@ -35,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'

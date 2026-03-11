@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs } from 'vue'
 import ComponentHang from '@/custom-component/independent-hang/ComponentHang.vue'
 

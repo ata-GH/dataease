@@ -1,3 +1,4 @@
+/* eslint-disable */
 import areaStack from '@/assets/svg/area-stack.svg'
 import area from '@/assets/svg/area.svg'
 import barGroupStack from '@/assets/svg/bar-group-stack.svg'

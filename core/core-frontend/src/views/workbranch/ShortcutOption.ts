@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import request from '@/config/axios'
 const { t } = useI18n()

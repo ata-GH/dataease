@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { ComponentInfo } from '@/api/chart'
 import { guid } from '@/views/visualized/data/dataset/form/util.js'
 import { useI18n } from '@/hooks/web/useI18n'

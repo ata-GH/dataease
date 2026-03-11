@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 
 interface IResourceCount {

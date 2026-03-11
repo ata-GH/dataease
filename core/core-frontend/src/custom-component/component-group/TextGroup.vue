@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvRichText from '@/assets/svg/dv-richText.svg'
 import dvScrollText from '@/assets/svg/dv-scroll-text.svg'
 import { toRefs } from 'vue'

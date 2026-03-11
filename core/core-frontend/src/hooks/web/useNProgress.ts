@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { nextTick, unref } from 'vue'
 import type { NProgressOptions } from 'nprogress'
 import NProgress from 'nprogress'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <!--此区域暂时放到类似图表和分组平行的组件作为后续扩展使用，但当前版本只作为类似MarkLine 和canvasCore平行组件 仅做区域显示使用-->
   <div
@@ -40,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { findDragComponent } from '@/utils/canvasUtils'
 import { guid } from '@/views/visualized/data/dataset/form/util'

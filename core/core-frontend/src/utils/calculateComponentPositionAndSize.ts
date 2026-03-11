@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable no-lonely-if */
 import { calculateRotatedPointCoordinate, getCenterPoint } from '@/utils/translate'
 

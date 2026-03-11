@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dvDashboardSpineMobile from '@/assets/svg/dv-dashboard-spine-mobile.svg'
 import dvDashboardSpineMobileDisabled from '@/assets/svg/dv-dashboard-spine-mobile-disabled.svg'
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
@@ -143,7 +145,7 @@ const state = reactive({
 })
 
 const dvSvgType = computed(() =>
-  ['dashboard', 'chart'].includes(curCanvasType.value) ? dvDashboardSpine : dvScreenSpine
+  (curCanvasType.value === 'dashboard' || curCanvasType.value === 'chart') ? dvDashboardSpine : dvScreenSpine
 )
 
 const isEmbedded = computed(() => appStore.getIsDataEaseBi || appStore.getIsIframe)

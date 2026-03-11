@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { ViewLevel } from '@antv/l7plot/dist/esm/plots/choropleth/types'
 import type { FeatureCollection } from '@antv/l7plot/dist/esm/plots/choropleth/types'
 import type { PlotOptions } from '@antv/l7plot/dist/esm/types/plot'

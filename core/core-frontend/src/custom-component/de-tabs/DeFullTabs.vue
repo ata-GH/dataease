@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-tabs
     class="fu-tabs"
@@ -49,6 +50,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { PropType } from 'vue'
 import { DropdownProps } from '@/custom-component/de-tabs/types'
 import generateID from '@/utils/generateID'

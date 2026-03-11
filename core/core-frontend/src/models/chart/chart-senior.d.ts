@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { SymbolicMap } from '@/views/chart/components/js/panel/charts/map/symbolic-map'
 
 /**

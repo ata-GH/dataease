@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { sin, cos, toPercent } from '@/utils/translate'
 import { imgUrlTrans } from '@/utils/imgUtils'
 import { hexColorToRGBA } from '@/views/chart/components/js/util'
@@ -205,7 +206,7 @@ export function getCanvasStyle(canvasStyleData, canvasId = 'canvas-main') {
   } = canvasStyleData
   const style = { fontSize: fontSize + 'px', color: canvasStyleData.color }
   if (isMainCanvas(canvasId)) {
-    // 仪表板默认色#f5f6f7 大屏默认配色 #1a1a1a
+    // 仪表盘默认色#f5f6f7 大屏默认配色 #1a1a1a
     let colorRGBA = dvMainStore.dvInfo.type === 'dashboard' ? '#f5f6f7' : '#1a1a1a'
     if (backgroundColorSelect && backgroundColor) {
       colorRGBA = backgroundColor

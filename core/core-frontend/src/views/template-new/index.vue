@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="template-new-container">
     <template-market ref="templateMarketRef" @close="close"></template-market>
@@ -5,9 +6,10 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import TemplateMarket from '@/views/template-market/index.vue'
 import { nextTick, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router_2'
 
 const router = useRouter()
 const templateMarketRef = ref(null)

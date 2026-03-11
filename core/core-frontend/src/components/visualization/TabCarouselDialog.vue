@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row>
     <el-form ref="form" size="mini" label-width="70px">
@@ -27,6 +28,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import { reactive } from 'vue'

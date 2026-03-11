@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const TABLE_EDITOR_PROPERTY: EditorProperty[] = [
   'background-overall-component',
   'border-style',

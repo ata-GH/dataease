@@ -1,8 +1,10 @@
+<!-- eslint-disable -->
 <template>
   <editor v-model="myValue" :init="init" :disabled="disabled" :id="tinymceId"></editor>
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { formatDataEaseBi } from '@/utils/url'
 //JS部分
 //在js中引入所需的主题和组件

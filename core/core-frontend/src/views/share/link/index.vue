@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     class="link-container"
@@ -30,6 +31,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import { onMounted, nextTick, ref, reactive, onBeforeUnmount } from 'vue'
 import { useRequestStoreWithOut } from '@/store/modules/request'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'

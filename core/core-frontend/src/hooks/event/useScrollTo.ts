@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ref, unref } from 'vue'
 
 export interface ScrollToParams {

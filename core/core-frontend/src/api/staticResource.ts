@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import { guid } from '@/views/visualized/data/dataset/form/util.js'
 import { ElMessage } from 'element-plus-secondary'

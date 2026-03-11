@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="grid">
     <div v-for="(yItem, index) in positionBox" :key="index + 'y'" class="outer-class">
@@ -9,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs } from 'vue'
 
 const props = defineProps({

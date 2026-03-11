@@ -1,3 +1,4 @@
+/* eslint-disable */
 import ace from 'ace-builds'
 import themeChromeUrl from 'ace-builds/src-noconflict/theme-chrome?url'
 ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl)

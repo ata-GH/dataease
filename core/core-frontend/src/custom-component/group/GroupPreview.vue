@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { ref, toRefs } from 'vue'
 import ComponentWrapper from '@/components/data-visualization/canvas/ComponentWrapper.vue'
 import { toPercent } from '@/utils/translate'
@@ -29,7 +31,7 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,

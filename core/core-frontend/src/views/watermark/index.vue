@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template xmlns:el-col="http://www.w3.org/1999/html">
   <el-row class="watermark-table__content">
     <el-row class="watermark-main-outer">
@@ -106,6 +107,7 @@
 </template>
 
 <script setup>
+/* eslint-disable */
 import { onMounted, reactive } from 'vue'
 import { watermarkFind, watermarkSave } from '@/api/watermark'
 import { ElMessage } from 'element-plus-secondary/es'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 公共样式
 import { deepCopy } from '@/utils/utils'
 import { guid } from '@/views/visualized/data/dataset/form/util'
@@ -239,7 +240,7 @@ export const commonAttr = {
   maintainRadio: false, // 布局时保持宽高比例
   aspectRatio: 1, // 锁定时的宽高比例
   isShow: true, // 是否显示组件
-  dashboardHidden: false, // 仪表板组件隐藏
+  dashboardHidden: false, // 仪表盘组件隐藏
   category: 'base', //组件类型 base 基础组件 hidden隐藏组件
   // 当前组件动作
   dragging: false,

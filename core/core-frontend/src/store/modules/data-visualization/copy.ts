@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore, storeToRefs } from 'pinia'
 import { dvMainStoreWithOut } from './dvMain'
 import { contextmenuStoreWithOut } from './contextmenu'

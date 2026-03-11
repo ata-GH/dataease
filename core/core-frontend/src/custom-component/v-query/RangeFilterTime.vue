@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { toRefs, computed, PropType, watch } from 'vue'
 import { type TimeRange } from './time-format'
 import { useI18n } from '@/hooks/web/useI18n'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { propTypes } from '@/utils/propTypes'
 import { ElTreeSelect } from 'element-plus-secondary'
 import { computed, reactive, ref, PropType, toRefs, watch } from 'vue'

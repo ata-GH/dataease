@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import { originNameHandleWithArr, originNameHandleBackWithArr } from '@/utils/CalculateFields'
 import { cloneDeep } from 'lodash-es'
@@ -98,15 +99,6 @@ export const innerExportDetails = async (data): Promise<IResponse> => {
   })
 }
 
-export const submitExportFiles = data =>
-  request.post({
-    url: '/chartData/innerExportFiles',
-    data,
-    headersType: 'multipart/form-data',
-    loading: true,
-    responseType: 'blob'
-  })
-
 export const innerExportDataSetDetails = async (data): Promise<IResponse> => {
   return request.post({
     url: '/chartData/innerExportDataSetDetails',
@@ -116,6 +108,14 @@ export const innerExportDataSetDetails = async (data): Promise<IResponse> => {
     responseType: 'blob'
   })
 }
+
+export const submitExportFiles = data => request.post({
+  url: '/chartData/innerExportFiles',
+  data,
+  headersType: 'multipart/form-data',
+  loading: true,
+  responseType: 'blob'
+})
 
 // 通过图表id获取数据
 export const getChart = async (id): Promise<IResponse> => {

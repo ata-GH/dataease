@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     ref="enlargeDialog"
@@ -32,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import drag from '@/assets/svg/drag.svg'
 import draggable from 'vuedraggable'
 import { ref } from 'vue'

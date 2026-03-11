@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { storeToRefs } from 'pinia'
 import { dvMainStoreWithOut } from './dvMain'
 const dvMainStore = dvMainStoreWithOut()

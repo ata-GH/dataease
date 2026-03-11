@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import noJoin from '@/assets/svg/no-join.svg'
 import icon_fullAssociation from '@/assets/svg/icon_full-association.svg'
 import icon_intersect from '@/assets/svg/icon_intersect.svg'

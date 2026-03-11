@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { dvNameCheck, moveResource } from '@/api/visualization/dataVisualization'
 import { cloneDeep } from 'lodash-es'
 const treeDraggbleChart = (state, key, type) => {

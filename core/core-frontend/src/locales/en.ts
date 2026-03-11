@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   common: {
     month_to_yesterday: 'From the beginning of the month to yesterday',

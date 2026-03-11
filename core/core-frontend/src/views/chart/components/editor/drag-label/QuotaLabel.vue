@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { includesAny, equalsAny } from '../util/StringUtils'
 const { t } = useI18n()

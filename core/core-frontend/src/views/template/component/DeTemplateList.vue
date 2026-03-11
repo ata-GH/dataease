@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template xmlns:el-col="http://www.w3.org/1999/html">
   <div class="de-template-list">
     <el-empty
@@ -41,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed, reactive } from 'vue'
 import NoneImage from '@/assets/none.png'

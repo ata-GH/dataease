@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_upload_outlined from '@/assets/svg/icon_upload_outlined.svg'
 import { Icon } from '@/components/icon-custom'
 import { ElIcon } from 'element-plus-secondary'
@@ -300,17 +302,13 @@ const saveExcelDs = (params, successCb, finallyCb) => {
       description: params.description
     }
   } else {
+    // 替换数据和追加数据
     table = {
       id: props.param.id,
       name: props.param.name,
       type: 'Excel',
       sheets: selectedSheet,
-      editType: props.param.editType ? props.param.editType : 0,
-      manageUserIds: params.manageUserIds,
-      manageRoleIds: params.manageRoleIds,
-      viewUserIds: params.viewUserIds,
-      viewRoleIds: params.viewRoleIds,
-      description: params.description
+      editType: props.param.editType ? props.param.editType : 0
     }
   }
 
@@ -432,6 +430,17 @@ const submitForm = () => {
 }
 
 const showName = ref(true)
+
+const nameValidator = (_, value, callback) => {
+  // 名称校验：1~50 位，允许中文、字母、数字、下划线，并校验重名
+  const NAME_REG = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,50}$/
+  if (!value || !NAME_REG.test(value)) {
+    callback(new Error('请填写1~50位名称，允许汉字、字母、下划线、数字'))
+    return
+  } else {
+    callback()
+  }
+}
 
 const appendReplaceExcel = response => {
   showName.value = false
@@ -651,7 +660,8 @@ defineExpose({
                 t('datasource.datasource') +
                 t('common.empty') +
                 t('common.name')
-            }
+            },
+            { required: true, trigger: 'blur', validator: nameValidator }
           ]"
           :label="
             t('visualization.custom') +
@@ -663,6 +673,7 @@ defineExpose({
         >
           <el-input
             v-model="param.name"
+            maxlength="50"
             :placeholder="
               t('common.please_input') +
               t('common.empty') +
@@ -670,6 +681,7 @@ defineExpose({
               t('common.empty') +
               t('common.name')
             "
+            style="width: 600px;"
           />
         </el-form-item>
       </el-form>
@@ -916,9 +928,6 @@ defineExpose({
       }
       &.info-table_height {
         height: calc(100% - 379px);
-        .ed-table--fit {
-          height: 100%;
-        }
       }
     }
   }

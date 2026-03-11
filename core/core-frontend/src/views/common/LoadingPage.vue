@@ -1,9 +1,10 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 // 可选：接收 query 参数以显示自定义提示
 // import { useRoute } from 'vue-router_2'
 // const route = useRoute()
 // const tip = computed(() => route.query?.tip as string || '正在加载，请稍候…')
-
 // 关闭加载页：通知父窗口
 const closeLoading = () => {
   try {
@@ -26,7 +27,7 @@ const closeLoading = () => {
   </div>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 .loading-page {
   position: fixed;
   inset: 0;
@@ -45,7 +46,7 @@ const closeLoading = () => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  border: 4px solid rgba(0,0,0,0.1);
   border-top-color: #409eff; /* Element Plus primary color */
   animation: spin 0.9s linear infinite;
 }
@@ -67,8 +68,7 @@ const closeLoading = () => {
   color: #409eff;
 }
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 </style>
+

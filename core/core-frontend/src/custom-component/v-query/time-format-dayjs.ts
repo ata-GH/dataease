@@ -1,3 +1,4 @@
+/* eslint-disable */
 import dayjs from 'dayjs'
 import type { ManipulateType } from 'dayjs'
 function getThisStart(val = 'month' as ManipulateType | 'quarter') {

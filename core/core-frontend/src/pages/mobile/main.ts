@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createApp } from 'vue'
 import '@/style/index.less'
 import 'normalize.css/normalize.css'

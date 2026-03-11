@@ -1,17 +1,20 @@
+<!-- eslint-disable -->
 <template>
   <div class="testcase-template">
     <div class="template-img-container">
       <div class="template-img" :style="classBackground" @click.stop="templateInnerPreview" />
     </div>
     <el-row class="bottom-area"> </el-row>
-    <el-row
+    <!-- <el-row
       class="bottom-area-show"
       :class="{
         'create-area': !createAuth[template.templateType]
       }"
-    >
+    > -->
+    <el-row class="bottom-area-show">
       <el-row class="demonstration"> {{ template.title }} </el-row>
-      <el-row class="template-button" v-show="createAuth[template.templateType]">
+      <!-- <el-row class="template-button" v-show="createAuth[template.templateType]"> -->
+      <el-row class="template-button">
         <el-button secondary style="width: calc(50% - 18px)" @click="templateInnerPreview">{{
           t('visualization.preview')
         }}</el-button>
@@ -24,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'

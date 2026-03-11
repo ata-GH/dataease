@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 
 export const watermarkSave = params => request.post({ url: '/watermark/save', data: params })

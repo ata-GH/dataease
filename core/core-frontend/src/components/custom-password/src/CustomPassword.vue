@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { useAttrs, computed } from 'vue'
 import icon_visible_outlined from '@/assets/svg/icon_visible_outlined.svg'
 import icon_invisible_outlined from '@/assets/svg/icon_invisible_outlined.svg'

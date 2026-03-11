@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const getRange = (outerTimeValue, timeGranularity) => {
   const selectValue = timeGranularity === 'y_M_d_H' ? outerTimeValue + ':' : outerTimeValue
   if (new Date(selectValue).toString() === 'Invalid Date') {

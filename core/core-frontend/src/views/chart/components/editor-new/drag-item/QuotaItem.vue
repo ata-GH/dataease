@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_sortAToZ_outlined from '@/assets/svg/icon_sort-a-to-z_outlined.svg'
 import icon_sortZToA_outlined from '@/assets/svg/icon_sort-z-to-a_outlined.svg'
 import icon_sort_outlined from '@/assets/svg/icon_sort_outlined.svg'

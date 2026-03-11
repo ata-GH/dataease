@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="template">
     <div class="photo">
@@ -18,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { computed } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'

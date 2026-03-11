@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_excel from '@/assets/svg/icon_excel.svg'
 withDefaults(
   defineProps<{

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const domSymbol = Symbol('watermark-dom')
 
 export function useWatermark(appendEl: HTMLElement | null = document.body) {

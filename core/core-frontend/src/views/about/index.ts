@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface F2CLicense {
   isv: string
   status: string

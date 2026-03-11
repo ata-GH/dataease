@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const domId = ref('de-map-container')

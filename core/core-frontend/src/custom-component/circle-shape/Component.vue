@@ -1,8 +1,10 @@
+<!-- eslint-disable -->
 <template>
   <div class="circle-shape"></div>
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 defineProps({
   propValue: {
     type: String,

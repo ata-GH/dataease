@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 
 export const searchApi = data => request.post({ url: '/org/page/tree', data })

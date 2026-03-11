@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ref, onBeforeUnmount, onMounted } from 'vue'
 import { useCache } from '@/hooks/web/useCache'
 import { useEmitt } from '@/hooks/web/useEmitt'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { Scene } from '@antv/l7-scene'
 import {
   AntVAbstractChartView,

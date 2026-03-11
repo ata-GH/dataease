@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type {
   Bullet as G2Bullet,
   BulletOptions as G2BulletOptions

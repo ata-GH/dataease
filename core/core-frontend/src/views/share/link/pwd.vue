@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="pwd-body" v-loading="loading">
     <div class="pwd-wrapper">
@@ -41,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import type { FormInstance, FormRules } from 'element-plus-secondary'

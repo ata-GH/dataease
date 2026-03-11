@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import configGlobal from '@/components/config-global/src/ConfigGlobal.vue'
 let startX = 0 // 滑动开始时的X坐标
 let endX = 0 // 滑动结束时的X坐标

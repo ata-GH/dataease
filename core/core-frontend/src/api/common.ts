@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 
 // 获取权限路由

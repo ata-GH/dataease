@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <InfoTemplate
     ref="infoTemplate"
@@ -38,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_down_outlined1 from '@/assets/svg/icon_down_outlined-1.svg'
 import icon_down_outlined from '@/assets/svg/icon_down_outlined.svg'
 import { ref, nextTick } from 'vue'

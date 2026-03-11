@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import dbMoreWeb from '@/assets/svg/db-more-web.svg'
 import dvTabScreen from '@/assets/svg/dv-tab-screen.svg'
 import { toRefs } from 'vue'

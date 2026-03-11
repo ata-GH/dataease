@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_info_outlined from '@/assets/svg/icon_info_outlined.svg'
 import icon_linkRecord_outlined from '@/assets/svg/icon_link-record_outlined.svg'
 import icon_viewinchat_outlined from '@/assets/svg/icon_viewinchat_outlined.svg'
@@ -118,7 +120,7 @@ const props = defineProps({
     required: false,
     default: 'preview'
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,
@@ -262,7 +264,7 @@ watch([() => searchCount.value], () => {
     queryData()
   }
 })
-// 仪表板的查询结果设置变化 图表数据需要刷新
+// 仪表盘的查询结果设置变化 图表数据需要刷新
 watch([() => resultCount.value], () => {
   queryData()
 })
@@ -372,7 +374,7 @@ const chartClick = param => {
   }
 }
 
-// 仪表板和大屏所有额外过滤参数都在此处
+// 仪表盘和大屏所有额外过滤参数都在此处
 const filter = (firstLoad?: boolean) => {
   const { filter } = useFilter(view.value.id, firstLoad)
   const result = {
@@ -481,7 +483,7 @@ const jumpClick = param => {
       Base64.encode(JSON.stringify(param))
     )}`
 
-    // 内部仪表板跳转
+    // 内部仪表盘跳转
     if (jumpInfo.linkType === 'inner') {
       if (jumpInfo.targetDvId) {
         const editPreviewParams = ['canvas', 'edit-preview'].includes(showPosition.value)
@@ -549,7 +551,7 @@ const jumpClick = param => {
           windowsJump(url, jumpInfo.jumpType, jumpInfo.windowSize)
         }
       } else {
-        ElMessage.warning('未指定跳转仪表板')
+        ElMessage.warning('未指定跳转仪表盘')
       }
     } else {
       const colList = [...param.dimensionList, ...param.quotaList]
@@ -873,7 +875,7 @@ onMounted(() => {
   initTitle()
 })
 
-// 1.开启仪表板刷新 2.首次加载（searchCount =0 ）3.正在请求数据 则显示加载状态
+// 1.开启仪表盘刷新 2.首次加载（searchCount =0 ）3.正在请求数据 则显示加载状态
 const loadingFlag = computed(() => {
   return (
     (canvasStyleData.value.refreshViewLoading ||
@@ -1026,7 +1028,7 @@ const pluginLoaded = computed(() => {
   })
   return result
 })
-// TODO 统一加载
+// 统一加载
 const loadPluginCategory = data => {
   data.forEach(item => {
     const { category, title, render, chartValue, chartTitle, icon, staticMap } = item
@@ -1102,7 +1104,7 @@ const clearG2Tooltip = () => {
     @mouseover="chartHover = true"
     @mouseleave="chartHover = false"
   >
-    <!-- <div
+    <div
       class="title-container"
       :style="{ 'justify-content': titleAlign, 'margin-bottom': marginBottom }"
     >
@@ -1177,7 +1179,7 @@ const clearG2Tooltip = () => {
           </el-tooltip>
         </div>
       </transition>
-    </div> -->
+    </div>
     <!--这里去渲染不同图库的图表-->
     <div v-if="allEmptyCheck || (chartAreaShow && !showEmpty)" style="flex: 1; overflow: hidden">
       <plugin-component

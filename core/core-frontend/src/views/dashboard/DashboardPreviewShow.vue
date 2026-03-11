@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import DeResourceTree from '@/views/common/DeResourceTree.vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -29,6 +31,8 @@ import {
 } from '@/api/visualization/dataVisualization'
 import { submitExportFiles } from '@/api/chart'
 import { InfoFilled } from '@element-plus/icons-vue'
+import { sdarDashboardLogApi } from '@/api/log'
+
 const userStore = useUserStoreWithOut()
 
 const userName = computed(() => userStore.getName)
@@ -96,7 +100,14 @@ watch(curCanvasType, () => {
   state.dvInfo = null
 })
 
-
+// watch(
+//   () => route.query.dvId,
+//   (val: any) => {
+//     if (val && showPosition.value === 'preview' && state.dvInfo?.id !== val) {
+//       loadCanvasData(val)
+//     }
+//   }
+// )
 
 const resourceTreeRef = ref()
 
@@ -131,7 +142,7 @@ const loadCanvasData = (dvId, weight?) => {
   dataInitState.value = false
   initMethod(
     dvId,
-    { busiFlag: 'dashboard', resourceTable: 'core' },
+    { busiFlag: curCanvasType.value, resourceTable: 'core' },
     function ({
       canvasDataResult,
       canvasStyleResult,
@@ -160,6 +171,10 @@ watch(
   () => route.query.dvId,
   (val: any) => {
     if (val && (showPosition.value === 'preview' || isPanel.value) && state.dvInfo?.id !== val) {
+      if (isPanel.value) {
+        // 记录log
+        sdarDashboardLogApi({ dvId: route.query.dvId })
+      }
       loadCanvasData(val)
     }
   },
@@ -175,10 +190,6 @@ const downloadH2 = type => {
 
 const downloadDirect = type => {
   executeDirectDownload(type)
-}
-
-const handleExportConfirm = formData => {
-  executeDownload(downloadTypeTemp.value, formData)
 }
 
 const executeDirectDownload = (type) => {
@@ -206,7 +217,11 @@ const executeDirectDownload = (type) => {
   })
 }
 
-const executeDownload = (type, formData) => {
+const handleExportConfirm = formData => {
+  executeDownload(downloadTypeTemp.value, formData)
+}
+
+const executeDownload = (type, formData) => {  
   downloadStatus.value = true
   const mapElementIds =
     state.canvasDataPreview
@@ -397,8 +412,8 @@ defineExpose({
       </div>
       <de-resource-tree
         ref="resourceTreeRef"
-        v-show="slideShow"
         v-if="!isPanel"
+        v-show="slideShow"
         :cur-canvas-type="curCanvasType"
         :show-position="showPosition"
         :resource-table="resourceTable"
@@ -418,7 +433,7 @@ defineExpose({
         <el-icon v-if="slideShow"><ArrowLeft /></el-icon>
         <el-icon v-else><ArrowRight /></el-icon>
       </div>
-      <!--从store中判断当前是否有点击仪表板 复用时也符合-->
+      <!--从store中判断当前是否有点击仪表盘 复用时也符合-->
       <template v-if="previewShowFlag">
         <preview-head
           v-if="showPosition === 'preview'"
@@ -480,7 +495,7 @@ defineExpose({
   <export-application-dialog
     ref="exportApplicationDialogRef"
     @confirm="handleExportConfirm"
-  />
+  ></export-application-dialog>
 </template>
 
 <style lang="less">
@@ -498,7 +513,6 @@ defineExpose({
     padding: 0;
     border-right: 1px solid #d7d7d7;
     overflow: visible;
-
     .canvas-type-tab {
       display: flex;
       width: 100%;
@@ -524,11 +538,9 @@ defineExpose({
         &.active {
           color: var(--ed-color-primary);
           font-weight: 500;
-
           .info-icon {
             color: var(--ed-color-primary);
           }
-
           &::after {
             content: '';
             position: absolute;
@@ -545,7 +557,6 @@ defineExpose({
         }
       }
     }
-
     &.retract {
       display: none;
     }

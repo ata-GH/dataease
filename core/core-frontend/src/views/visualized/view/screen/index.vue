@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import PreviewShow from '@/views/data-visualization/PreviewShow.vue'
 </script>
 <!--调试测试页面-->

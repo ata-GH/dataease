@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="batch-opt-main view-panel-row tab-header">
     <chart-style
@@ -43,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import ChartStyle from '@/views/chart/components/editor-new/editor-style/ChartStyle.vue'

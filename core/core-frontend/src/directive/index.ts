@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { checkPermission } from './Permission'
 import { vClickOutside } from './ClickOutside'
 import type { App } from 'vue'

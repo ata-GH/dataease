@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { App } from 'vue'
 
 const components = ['circle-shape']

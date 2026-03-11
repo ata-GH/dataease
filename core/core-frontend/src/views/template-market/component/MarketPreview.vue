@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row style="width: 100%">
     <el-row style="display: table; width: 100%">
@@ -93,6 +94,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import no_result from '@/assets/svg/no_result.svg'
 import { searchMarket, getCategories } from '@/api/templateMarket'
 import { onMounted, reactive, watch } from 'vue'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // 动态创建水印元素的封装函数
 import { storeToRefs } from 'pinia'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

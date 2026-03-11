@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { computed } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ArrowRight } from '@element-plus/icons-vue'

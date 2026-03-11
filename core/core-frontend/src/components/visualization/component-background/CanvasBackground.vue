@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%" ref="bgForm">
     <input
@@ -117,6 +118,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { getScaleValue, mobileSpecialProps } from '@/utils/canvasStyle'
 
 export const customAttrTrans = {

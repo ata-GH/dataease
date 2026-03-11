@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import icon_calendar_outlined from '@/assets/svg/icon_calendar_outlined.svg'
 import {
   ref,

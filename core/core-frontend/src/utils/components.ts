@@ -1,3 +1,4 @@
+/* eslint-disable */
 import VText from '@/custom-component/v-text/Component.vue'
 import VQuery from '@/custom-component/v-query/Component.vue'
 import VTextAttr from '@/custom-component/v-text/Attr.vue'

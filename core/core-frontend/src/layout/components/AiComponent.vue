@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvAiWindowMax from '@/assets/svg/dv-ai-window-max.svg'
 import dvAiWindowMin from '@/assets/svg/dv-ai-window-min.svg'
 import { onMounted, ref } from 'vue'

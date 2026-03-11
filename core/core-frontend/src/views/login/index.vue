@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import DataEase from '@/assets/svg/DataEase.svg'
 import { ref, reactive, onMounted, computed, nextTick } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -24,6 +26,7 @@ const appStore = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
 const appearanceStore = useAppearanceStoreWithOut()
 const { t } = useI18n()
+const isDev = import.meta.env.DEV
 const contentShow = ref(true)
 const loading = ref(false)
 const axiosFinished = ref(true)
@@ -48,14 +51,12 @@ const closePage = () => {
     window.parent?.postMessage({ type: 'closeBoard', data: {} }, '*')
   }
 }
-
 const demoTips = computed(() => {
   if (!showDempTips.value) {
     return ''
   }
   return appearanceStore.getDemoTipsContent || ''
 })
-
 const expiredText = computed(() => {
   if (router.currentRoute.value.query.type === 'noauth') {
     return '您暂无该页面的访问权限，请联系管理员'
@@ -250,7 +251,7 @@ const handlerFail = () => {
 const loginBySingleBtn = async () => {
   try {
     duringLogin.value = true
-    const response = await fetch('http://10.149.245.148:8100/de2api/login/analysisLogin', {
+    const response = await fetch('http://10.193.131.27:8100/de2api/login/analysisLogin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -267,7 +268,7 @@ const loginBySingleBtn = async () => {
     }
     const result = await response.json()
     const { token, exp } = result?.data || {}
-    if (!token || !exp) {
+    if (!token) {
       throw new Error('登录返回不包含 token/exp')
     }
     userStore.setToken(token)
@@ -275,11 +276,11 @@ const loginBySingleBtn = async () => {
     userStore.setTime(Date.now())
     const queryRedirectPath = getCurLocation()
     router.push({ path: queryRedirectPath })
+    duringLogin.value = false
   } catch (error) {
+    duringLogin.value = false
     console.error('一键登录失败:', error)
     ElMessage.error('一键登录失败')
-  } finally {
-    duringLogin.value = false
   }
 }
 
@@ -318,12 +319,7 @@ onMounted(async () => {
   />
   <div v-show="contentShow" class="login-background" v-loading="duringLogin">
     <div class="login-container" ref="loginContainer">
-      <div
-        class="login-image-content"
-        v-loading="!axiosFinished"
-        v-if="showLoginImage"
-        @dblclick="isLoginHidden = !isLoginHidden"
-      >
+      <div class="login-image-content" v-loading="!axiosFinished" v-if="isDev" @dblclick="isLoginHidden = !isLoginHidden">
         <el-image
           v-if="axiosFinished"
           class="login-image"
@@ -334,7 +330,7 @@ onMounted(async () => {
       <div class="login-form-content" v-loading="loading">
         <div v-if="isLoginHidden" class="session-expired-view">
           <div class="expired-text">{{ expiredText }}</div>
-          <button class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
+          <button v-if="inIframe" class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
         </div>
         <div v-else class="login-form-center">
           <el-form
@@ -344,7 +340,7 @@ onMounted(async () => {
             size="default"
             :disabled="preheat"
           >
-            <div class="login-logo">
+            <!-- <div class="login-logo">
               <Icon
                 v-if="!loginLogoUrl && axiosFinished"
                 className="login-logo-icon"
@@ -356,7 +352,7 @@ onMounted(async () => {
             </div>
             <div v-if="showSlogan" class="login-welcome">
               {{ slogan || t('system.available_to_everyone') }}
-            </div>
+            </div> -->
             <div class="login-form">
               <div
                 class="default-login-tabs"

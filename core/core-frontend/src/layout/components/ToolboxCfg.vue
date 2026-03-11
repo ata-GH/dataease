@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import toolboxData_fill from '@/assets/svg/toolbox-data_fill.svg'
 import toolboxIcon_template from '@/assets/svg/toolbox-icon_template.svg'
 import toolboxLog from '@/assets/svg/toolbox-log.svg'

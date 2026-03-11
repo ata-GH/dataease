@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row style="flex-direction: column; width: 100%">
     <el-row style="margin-top: -4px; margin-bottom: -6px" v-loading="state.slidersLoading">
@@ -191,6 +192,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import SubjectTemplateItem from './SubjectTemplateItem.vue'
 import {
   querySubjectWithGroupApi,

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%" ref="bgForm">
     <input
@@ -396,6 +397,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { queryVisualizationBackground } from '@/api/visualization/visualizationBackground'
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { computed, effect, nextTick, onMounted, reactive, ref, watch } from 'vue'

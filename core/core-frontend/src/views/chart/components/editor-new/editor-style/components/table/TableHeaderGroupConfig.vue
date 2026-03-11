@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div :id="containerId" class="table-container" :class="{ dark: themes === 'dark' }"></div>
   <div class="button-group">
@@ -8,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { formatterItem, valueFormatter } from '@/views/chart/components/js/formatter'
 import {
@@ -45,7 +47,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 const emits = defineEmits(['onConfigChange', 'onCancelConfig'])

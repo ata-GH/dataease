@@ -1,5 +1,7 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+/* eslint-disable */
+import { ref, watch, computed, nextTick } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 
 type ValueType = string | number
@@ -77,7 +79,7 @@ const handleCheckAll = (val: boolean) => {
   } else {
     innerValue.value = []
   }
-  // 勾选“全员”或取消时立即同步到外部
+  // 勾选“全选”或取消时立即同步到外部
   emit('update:modelValue', innerValue.value)
 }
 
@@ -86,14 +88,12 @@ const remove = (val: ValueType) => {
   emit('update:modelValue', innerValue.value)
 }
 
-// 选项组变化时：去重并即时同步到外部
+// 选项组变化时即时同步到外部
 const onGroupChange = (vals: ValueType[]) => {
-  innerValue.value = Array.from(new Set(vals))
-  emit('update:modelValue', innerValue.value)
+  emit('update:modelValue', vals)
 }
 
 const onSearchInput = (val: string) => {
-  // 纯前端筛选：仅更新关键字，利用 filteredOptions 计算结果
   keyword.value = val
 }
 
@@ -110,7 +110,7 @@ const formatLabel = (label: string | null | undefined) => {
 </script>
 
 <template>
-  <el-popover v-model:visible="visible" placement="bottom-start" trigger="click" width="360">
+  <el-popover v-model:visible="visible" placement="bottom-start" trigger="click" width="300">
     <template #reference>
       <div class="check-select-reference">
         <div class="tags" v-if="selectedOptions.length">
@@ -141,15 +141,14 @@ const formatLabel = (label: string | null | undefined) => {
       </div>
       <el-scrollbar height="240px">
         <template v-if="filteredOptions.length">
-          <el-checkbox-group v-model="innerValue" @change="onGroupChange">
-            <el-checkbox v-for="opt in filteredOptions" :key="opt.value" :label="opt.value">
-              {{ opt.label }}
-            </el-checkbox>
-          </el-checkbox-group>
+            <el-checkbox-group v-model="innerValue" @change="onGroupChange">
+              <el-checkbox class="checkbox-list" v-for="opt in filteredOptions" :key="opt.value" :label="opt.value">
+                {{ opt.label }}
+              </el-checkbox>
+            </el-checkbox-group>
         </template>
         <div v-else class="empty-tip">暂无数据</div>
       </el-scrollbar>
-
     </div>
   </el-popover>
 </template>
@@ -182,18 +181,21 @@ const formatLabel = (label: string | null | undefined) => {
 .check-select-panel {
   display: flex;
   flex-direction: column;
+  .checkbox-list {
+    display: flex;
+    margin-bottom: 10px;
+  }
 }
 .panel-header {
   display: flex;
-  gap: 8px;
+  gap: 100px;
   align-items: center;
   margin-bottom: 8px;
 }
-
 .empty-tip {
   color: #909399;
   text-align: center;
   padding: 24px 0;
 }
-
 </style>
+

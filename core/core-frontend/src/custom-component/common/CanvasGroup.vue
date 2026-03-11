@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs } from 'vue'
 import CanvasCore from '@/components/data-visualization/canvas/CanvasCore.vue'
 import GroupPreview from '@/custom-component/group/GroupPreview.vue'
@@ -41,7 +43,7 @@ const props = defineProps({
     type: String,
     required: true
   },
-  // 仪表板刷新计时器
+  // 仪表盘刷新计时器
   searchCount: {
     type: Number,
     required: false,

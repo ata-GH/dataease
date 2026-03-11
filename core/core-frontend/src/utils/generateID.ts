@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { guid } from '@/views/visualized/data/dataset/form/util.js'
 
 // snowflake

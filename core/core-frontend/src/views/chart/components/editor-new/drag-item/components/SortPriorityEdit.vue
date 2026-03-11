@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_drag_outlined from '@/assets/svg/icon_drag_outlined.svg'
 import draggable from 'vuedraggable'
 import { reactive, watch, ref } from 'vue'

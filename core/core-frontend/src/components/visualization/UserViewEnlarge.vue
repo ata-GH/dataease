@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-dialog
     ref="enlargeDialog"
@@ -162,8 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { generateCanvasFile } from '@/utils/imgUtils'
-import { submitExportFiles } from '@/api/chart'
+/* eslint-disable */
 import ComponentWrapper from '@/components/data-visualization/canvas/ComponentWrapper.vue'
 import { computed, h, nextTick, reactive, ref } from 'vue'
 import { toPng } from 'html-to-image'
@@ -184,6 +184,8 @@ import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { activeWatermarkCheckUser } from '@/components/watermark/watermark'
 import { getCanvasStyle } from '@/utils/style'
 import { exportPermission } from '@/utils/utils'
+import { generateCanvasFile } from '@/utils/imgUtils'
+import { submitExportFiles } from '@/api/chart'
 import EmptyBackground from '../empty-background/src/EmptyBackground.vue'
 import { supportExtremumChartType } from '@/views/chart/components/js/extremumUitl'
 import ChartCarouselTooltip from '@/views/chart/components/js/g2plot_tooltip_carousel'
@@ -374,6 +376,11 @@ const downloadViewImage = () => {
     ElMessage.error(t('chart.field_is_empty_export_error'))
     return
   }
+  const viewInfoObj = dvMainStore.getViewDetails(viewInfo.value.id)
+  if (!viewInfoObj || (viewInfoObj && viewInfoObj.sceneId === 0)) {
+    ElMessage.error('请先保存仪表盘才能导出')
+    return
+  }
   currentDownloadType.value = 'img'
   exportApplicationDialogRef.value.open()
 }
@@ -384,10 +391,14 @@ const downloadViewDetails = (downloadType = 'view') => {
     ElMessage.error(t('chart.field_is_empty_export_error'))
     return
   }
+  const viewInfoObj = dvMainStore.getViewDetails(viewInfo.value.id)
+  if (!viewInfoObj || (viewInfoObj && viewInfoObj.sceneId === 0)) {
+    ElMessage.error('请先保存仪表盘才能导出')
+    return
+  }
   currentDownloadType.value = downloadType
   exportApplicationDialogRef.value.open()
 }
-
 const handleExportConfirm = (formData) => {
   const downloadType = currentDownloadType.value
   if (downloadType === 'img') {

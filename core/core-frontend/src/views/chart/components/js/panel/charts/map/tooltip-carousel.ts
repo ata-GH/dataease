@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Popup } from '@antv/l7'
 import { Plot } from '@antv/l7plot/dist/lib/core/plot'
 import isEmpty from 'lodash-es/isEmpty'

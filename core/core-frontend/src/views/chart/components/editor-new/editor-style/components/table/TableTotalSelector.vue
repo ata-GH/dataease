@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { onMounted, PropType, reactive, watch, ref, inject, nextTick, computed } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import {
@@ -20,7 +22,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 watch(

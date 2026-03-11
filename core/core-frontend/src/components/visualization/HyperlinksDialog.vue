@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row>
     <el-form ref="form" size="mini" label-width="70px">
@@ -25,6 +26,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { snapshotStoreWithOut } from '@/store/modules/data-visualization/snapshot'

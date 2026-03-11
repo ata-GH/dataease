@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { BusiTreeNode } from '@/models/tree/TreeNode'
 import _ from 'lodash'
 

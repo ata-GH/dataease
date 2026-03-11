@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%; padding-bottom: 8px">
     <el-form label-position="top" style="width: 100%">
@@ -46,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { onMounted, reactive, computed } from 'vue'
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

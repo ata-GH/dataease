@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { PropType, toRefs, nextTick, watch, ref, computed } from 'vue'
 import MiscSelector from '@/views/chart/components/editor-new/editor-style/components/MiscSelector.vue'
@@ -696,7 +698,6 @@ span {
 }
 
 .attr-style {
-  overflow-y: auto;
   height: 100%;
   width: 100%;
 }

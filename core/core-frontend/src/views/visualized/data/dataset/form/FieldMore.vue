@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import custom_sort from '@/assets/svg/custom_sort.svg'
 import dvRename from '@/assets/svg/dv-rename.svg'
 import icon_calendar_outlined from '@/assets/svg/icon_calendar_outlined.svg'

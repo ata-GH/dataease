@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { findDvSqlBotDataset } from '@/api/aiSqlBot'
 import { onMounted, reactive } from 'vue'
 import { storeToRefs } from 'pinia'

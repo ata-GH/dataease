@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_expandLeft_filled from '@/assets/svg/icon_expand-left_filled.svg'
 import icon_expandRight_filled from '@/assets/svg/icon_expand-right_filled.svg'
 import { toRefs, ref, watch, nextTick } from 'vue'

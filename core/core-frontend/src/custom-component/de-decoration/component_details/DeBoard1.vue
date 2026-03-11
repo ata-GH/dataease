@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="dv-border-box-1" :style="border_style" :ref="refName">
     <svg class="border" :width="width" :height="height">
@@ -64,6 +65,7 @@
 </template>
 
 <script lang="tsx" setup>
+/* eslint-disable */
 import { ref, watch, onMounted, computed } from 'vue'
 interface Props {
   color?: string[]

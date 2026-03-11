@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     v-if="showButton && (!dvMainStore.mobileInPc || isMobile())"
@@ -16,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import exit_fullscreen from '@/assets/svg/exit-fullscreen.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { computed } from 'vue'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import DePreview from '@/components/data-visualization/canvas/DePreview.vue'
@@ -76,7 +78,7 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
       resourceTable: state.editPreview ? 'snapshot' : 'core'
     }
     try {
-      // 刷新跳转目标仪表板联动信息
+      // 刷新跳转目标仪表盘联动信息
       await queryTargetVisualizationJumpInfo(jumpRequestParam).then(rsp => {
         dvMainStore.setNowTargetPanelJumpInfo(rsp.data)
       })
@@ -164,7 +166,7 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
       }
 
       if (props.publicLinkStatus) {
-        // 设置浏览器title为当前仪表板名称
+        // 设置浏览器title为当前仪表盘名称
         document.title = dvInfo.name
         setTitle(dvInfo.name)
       }
@@ -219,10 +221,11 @@ onMounted(async () => {
   dvMainStore.setIframeFlag(isFrameFlag)
   dvMainStore.setIsPopWindow(isPopWindow)
   state.showPosition = state.editPreview ? 'edit-preview' : 'preview'
-  const { dvType, callBackFlag, taskId, showWatermark } = router.currentRoute.value.query
+  const { callBackFlag, taskId, showWatermark } = router.currentRoute.value.query
   if (!!taskId) {
     dvMainStore.setCanvasAttachInfo({ taskId, showWatermark })
   }
+  const dvType = 'chart'
   if (dvId) {
     await loadCanvasDataAsync(dvId, dvType, ignoreParams)
     return
@@ -261,16 +264,11 @@ const showBackIcon = computed(() => {
 })
 
 const backToMain = () => {
-  const type = state.dvInfo?.type || 'dashboard'
-  let url = type === 'dataV' ? '#/screen/index' : '#/panel/index'
-  if (state.dvInfo?.id) {
-    url = url + '?dvId=' + state.dvInfo.id
-  }
-  if (history.state && history.state.back) {
-    history.back()
-  } else {
-    window.open(url, '_self')
-  }
+  var eventnData = {type: 'closeBoard', data: {}};
+  parent.window.postMessage(eventnData, '*')
+  router.push({
+    path: '/loading'
+  })
 }
 
 const dvPreview = ref(null)
@@ -303,7 +301,7 @@ defineExpose({
     ref="previewCanvasContainer"
     :style="freezeStyle"
   >
-    <el-icon v-if="showBackIcon" class="custom-el-icon back-icon" style="position: fixed; left: 12px; top: 10px; z-index: 20" @click="backToMain()">
+    <el-icon v-if="showBackIcon" class="custom-el-icon back-icon" @click="backToMain">
       <Icon name="icon_left_outlined"><icon_left_outlined class="svg-icon toolbar-icon" /></Icon>
     </el-icon>
     <canvas-opt-bar
@@ -329,7 +327,7 @@ defineExpose({
     ></dv-preview>
     <de-preview
       ref="dvPreview"
-      v-if="state.canvasStylePreview && state.initState && state.dvInfo?.type === 'dashboard'"
+      v-if="state.canvasStylePreview && state.initState && state.dvInfo?.type === 'chart'"
       :component-data="state.canvasDataPreview"
       :canvas-style-data="state.canvasStylePreview"
       :canvas-view-info="state.canvasViewInfoPreview"
@@ -373,22 +371,6 @@ defineExpose({
 }
 </style>
 
-<style lang="less">
-.single-preview-content {
-  .edit-preview-VQuery {
-    height: 200px !important;
-    .bar-base-icon {
-      display: none;
-    }
-  }
-  .edit-preview-UserView {
-    top: 200px !important;
-    width: 100% !important;
-    height: calc(100% - 200px) !important;
-  }
-}
-</style>
-
 <style lang="less" scoped>
 ::-webkit-scrollbar {
   display: none;
@@ -401,5 +383,29 @@ defineExpose({
   align-items: center;
   overflow-x: hidden;
   overflow-y: auto;
+}
+</style>
+<style lang="less">
+.single-preview-content {
+  .custom-el-icon {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    z-index: 20;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  .edit-preview-VQuery {
+    width: 100%!important;
+    height: 200px!important;
+    .add-btn {
+      display: none;
+    }
+  }
+  .edit-preview-UserView {
+    top: 200px!important;
+    width: 100%!important;
+    height: calc(100% - 200px)!important;
+  }
 }
 </style>

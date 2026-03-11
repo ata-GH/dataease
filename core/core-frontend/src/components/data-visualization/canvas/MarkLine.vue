@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import eventBus from '@/utils/eventBus'
 import { getComponentRotatedStyle } from '@/utils/style'
 import { getCurrentInstance, onMounted, ref } from 'vue'

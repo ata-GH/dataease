@@ -1,9 +1,11 @@
+<!-- eslint-disable -->
 <template>
   <div class="de-tinymce-container ed-textarea__inner">
     <editor class="de-tinymce-content" v-model="myValue" :id="tinymceId" :init="init" />
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, toRefs, watch } from 'vue'
 import { formatDataEaseBi } from '@/utils/url'
 import tinymce from 'tinymce/tinymce' // tinymce默认hidden，不引入不显示

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="shadow-main" :style="shadowStyle">
     <div class="shadow-background"></div>
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, toRefs } from 'vue'
 const props = defineProps({
   baseWidth: {

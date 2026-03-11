@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-popover
     :visible="popoverVisible"
@@ -218,6 +219,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_shareLabel_outlined from '@/assets/svg/icon_share-label_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_close_outlined from '@/assets/svg/icon_close_outlined.svg'

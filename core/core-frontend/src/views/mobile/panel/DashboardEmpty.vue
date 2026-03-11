@@ -1,5 +1,6 @@
+<!-- eslint-disable -->
 <template>
-  <div class="not-support">仪表板未开启移动端，无法在移动端展示</div>
+  <div class="not-support">仪表盘未开启移动端，无法在移动端展示</div>
 </template>
 
 <style lang="less" scoped>

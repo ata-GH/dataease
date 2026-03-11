@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div @mousedown="fieldsAreaDown" class="field-main">
     <el-button
@@ -14,6 +15,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { toRefs } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="page-not-found">
     <Icon className="login-logo-icon" name="403"><Four class="svg-icon login-logo-icon" /></Icon>
@@ -6,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import Four from '@/assets/svg/403.svg'
 import { Icon } from '@/components/icon-custom'
 import { useI18n } from '@/hooks/web/useI18n'

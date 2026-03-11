@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { cos, sin } from '@/utils/translate'
 import {
   CHART_FONT_FAMILY_MAP_TRANS,

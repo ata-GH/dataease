@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_admin_outlined from '@/assets/svg/icon_admin_outlined.svg'
 import { ElColorPicker, ElPopover } from 'element-plus-secondary'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'

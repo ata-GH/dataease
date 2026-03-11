@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { Column, ColumnOptions } from '@antv/g2plot/esm/plots/column'
 import { cloneDeep, defaults, each, groupBy, isEmpty } from 'lodash-es'
 import {

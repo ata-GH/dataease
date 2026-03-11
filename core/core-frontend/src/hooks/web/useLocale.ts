@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { i18n } from '@/plugins/vue-i18n'
 import { useLocaleStoreWithOut } from '@/store/modules/locale'
 import { setHtmlPageLang } from '@/plugins/vue-i18n/helper'

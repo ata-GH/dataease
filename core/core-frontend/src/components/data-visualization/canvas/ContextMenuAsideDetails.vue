@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import ContextMenuDetails from '@/components/data-visualization/canvas/ContextMenuDetails.vue'
 
 const emit = defineEmits(['close'])

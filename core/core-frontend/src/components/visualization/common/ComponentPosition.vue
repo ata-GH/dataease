@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-form size="small" label-position="left" :label-width="14">
     <el-row :gutter="8" v-for="(x, i) in positionKeysGroup" :key="i">
@@ -101,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed, ref, watch } from 'vue'
 import { positionData } from '@/utils/attr'
 import { storeToRefs } from 'pinia'

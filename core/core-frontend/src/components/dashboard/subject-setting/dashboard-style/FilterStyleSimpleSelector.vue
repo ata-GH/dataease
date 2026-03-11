@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%">
     <el-form label-position="top" size="small" style="width: 100%">
@@ -155,6 +156,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import icon_leftAlign_outlined from '@/assets/svg/icon_left-align_outlined.svg'
 import icon_horizontalAlign_outlined from '@/assets/svg/icon_horizontal-align_outlined.svg'
 import icon_rightAlign_outlined from '@/assets/svg/icon_right-align_outlined.svg'

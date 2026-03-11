@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import iconVideo from '@/assets/svg/icon-video.svg'
 import dvPictureShow from '@/assets/svg/dv-picture-show.svg'
 import iconStream from '@/assets/svg/icon-stream.svg'

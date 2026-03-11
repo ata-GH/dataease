@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
 import eventBus from '@/utils/eventBus'
@@ -70,7 +72,7 @@ const canEdit = ref(false)
 const queryConfig = ref()
 const defaultStyle = {
   border: '',
-  placeholderSize: 14,
+  placeholderSize: 12,
   placeholderShow: true,
   background: '',
   text: '',
@@ -83,10 +85,10 @@ const defaultStyle = {
   labelShow: true,
   title: '',
   labelColor: '#1f2329',
-  fontSize: '14',
+  fontSize: '12',
   fontWeight: '',
   fontStyle: '',
-  fontSizeBtn: '14',
+  fontSizeBtn: '12',
   fontWeightBtn: '',
   fontStyleBtn: '',
   queryConditionWidth: 227,
@@ -257,7 +259,7 @@ const setCustomStyle = val => {
   customStyle.titleShow = titleShow
   customStyle.titleColor = titleColor
   customStyle.labelColor = labelShow ? labelColor || '' : ''
-  customStyle.fontSize = labelShow ? fontSize || '14' : '14'
+  customStyle.fontSize = labelShow ? fontSize || '12' : '12'
   customStyle.fontWeight = labelShow ? fontWeight || '' : ''
   customStyle.fontStyle = labelShow ? fontStyle || '' : ''
   customStyle.title = title
@@ -717,6 +719,7 @@ const boxHeight = computed(() => {
 const queryData = () => {
   let requiredName = ''
   let numName = ''
+  useEmitt().emitter.emit('v-query-update-chart-data', element.value)
   const emitterList = (element.value.propValue || []).reduce((pre, next) => {
     if (next.required) {
       if (!next.defaultValueCheck) {
@@ -844,6 +847,7 @@ const autoStyle = computed(() => {
 
 <template>
   <div class="v-query-container" ref="vQueryRef" :style="autoStyle" @keydown.stop @keyup.stop>
+    <i v-if="listVisible.length" class="ed-icon bar-base-icon add-btn" @click="addCriteriaConfigOut">+</i>
     <p v-if="customStyle.titleShow" class="title" :style="titleStyle">
       {{ customStyle.title }}
     </p>
@@ -856,6 +860,7 @@ const autoStyle = computed(() => {
         <div class="container flex-align-center">
           {{ t('v_query.here_or_click') }}
           <el-button
+            size="mini"
             :disabled="showPosition === 'preview' || mobileInPc"
             @click="addCriteriaConfigOut"
             style="font-family: inherit"
@@ -865,7 +870,7 @@ const autoStyle = computed(() => {
           </el-button>
         </div>
       </div>
-      <div class="query-fields-container">
+      <div v-else class="query-fields-container">
         <div
           class="query-item"
           :style="{ marginRight: `${customStyle.queryConditionSpacing}px` }"
@@ -921,6 +926,7 @@ const autoStyle = computed(() => {
         </div>
         <div class="query-button" v-if="!!listVisible.length">
           <el-button
+            size="small"
             @click.stop="clearData"
             :style="btnPlainStyle"
             v-if="customStyle.btnList.includes('clear')"
@@ -929,6 +935,7 @@ const autoStyle = computed(() => {
             {{ t('commons.clear') }}
           </el-button>
           <el-button
+            size="small"
             @click.stop="resetData"
             :style="btnPlainStyle"
             v-if="customStyle.btnList.includes('reset')"
@@ -937,6 +944,7 @@ const autoStyle = computed(() => {
             {{ t('chart.reset') }}
           </el-button>
           <el-button
+            size="small"
             @click.stop="queryData"
             style="margin-right: 7px"
             :style="btnStyle"
@@ -966,6 +974,7 @@ const autoStyle = computed(() => {
   overflow: auto;
   position: relative;
   --ed-font-size-base: v-bind(boxWidth);
+  border-bottom: solid 1px rgba(31, 35, 41, 0.15);
 
   :deep(.ed-select-v2 .ed-select-v2__selection .ed-tag),
   :deep(.select-trigger .ed-select__tags .ed-tag) {
@@ -1011,7 +1020,7 @@ const autoStyle = computed(() => {
   }
 
   .no-list-label {
-    width: 100%;
+    width: 300px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1022,12 +1031,13 @@ const autoStyle = computed(() => {
       justify-content: center;
       color: #646a73;
       text-align: center;
-      font-size: 16px;
+      font-size: 12px;
       font-style: normal;
       font-weight: 400;
       line-height: 24px;
+      transform: scale(1.5);
       .ed-button {
-        font-size: 16px;
+        font-size: 12px;
         font-style: normal;
         font-weight: 400;
         line-height: 24px;
@@ -1037,11 +1047,24 @@ const autoStyle = computed(() => {
   .title {
     color: #1f2329;
     font-feature-settings: 'clig' off, 'liga' off;
-    font-size: 14px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 500;
     line-height: 22px;
     letter-spacing: -0.1px;
+  }
+  .add-btn {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    color: #fff;
+    background: #33BDFC;
+    font-style: normal;
+    cursor: pointer;
+    z-index: 5;
   }
 }
 .v-query {
@@ -1095,14 +1118,14 @@ const autoStyle = computed(() => {
           text-overflow: ellipsis;
           white-space: nowrap;
           color: #1f2329;
-          font-size: 14px;
+          font-size: 12px;
           font-style: normal;
           font-weight: 400;
           line-height: 22px;
         }
 
         .required {
-          font-size: 14px;
+          font-size: 12px;
           color: #f54a45;
           margin-left: 3px;
           line-height: 22px;
@@ -1126,7 +1149,6 @@ const autoStyle = computed(() => {
         flex-wrap: wrap;
         line-height: 28px;
         position: relative;
-
         :deep(.ed-date-editor) {
           .ed-input__wrapper {
             width: 100%;
@@ -1137,7 +1159,6 @@ const autoStyle = computed(() => {
   }
   .query-button {
     align-self: flex-end;
-    line-height: 40px;
     margin: auto 0 5px auto;
     z-index: 0;
   }

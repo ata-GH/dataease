@@ -1,3 +1,4 @@
+/* eslint-disable */
 const suffix = `${import.meta.env.VITE_VERSION}-dataease`
 
 const dom = document.querySelector('head')

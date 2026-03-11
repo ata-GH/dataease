@@ -1,3 +1,4 @@
+/* eslint-disable */
 declare type EditorProperty =
   | 'background-overall-component'
   | 'border-style'

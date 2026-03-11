@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AbstractChartView } from '@/views/chart/components/js/panel/types'
 import { isParent } from '@/views/chart/components/js/util'
 

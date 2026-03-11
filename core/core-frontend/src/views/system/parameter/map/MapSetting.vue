@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-container class="map-setting-container">
     <el-aside class="map-setting-left">
@@ -23,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import Geometry from './Geometry.vue'

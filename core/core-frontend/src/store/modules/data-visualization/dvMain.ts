@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore } from 'pinia'
 import { store } from '../../index'
 import { deepCopy } from '@/utils/utils'
@@ -525,7 +526,7 @@ export const dvMainStore = defineStore('dataVisualization', {
               fontSizeBtn: '14',
               fontWeightBtn: '',
               fontStyleBtn: '',
-              queryConditionWidth: 227,
+              queryConditionWidth: 185,
               nameboxSpacing: 8,
               placeholderShow: true,
               placeholderSize: 14,
@@ -1640,8 +1641,9 @@ export const dvMainStore = defineStore('dataVisualization', {
       }
     },
     createInit(dvType, resourceId?, pid?, watermarkInfo?, preName) {
+      const dashboardTitle = window.location.href.includes('dashboard-new') ? '图表' : '仪表盘'
       const optName =
-        dvType === 'dashboard' ? t('visualization.new_dashboard') : t('visualization.new_screen')
+        dvType === 'dashboard' ? '新建' + dashboardTitle : t('visualization.new_screen')
       const name = preName ? preName : optName
       this.hiddenListStatus = false
       this.dvInfo = {

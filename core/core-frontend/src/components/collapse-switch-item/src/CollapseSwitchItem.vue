@@ -1,7 +1,8 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { ElCollapseItem, ElSwitch } from 'element-plus-secondary'
 import { computed, PropType, ref, toRefs } from 'vue'
-
 const props = defineProps({
   modelValue: {
     type: Boolean

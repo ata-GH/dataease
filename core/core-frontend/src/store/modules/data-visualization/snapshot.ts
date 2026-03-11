@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore, storeToRefs } from 'pinia'
 import { store } from '../../index'
 import { dvMainStoreWithOut } from './dvMain'
@@ -38,7 +39,7 @@ export const snapshotStore = defineStore('snapshot', {
     return {
       snapshotDisableTime: 1, // 镜像禁用时间，解决redo undo 造成的样式变更
       styleChangeTimes: -1, // 组件样式修改次数
-      cacheStyleChangeTimes: 0, // 仪表板未缓存的组件样式修改次数
+      cacheStyleChangeTimes: 0, // 仪表盘未缓存的组件样式修改次数
       snapshotCacheTimes: 0, // 当前未计入镜像中的修改变动次数, 此为定时缓存，缓存间隔时间5秒一次 针对类型样式这种变动不大的修改
       cacheViewIdInfo: {
         snapshotCacheViewCalc: [], // 当前未计入镜像需要图表计算的图表ID, all代表全部
@@ -257,7 +258,9 @@ export const snapshotStore = defineStore('snapshot', {
         this.snapshotCacheTimes = 0
         // 始终持久化最新快照到本地，保证刷新后可恢复
         try {
-          wsCache.set('DE-DV-CATCH-' + dvInfo.value.id, newSnapshot)
+          if (dvInfo.value.id) {
+            wsCache.set('DE-DV-CATCH-' + dvInfo.value.id, newSnapshot)
+          }
         } catch (e) {}
         // 同步持久化历史记录（裁剪到最近 50 条，避免 localStorage 过大）
         this.persistHistory()
@@ -273,7 +276,6 @@ export const snapshotStore = defineStore('snapshot', {
           snapshotData: deepCopy(this.snapshotData.slice(start)),
           snapshotIndex: Math.max(0, this.snapshotIndex - start)
         }
-        console.log('persistHistory', history)
         wsCache.set('DE-DV-HISTORY-' + dvInfo.value.id, history)
       } catch (e) {}
     }

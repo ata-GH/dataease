@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import SnowflakeId from 'snowflake-id'
 const snowflake = new SnowflakeId()

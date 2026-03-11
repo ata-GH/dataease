@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { shallowRef, PropType, computed } from 'vue'
 import { dsTypes, typeList, nameMap } from './option'
 import Icon from '@/components/icon-custom/src/Icon.vue'

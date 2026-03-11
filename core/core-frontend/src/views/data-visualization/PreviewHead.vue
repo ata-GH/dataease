@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_collection_outlined from '@/assets/svg/icon_collection_outlined.svg'
 import visualStar from '@/assets/svg/visual-star.svg'
 import dvInfoSvg from '@/assets/svg/dv-info.svg'
@@ -17,7 +19,6 @@ import DvDetailInfo from '@/views/common/DvDetailInfo.vue'
 import { useEmbedded } from '@/store/modules/embedded'
 import { storeApi, storeStatusApi, biFavoriteApi, biFavoriteCancelApi } from '@/api/visualization/dataVisualization'
 import { ref, watch, computed, nextTick } from 'vue'
-import { useRouter, useRoute } from 'vue-router_2'
 import ShareVisualHead from '@/views/share/share/ShareVisualHead.vue'
 import { XpackComponent } from '@/components/plugin'
 import { useEmitt } from '@/hooks/web/useEmitt'
@@ -25,6 +26,7 @@ import { useShareStoreWithOut } from '@/store/modules/share'
 import { exportPermission } from '@/utils/utils'
 import { useCache } from '@/hooks/web/useCache'
 import { isDesktop } from '@/utils/ModelUtil'
+import { useRouter, useRoute } from 'vue-router_2'
 
 const shareStore = useShareStoreWithOut()
 const { wsCache } = useCache('localStorage')
@@ -36,19 +38,6 @@ const { t } = useI18n()
 const embeddedStore = useEmbedded()
 const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
 const favorited = ref(false)
-const router = useRouter()
-const route = useRoute()
-const showBack = computed(() => {
-  return route.query && route.query.back !== 'false'
-})
-const handleCloseIframe = () => {
-  router.replace({
-    path: '/loading'
-  })
-  nextTick(() => {
-    parent.window.postMessage({ type: 'closeBoard', data: {} }, '*')
-  })
-}
 const preview = () => {
   const baseUrl = isDataEaseBi.value ? embeddedStore.baseUrl : ''
   const url = baseUrl + '#/preview?dvId=' + dvInfo.value.id + '&ignoreParams=true'
@@ -143,18 +132,25 @@ const initOpenHandler = newWindow => {
     openHandler.value.invokeMethod(pm)
   }
 }
+const router = useRouter()
+const route = useRoute()
+const showBack = computed(() => {
+  return route.query && route.query.back !== 'false'
+})
+const handleCloseIframe = () => {
+  router.replace({
+    path: '/loading'
+  })
+  nextTick(() => {
+    parent.window.postMessage({type: 'closeBoard', data: {}}, '*')
+  })
+}
 </script>
 
 <template>
   <div class="preview-head flex-align-center">
-    <el-icon
-      v-if="showBack"
-      class="custom-el-icon back-icon"
-      @click="handleCloseIframe()"
-    >
-      <Icon name="icon_left_outlined"
-        ><icon_left_outlined class="svg-icon toolbar-icon"
-      /></Icon>
+    <el-icon v-if="showBack" class="custom-el-icon back-icon" @click="handleCloseIframe()">
+      <Icon name="icon_left_outlined"><icon_left_outlined class="svg-icon toolbar-icon" /></Icon>
     </el-icon>
     <div :title="dvInfo.name" class="canvas-name ellipsis">{{ dvInfo.name }}</div>
     <div v-show="dvInfo.status === 2" class="canvas-have-update">
@@ -211,10 +207,56 @@ const initOpenHandler = newWindow => {
           :weight="dvInfo.weight"
           :resource-type="dvInfo.type"
         />
+        <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" @click="dvEdit()">
+          <template #icon>
+            <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
+          </template>
+          {{ t('visualization.edit') }}
+        </el-button>
       </template>
+      <!-- <el-dropdown :disabled="dvInfo.status === 0" popper-class="pad12" trigger="click">
+        <el-icon class="head-more-icon">
+          <Icon name="dv-head-more"><dvHeadMore class="svg-icon" /></Icon>
+        </el-icon>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="reload()"
+              ><el-icon color="#646A73" size="16"><icon_replace_outlined /></el-icon
+              >{{ t('visualization.refresh_data') }}
+            </el-dropdown-item>
+            <el-dropdown
+              style="width: 100%; overflow: hidden"
+              trigger="hover"
+              popper-class="pad12"
+              placement="left-start"
+              v-if="exportPermissions[0]"
+            >
+              <div class="ed-dropdown-menu__item flex-align-center icon">
+                <el-icon color="#646A73" size="16"><icon_download_outlined /></el-icon>
+                {{ t('visualization.export_as') }}
+                <el-icon color="#646A73" size="16" class="arrow-right_icon"><ArrowRight /></el-icon>
+              </div>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="download('pdf')">PDF</el-dropdown-item>
+                  <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
+                    t('visualization.style_template')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
+                    t('visualization.apply_template')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item @click="download('img')">{{
+                    t('chart.image')
+                  }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown> -->
       <el-button
-        @click="executeStore"
         size="small"
+        @click="executeStore"
         :style="{ color: favorited ? '#FFC60A' : '', borderColor: favorited ? '#FFC60A' : '' }"
       >
         <template #icon>
@@ -235,12 +277,6 @@ const initOpenHandler = newWindow => {
         </template>
         {{ t('visualization.fullscreen') }}</el-button
       >
-      <el-button class="custom-button" v-if="dvInfo.weight > 6" type="primary" size="small" @click="dvEdit()">
-        <template #icon>
-          <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
-        </template>
-        {{ t('visualization.edit') }}
-      </el-button>
       <el-button
         :disabled="dvInfo.status === 0"
         class="custom-icon"
@@ -267,12 +303,6 @@ const initOpenHandler = newWindow => {
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="download('pdf')" @contextmenu.prevent="handleRightDoubleClick('pdf')">PDF</el-dropdown-item>
-            <!-- <el-dropdown-item @click="downloadAsAppTemplate('template')">{{
-              t('visualization.style_template')
-            }}</el-dropdown-item>
-            <el-dropdown-item @click="downloadAsAppTemplate('app')">{{
-              t('visualization.apply_template')
-            }}</el-dropdown-item> -->
             <el-dropdown-item @click="download('img')" @contextmenu.prevent="handleRightDoubleClick('img')">{{
               t('chart.image')
             }}</el-dropdown-item>
@@ -307,8 +337,13 @@ const initOpenHandler = newWindow => {
   width: 100%;
   min-width: 300px;
   height: 40px;
-  padding: 0 24px;
+  padding: 0px 12px;
   border-bottom: 1px solid rgba(31, 35, 41, 0.15);
+  .back-icon {
+    margin-right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
   .canvas-name {
     max-width: 200px;
     font-size: 16px;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 import { deepCopy } from '@/utils/utils'
 import { formatterItem, isEnLocal } from '@/views/chart/components/js/formatter'
@@ -1497,48 +1498,48 @@ export const CHART_TYPE_CONFIGS = [
       }
     ]
   },
-  {
-    category: 'map',
-    title: t('chart.chart_type_space'),
-    display: 'show',
-    details: [
-      {
-        render: 'antv',
-        category: 'map',
-        value: 'map',
-        title: t('chart.chart_map'),
-        icon: 'map'
-      },
-      {
-        render: 'antv',
-        category: 'map',
-        value: 'bubble-map',
-        title: t('chart.chart_bubble_map'),
-        icon: 'bubble-map'
-      },
-      {
-        render: 'antv',
-        category: 'map',
-        value: 'flow-map',
-        title: t('chart.chart_flow_map'),
-        icon: 'flow-map'
-      },
-      {
-        render: 'antv',
-        category: 'map',
-        value: 'heat-map',
-        title: t('chart.chart_heat_map'),
-        icon: 'heat-map'
-      },
-      {
-        render: 'antv',
-        category: 'map',
-        value: 'symbolic-map',
-        title: t('chart.chart_symbolic_map'),
-        icon: 'symbolic-map'
-      }
-    ]
-  },
+  // {
+  //   category: 'map',
+  //   title: t('chart.chart_type_space'),
+  //   display: 'show',
+  //   details: [
+  //     {
+  //       render: 'antv',
+  //       category: 'map',
+  //       value: 'map',
+  //       title: t('chart.chart_map'),
+  //       icon: 'map'
+  //     },
+  //     {
+  //       render: 'antv',
+  //       category: 'map',
+  //       value: 'bubble-map',
+  //       title: t('chart.chart_bubble_map'),
+  //       icon: 'bubble-map'
+  //     },
+  //     {
+  //       render: 'antv',
+  //       category: 'map',
+  //       value: 'flow-map',
+  //       title: t('chart.chart_flow_map'),
+  //       icon: 'flow-map'
+  //     },
+  //     {
+  //       render: 'antv',
+  //       category: 'map',
+  //       value: 'heat-map',
+  //       title: t('chart.chart_heat_map'),
+  //       icon: 'heat-map'
+  //     },
+  //     {
+  //       render: 'antv',
+  //       category: 'map',
+  //       value: 'symbolic-map',
+  //       title: t('chart.chart_symbolic_map'),
+  //       icon: 'symbolic-map'
+  //     }
+  //   ]
+  // },
   {
     category: 'relation',
     title: t('chart.chart_type_relation'),
@@ -1731,7 +1732,7 @@ export const DEFAULT_BASIC_STYLE: ChartBasicStyle = {
 export const BASE_VIEW_CONFIG = {
   id: '', // 图表id
   title: t('data_set.view'),
-  sceneId: 0, // 仪表板id
+  sceneId: 0, // 仪表盘id
   tableId: '', // 数据集id
   type: 'bar',
   render: 'antv',

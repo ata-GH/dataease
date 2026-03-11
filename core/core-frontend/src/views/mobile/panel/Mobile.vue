@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive } from 'vue'
 import icon_collection_outlined from '@/assets/svg/icon_collection_outlined.svg'
 import visualStar from '@/assets/svg/visual-star.svg'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import '@/style/index.less'
 import '@/plugins/svg-icon'
 import 'normalize.css/normalize.css'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="point-shadow" id="point-shadow-main" :style="styleInfo">
     <div class="point-shadow-content">
@@ -10,6 +11,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'

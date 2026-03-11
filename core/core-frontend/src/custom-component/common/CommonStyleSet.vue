@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row class="custom-row">
     <el-row class="custom-row-inner">
@@ -299,6 +300,7 @@
 </template>
 
 <script lang="tsx" setup>
+/* eslint-disable */
 import dvStyleBackgroundColor from '@/assets/svg/dv-style-backgroundColor.svg'
 import dvStyleColor from '@/assets/svg/dv-style-color.svg'
 import dvStyleHeadFontActiveColor from '@/assets/svg/dv-style-headFontActiveColor.svg'

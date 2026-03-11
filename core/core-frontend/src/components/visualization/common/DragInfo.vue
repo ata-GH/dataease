@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="drag-info-main">
     <template v-if="!mobileInPc">
@@ -13,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import dvDragTips from '@/assets/svg/dv-drag-tips.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'

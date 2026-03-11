@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 // 核心Vue模块
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -198,10 +200,7 @@ const onMobileConfig = () => {
 const XpackLoaded = () => p(true)
 
 const doUseCache = flag => {
-  const canvasCache = state.resourceId
-    ? wsCache.get('DE-DV-CATCH-' + state.resourceId)
-    : undefined
-  console.log('canvasCache', canvasCache)
+  const canvasCache = state.resourceId ? wsCache.get('DE-DV-CATCH-' + state.resourceId) : undefined
   if (flag && canvasCache) {
     const canvasCacheSeries = deepCopy(canvasCache)
     snapshotStore.snapshotPublish(canvasCacheSeries)
@@ -273,9 +272,10 @@ const initDashboardCreateMode = async (pid, createType, templateParams) => {
     // 数据准备完成，允许计入镜像
     dvMainStore.setDataPrepareState(true)
     // preOpt
-        canvasStyleData.value.component.chartTitle.color = '#000000'
-      })
-    }
+    canvasStyleData.value.component.chartTitle.color = '#000000'
+  })
+}
+
 const initLocalCanvasData = callBack => {
   const { resourceId, opt, sourcePid } = state
   const busiFlag = opt === 'copy' ? 'dashboard-copy' : 'chart'
@@ -307,7 +307,6 @@ const getComponentStyle = style => {
   return getStyle(style, style.borderActive ? commonFilterAttrs : commonFilterAttrsFilterBorder)
 }
 const calcData = (view, resetDrill = false, updateQuery = '') => {
-  console.log(view, 'view')
   if (
     view.refreshTime === '' ||
     parseFloat(view.refreshTime).toString() === 'NaN' ||
@@ -394,73 +393,84 @@ onMounted(async () => {
   state.sourcePid = pid
   state.opt = opt
   state.resourceId = resourceId
-  // 刷新后清空历史，重新开始记录（仅在存在资源ID时处理）
+  // 刷新后清空历史，重新开始记录
   if (resourceId) {
     snapshotStore.clearPersistHistory(resourceId)
   }
   snapshotStore.initSnapShot()
   if (resourceId) {
     dataInitState.value = false
-    const canvasCache = wsCache.get('DE-DV-CATCH-' + resourceId)
-    if (canvasCache) {
-      canvasCacheOutRef.value?.dialogInit({ canvasType: 'dashboard', resourceId: resourceId })
-    } else {
-      initLocalCanvasData(() => {
-        // do init
+    initLocalCanvasData(() => {
+      // do init
+      dvMainStore.setCurComponent({ component: componentData.value[1], index: 1 })
+      // 编辑页加载完成后执行一次更新数据
+      nextTick(() => {
+        updateChartData(canvasViewInfo.value[curComponent.value ? curComponent.value?.id : 'default'])
+      })
+    })
+    // const canvasCache = wsCache.get('DE-DV-CATCH-' + resourceId)
+    // if (canvasCache) {
+    //   // canvasCacheOutRef.value?.dialogInit({ canvasType: 'dashboard', resourceId: resourceId })
+    //   doUseCache(true)
+    // } else {
+    //   initLocalCanvasData(() => {
+    //     // do init
+    //     dvMainStore.setCurComponent({ component: componentData.value[1], index: 1 })
+    //   })
+    // }
+  } else {
+  // } else if (opt && opt === 'create') {
+    dataInitState.value = false
+    let watermarkBaseInfo
+    try {
+      await watermarkFind().then(rsp => {
+        watermarkBaseInfo = rsp.data
+        watermarkBaseInfo.settingContent = JSON.parse(watermarkBaseInfo.settingContent)
+      })
+    } catch (e) {
+      console.error('can not find watermark info')
+    }
+    let deTemplateData
+    let preName
+    if (createType === 'template') {
+      const templateParamsApply = JSON.parse(Base64.decode(decodeURIComponent(templateParams + '')))
+      await decompressionPre(templateParamsApply, result => {
+        deTemplateData = result
+        preName = deTemplateData.baseInfo?.preName
       })
     }
-  } else if (opt && opt === 'create') {
-    dataInitState.value = false
-    // 新建页不检查 null 键缓存，直接走初始化
-      let watermarkBaseInfo
-      try {
-        await watermarkFind().then(rsp => {
-          watermarkBaseInfo = rsp.data
-          watermarkBaseInfo.settingContent = JSON.parse(watermarkBaseInfo.settingContent)
-        })
-      } catch (e) {
-        console.error('can not find watermark info')
-      }
-      let deTemplateData
-      let preName
+    nextTick(() => {
+      dvMainStore.createInit('dashboard', null, pid, watermarkBaseInfo, preName)
+      // 从模板新建
       if (createType === 'template') {
-        const templateParamsApply = JSON.parse(Base64.decode(decodeURIComponent(templateParams + '')))
-        await decompressionPre(templateParamsApply, result => {
-          deTemplateData = result
-          preName = deTemplateData.baseInfo?.preName
-        })
-      }
-      nextTick(() => {
-        dvMainStore.createInit('dashboard', null, pid, watermarkBaseInfo, preName)
-        // 从模板新建
-        if (createType === 'template') {
-          wsCache.delete('de-template-data')
-          dvMainStore.setComponentData(deTemplateData['componentData'])
-          dvMainStore.setCanvasStyle(deTemplateData['canvasStyleData'])
-          dvMainStore.setCanvasViewInfo(deTemplateData['canvasViewInfo'])
-          dvMainStore.setAppDataInfo(deTemplateData['appData'])
-          setTimeout(() => {
-            snapshotStore.recordSnapshotCache('template')
-          }, 1500)
-          if (dvMainStore.getAppDataInfo()) {
-            eventBus.emit('save')
-          }
-        } else {
-          // 新建组件
-          handleNewFromCanvasMain({ componentName: 'VQuery', innerType: 'VQuery' })
-          handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
+        wsCache.delete('de-template-data')
+        dvMainStore.setComponentData(deTemplateData['componentData'])
+        dvMainStore.setCanvasStyle(deTemplateData['canvasStyleData'])
+        dvMainStore.setCanvasViewInfo(deTemplateData['canvasViewInfo'])
+        dvMainStore.setAppDataInfo(deTemplateData['appData'])
+        setTimeout(() => {
+          snapshotStore.recordSnapshotCache('template')
+        }, 1500)
+        if (dvMainStore.getAppDataInfo()) {
+          eventBus.emit('save')
         }
-        dataInitState.value = true
-        dvMainStore.setEditMode('edit')
-        // 数据准备完成，允许计入镜像
-        dvMainStore.setDataPrepareState(true)
-        // preOpt
-        canvasStyleData.value.component.chartTitle.color = '#000000'
-      })
-  } else {
-    let url = '#/panel/index'
-    window.open(url, '_self')
+      } else {
+        // 新建组件
+        handleNewFromCanvasMain({ componentName: 'VQuery', innerType: 'VQuery' })
+        handleNewFromCanvasMain({ componentName: 'UserView', innerType: 'table-info' })
+      }
+      dataInitState.value = true
+      dvMainStore.setEditMode('edit')
+      // 数据准备完成，允许计入镜像
+      dvMainStore.setDataPrepareState(true)
+      // preOpt
+      canvasStyleData.value.component.chartTitle.color = '#000000'
+    })
   }
+  //  else {
+  //   let url = '#/panel/index'
+  //   window.open(url, '_self')
+  // }
   // 监听展示区域尺寸变化：当从隐藏（高度≈0）变为可见时，触发一次全量重绘
   nextTick(() => {
     const el = showAreaRef.value as unknown as HTMLElement
@@ -530,15 +540,13 @@ const doRecoverToPublished = () => {
   )
 }
 
-//计算ComponentData中的style
-const calcComponentItemstyle = (item) => {
-  const heightObj = {
-    'VQuery': '100px',
-    'table-info': 'calc(100vh-345px)'
+// 计算ComponentData中的style
+const calcComponentItemStyle = (item) => {
+  const styleObj = {
+    'VQuery': { height: '100px', overflowY: 'auto' },
+    'UserView': { flex: 1 }
   }
-  return {
-    height: heightObj[item.innerType]
-  }
+  return styleObj[item.component]
 }
 
 onUnmounted(() => {
@@ -551,16 +559,12 @@ onUnmounted(() => {
   }
 })
 
-window.addEventListener('message', (event: MessageEvent) => {
+window.addEventListener('message', (event: MessageEvent<any>) => {
   const data = event?.data
   if (data?.type === 'dashboardClose') {
     // 清空localstorage里的DashboardCache
-    if (dvInfo.value.id) {
-      wsCache.delete('DE-DV-CATCH-' + dvInfo.value.id)
-    }
-    if (dvInfo.value.pid) {
-      wsCache.delete('DE-DV-HISTORY-' + dvInfo.value.pid)
-    }
+    wsCache.delete('DE-DV-CATCH-' + (dvInfo.value.id ?? 'null'))
+    wsCache.delete('DE-DV-HISTORY-' + (dvInfo.value.pid ?? 'null'))
   }
 })
 </script>
@@ -578,6 +582,12 @@ window.addEventListener('message', (event: MessageEvent) => {
     v-if="loadFinish && !mobileConfig"
   >
     <DbToolbar @recoverToPublished="doRecoverToPublished" />
+    <div style="position: relative; height: 0;">
+      <div class="button-area">
+        <!-- <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button> -->
+        <el-button ref="buttonAreaRef" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">更新图表数据</el-button>
+      </div>
+    </div>
     <el-container
       class="dv-layout-container"
       :class="{ 'preview-content': editMode === 'preview' }"
@@ -639,7 +649,7 @@ window.addEventListener('message', (event: MessageEvent) => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 180px;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 90px;">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"
@@ -651,12 +661,9 @@ window.addEventListener('message', (event: MessageEvent) => {
           :font-family="canvasStyleData.fontFamily"
         ></de-canvas> -->
 
-          <div class="button-area" ref="buttonAreaRef">
-            <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button>
-            <el-button size="small" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">查询</el-button>
-          </div>
+          
           <div class="show-area" ref="showAreaRef">
-            <div v-for="item in componentData" :key="item.id" :style="calcComponentItemstyle(item)">
+            <div v-for="item in componentData" :key="item.id" :style="calcComponentItemStyle(item)">
               <component
                 :is="findComponent(item.component)"
                 class="component"
@@ -718,13 +725,17 @@ window.addEventListener('message', (event: MessageEvent) => {
     transform: rotate(360deg);
   }
 }
-
+.button-area {
+  position: absolute;
+  top: -40px;
+  right: 100px;
+}
 .dv-common-layout {
   height: 100vh;
   width: 100vw;
 
   .dv-layout-container {
-    height: calc(100vh - @top-bar-height);
+    height: calc(100vh - 48px)!important;
     .left-sidebar {
       height: 100%;
     }
@@ -736,12 +747,11 @@ window.addEventListener('message', (event: MessageEvent) => {
       position: relative;
       overflow: auto;
       background: #fff;
-      .button-area {
-        padding: 10px;
-      }
       .show-area {
         padding: 0 10px;
-        height: calc(100vh - 300px);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
       }
       .content {
         flex: 1;
@@ -765,7 +775,7 @@ window.addEventListener('message', (event: MessageEvent) => {
     height: 100%;
     width: 100%;
     .dv-layout-container {
-      height: calc(100% - @top-bar-height);
+      height: calc(100% - 48px);
     }
   }
 }

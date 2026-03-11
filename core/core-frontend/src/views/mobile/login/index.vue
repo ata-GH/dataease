@@ -1,7 +1,9 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_invisible_outlined from '@/assets/svg/icon_invisible_outlined.svg'
 import icon_visible_outlined from '@/assets/svg/icon_visible_outlined.svg'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import VanCellGroup from 'vant/es/cell-group'
 import mobileWholeBg from '@/assets/img/bg-mobile.png'
 import mobileDeTop from '@/assets/img/mobile-de-top.png'
@@ -52,7 +54,12 @@ const closePage = () => {
     window.parent?.postMessage({ type: 'closeBoard', data: {} }, '*')
   }
 }
-
+const expiredText = computed(() => {
+  if (router.currentRoute.value.query.type === 'noauth') {
+    return '您暂无该页面的访问权限，请联系管理员'
+  }
+  return '登录会话已失效，请关闭页面重新登录'
+})
 const checkUsername = value => {
   if (!value) {
     return true
@@ -219,7 +226,7 @@ const loadFail = () => {
     />
     <div class="mobile-login-content">
       <div v-if="isLoginHidden" class="session-expired-view">
-        <div class="expired-text">登录会话已失效，请关闭页面重新登录</div>
+        <div class="expired-text">{{ expiredText }}</div>
         <button v-if="inIframe" class="close-btn" @click="closePage" aria-label="关闭">关闭</button>
       </div>
       <div v-else>
@@ -322,6 +329,7 @@ const loadFail = () => {
     height: 100%;
     position: relative;
     z-index: 1;
+    display: none;
   }
 
   .mobile-login-content {

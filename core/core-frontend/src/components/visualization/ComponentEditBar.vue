@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     class="bar-main"
@@ -113,32 +114,24 @@
             >
             <el-dropdown-item
               @click="userViewEnlargeOpen($event, 'details')"
-              v-if="
-                !['picture-group', 'rich-text'].includes(element.innerType) &&
-                barShowCheck('details')
-              "
-              >{{ t('visualization.show_data_info') }}</el-dropdown-item
-            >
+              v-if="!['picture-group', 'rich-text'].includes(element.innerType) &&
+                barShowCheck('details')"
+              >{{ t('visualization.show_data_info') }}</el-dropdown-item>
             <el-dropdown-item
               style="padding: 0"
-              v-if="
-                !['picture-group', 'rich-text'].includes(element.innerType) &&
+              v-if="!['picture-group', 'rich-text'].includes(element.innerType) &&
                 barShowCheck('download') &&
-                showDownload &&
                 (exportPermissions[0] || exportPermissions[1]) &&
-                isPreview
-              "
+                isPreview"
               @click.prevent
             >
               <el-dropdown style="width: 100%" trigger="hover" placement="right-start">
                 <div
                   class="flex-align-center"
-                  style="
-                    position: relative;
+                  style="position: relative;
                     width: 100%;
                     padding: 5px 32px 5px 16px;
-                    line-height: 24px;
-                  "
+                    line-height: 24px;"
                 >
                   {{ t('visualization.export_as') }}
                   <el-icon size="16px" style="position: absolute; right: 8px; margin-right: 0"
@@ -185,13 +178,11 @@
     <el-dropdown
       trigger="click"
       placement="right-start"
-      v-if="
-        !['picture-group', 'rich-text'].includes(element.innerType) &&
+      v-if="!['picture-group', 'rich-text'].includes(element.innerType) &&
         barShowCheck('previewDownload') &&
         showDownload &&
-        (exportPermissions[0] || exportPermissions[1])
-      "
-    >
+        (exportPermissions[0] || exportPermissions[1]) &&
+        isPreview">
       <el-icon @click="downloadClick" class="bar-base-icon">
         <el-tooltip :content="t('chart.export')" effect="dark" placement="bottom">
           <icon name="dv-preview-download"><dvPreviewDownload class="svg-icon" /></icon>
@@ -231,7 +222,7 @@
 </template>
 
 <script lang="ts" setup>
-import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
+/* eslint-disable */
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import dvBarEnlarge from '@/assets/svg/dv-bar-enlarge.svg'
@@ -254,19 +245,20 @@ import FieldsList from '@/custom-component/rich-text/FieldsList.vue'
 import { RefreshLeft } from '@element-plus/icons-vue'
 import { ElMessage, ElTooltip, ElButton } from 'element-plus-secondary'
 import CustomTabsSort from '@/custom-component/de-tabs/CustomTabsSort.vue'
+import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { exportPivotExcel } from '@/views/chart/components/js/panel/common/common_table'
 import { XpackComponent } from '@/components/plugin'
 import { exportPermission, isMobile } from '@/utils/utils'
 import { isMainCanvas } from '@/utils/canvasUtils'
 import { useRoute } from 'vue-router_2'
+const route = useRoute()
+const isPreview = computed(() => (!!route.query.resourceId || !!route.query.dvId) && !window.location.href.includes('/chartSwift'))
 const dvMainStore = dvMainStoreWithOut()
 const snapshotStore = snapshotStoreWithOut()
 const copyStore = copyStoreWithOut()
 const customTabsSortRef = ref(null)
 const exportApplicationDialogRef = ref(null)
 const currentDownloadType = ref('view')
-const route = useRoute()
-const isPreview = computed(() => !!route.query.resourceId || !!route.query.dvId)
 const exportPermissions = computed(() =>
   exportPermission(dvInfo.value['weight'], dvInfo.value['ext'])
 )
@@ -468,10 +460,14 @@ const exportAsExcel = () => {
     ElMessage.error(t('chart.field_is_empty_export_error'))
     return
   }
+  const viewInfo = dvMainStore.getViewDetails(element.value.id)
+  if (!viewInfo || (viewInfo && viewInfo.sceneId === 0)) {
+    ElMessage.error('请先保存仪表盘才能导出')
+    return
+  }
   currentDownloadType.value = 'view'
   exportApplicationDialogRef.value.open()
 }
-
 const handleExportConfirm = (formData) => {
   const viewDataInfo = dvMainStore.getViewDataDetails(element.value.id)
   const chartExtRequest = dvMainStore.getLastViewRequestInfo(element.value.id)
@@ -484,11 +480,9 @@ const handleExportConfirm = (formData) => {
     reason: formData.reason,
     desc: formData.desc
   }
-  exportExcelDownload(chart, dvInfo.value.name, (res) => {
-    if (res !== 'error') {
-      openMessageLoading(callbackExport)
-    }
+  exportExcelDownload(chart, dvInfo.value.name, () => {
     formData.callback && formData.callback()
+    openMessageLoading(callbackExport)
   })
 }
 const exportAsImage = () => {

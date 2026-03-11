@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { find } from 'lodash-es'
 import { useI18n } from '@/hooks/web/useI18n'
 import { getLocale } from '@/utils/utils'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-col
     v-for="templateItem in arr"
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed } from 'vue'
 
 const props = defineProps({

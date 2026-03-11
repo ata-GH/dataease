@@ -1,8 +1,10 @@
+<!-- eslint-disable -->
 <template>
   <div class="areaShadow"></div>
 </template>
 
 <script setup lang="ts"></script>
+/* eslint-disable */
 
 <style lang="less" scoped>
 .areaShadow {

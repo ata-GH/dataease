@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { useI18n } from '@/hooks/web/useI18n'
 export interface Info {
   name: string

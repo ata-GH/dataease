@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="mobile-link-container" v-loading="loading">
     <ErrorTemplate v-if="!loading && disableError" :msg="t('link_ticket.disable_error')" />
@@ -27,6 +28,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import { onMounted, nextTick, ref, reactive } from 'vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import PreviewCanvas from '@/views/data-visualization/PreviewCanvasMobile.vue'

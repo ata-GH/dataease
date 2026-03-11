@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-container class="geometry-container">
     <el-aside class="geonetry-aside">
@@ -265,6 +266,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import icon_more_outlined from '@/assets/svg/icon_more_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'

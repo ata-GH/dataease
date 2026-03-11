@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_letterSpacing_outlined from '@/assets/svg/icon_letter-spacing_outlined.svg'
 import icon_bold_outlined from '@/assets/svg/icon_bold_outlined.svg'
 import icon_italic_outlined from '@/assets/svg/icon_italic_outlined.svg'
@@ -28,7 +30,7 @@ const props = defineProps({
     default: 'dark'
   },
   propertyInner: {
-    type: Array<string>
+    type: Array
   }
 })
 

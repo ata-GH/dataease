@@ -1,3 +1,4 @@
+/* eslint-disable */
 import mysqlDs from '@/assets/svg/mysql-ds.svg'
 import oracleDs from '@/assets/svg/oracle-ds.svg'
 import sqlServerDs from '@/assets/svg/sqlServer-ds.svg'

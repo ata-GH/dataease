@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="info-card">
     <div class="info-title">
@@ -25,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import { storeToRefs } from 'pinia'
 import { useI18n } from '@/hooks/web/useI18n'

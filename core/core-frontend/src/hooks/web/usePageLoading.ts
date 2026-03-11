@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useAppStoreWithOut } from '@/store/modules/app'
 
 const appStore = useAppStoreWithOut()

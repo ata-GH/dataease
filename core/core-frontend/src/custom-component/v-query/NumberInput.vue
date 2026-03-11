@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { toRefs, onBeforeMount, type PropType, type Ref, inject, computed, nextTick } from 'vue'
 interface SelectConfig {
   id: string

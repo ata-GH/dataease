@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import type { ManipulateType } from 'dayjs'
 import { storeToRefs } from 'pinia'

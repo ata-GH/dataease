@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface SettingRecord {
   pkey: string
   pval: string

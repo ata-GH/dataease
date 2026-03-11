@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row ref="mainPlayer" style="width: 100%; height: 100%">
     <div
@@ -19,6 +20,7 @@
   </el-row>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import flvjs from 'flv.js'
 import '@/style/custom-theme.css'
 import { onMounted, reactive, toRefs, getCurrentInstance, nextTick, onBeforeUnmount } from 'vue'

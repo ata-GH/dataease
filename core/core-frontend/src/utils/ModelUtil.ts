@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useCache } from '@/hooks/web/useCache'
 const { wsCache } = useCache()
 

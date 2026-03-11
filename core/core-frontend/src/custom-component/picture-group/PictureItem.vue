@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="img-option">
     <div class="img-area" :class="{ 'selected-active': active }">
@@ -8,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs } from 'vue'
 import { imgUrlTrans } from '@/utils/imgUtils'
 

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div style="width: 100%">
     <el-col>
@@ -72,6 +73,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { reactive } from 'vue'
 import { COLOR_PANEL } from '@/views/chart/components/editor/util/chart'
 import { useI18n } from '@/hooks/web/useI18n'

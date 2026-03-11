@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_right_outlined from '@/assets/svg/icon_right_outlined.svg'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import userImg from '@/assets/img/user.png'

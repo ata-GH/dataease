@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import DeResourceTree from '@/views/common/DeResourceTree.vue'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -11,11 +13,10 @@ import { useAppStoreWithOut } from '@/store/modules/app'
 import { initCanvasData, initCanvasDataPrepare, onInitReady } from '@/utils/canvasUtils'
 import { useMoveLine } from '@/hooks/web/useMoveLine'
 import { Icon } from '@/components/icon-custom'
-import { download2AppTemplate, generateCanvasFile } from '@/utils/imgUtils'
+import { download2AppTemplate, downloadCanvas2 } from '@/utils/imgUtils'
 import MultiplexPreviewShow from '@/views/data-visualization/MultiplexPreviewShow.vue'
 import DvPreview from '@/views/data-visualization/DvPreview.vue'
 import AppExportForm from '@/components/de-app/AppExportForm.vue'
-import ExportApplicationDialog from '@/components/common/ExportApplicationDialog.vue'
 import { ElMessage } from 'element-plus-secondary'
 import { useEmitt } from '@/hooks/web/useEmitt'
 
@@ -38,6 +39,7 @@ const previewCanvasContainer = ref(null)
 const dvPreviewRef = ref(null)
 const slideShow = ref(true)
 const dataInitState = ref(true)
+const downloadStatus = ref(false)
 const { width, node } = useMoveLine('DASHBOARD')
 const appExportFormRef = ref(null)
 const props = defineProps({
@@ -112,30 +114,16 @@ const loadCanvasData = (dvId, weight?, ext?) => {
     }
   )
 }
-const exportApplicationDialogRef = ref(null)
-const downloadStatus = ref(false)
-const downloadTypeTemp = ref('')
+
 const download = type => {
-  downloadTypeTemp.value = type
-  exportApplicationDialogRef.value.open()
-}
-
-const handleExportConfirm = formData => {
-  executeDownload(downloadTypeTemp.value, formData)
-}
-
-const executeDownload = (type, formData) => {
   downloadStatus.value = true
   setTimeout(() => {
     const vueDom = previewCanvasContainer.value.querySelector('.canvas-container')
-    generateCanvasFile(type, vueDom, state.dvInfo.name, (file) => {
+    downloadCanvas2(type, vueDom, state.dvInfo.name, () => {
       downloadStatus.value = false
       const param = {
         id: state.dvInfo.id,
-        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen',
-        reason: formData.reason,
-        desc: formData.desc,
-        file
+        type: state.dvInfo.type === 'dashboard' ? 'panel' : 'screen'
       }
       type === 'img' ? exportLogImg(param) : exportLogPDF(param)
     })
@@ -168,7 +156,7 @@ const downloadAsAppTemplate = downloadType => {
 const downLoadToAppPre = () => {
   const result = checkTemplate()
   if (result && result.length > 0) {
-    ElMessage.warning(`当前仪表板中[${result}]属于模版图表，无法导出，请先设置数据集！`)
+    ElMessage.warning(`当前仪表盘中[${result}]属于模版图表，无法导出，请先设置数据集！`)
   } else {
     appExportFormRef.value.init({
       appName: state.dvInfo.name,
@@ -355,10 +343,6 @@ onBeforeMount(() => {
     :canvas-view-info="state.canvasViewInfoPreview"
     @downLoadApp="downLoadApp"
   ></app-export-form>
-  <export-application-dialog
-    ref="exportApplicationDialogRef"
-    @confirm="handleExportConfirm"
-  />
 </template>
 
 <style lang="less">

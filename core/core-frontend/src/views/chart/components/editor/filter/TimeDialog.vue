@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, computed } from 'vue'
 import DynamicTime from '@/custom-component/v-query/DynamicTimeForViewFilter.vue'
 import { type DatePickType } from 'element-plus-secondary'

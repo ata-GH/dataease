@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-row
     class="template-outer-body"
@@ -186,6 +187,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import no_result from '@/assets/svg/no_result.svg'
 import { searchMarket } from '@/api/templateMarket'
 import { useEmbedded } from '@/store/modules/embedded'
@@ -234,7 +236,7 @@ const state = reactive({
     value: 'label',
     label: 'label'
   },
-  templateType: 'all', // 模板类型 仪表板 数据大屏
+  templateType: 'all', // 模板类型 仪表盘 数据大屏
   templateSourceType: 'all', // 模板来源 模板市场 模板管理
   templateClassifyType: 'all', // 模板分类 样式模板 应用模板
   treeShow: true,
@@ -430,6 +432,7 @@ const initMarketTemplate = async () => {
       state.marketTabs = rsp.data.categories.filter(category =>
         activeCategories.has(category.label)
       )
+      // state.marketActiveTab = state.marketTabs[1].label
       // 过滤掉 最近使用
       state.marketTabs = state.marketTabs.filter(category => category.label !== t('work_branch.recent'))
 

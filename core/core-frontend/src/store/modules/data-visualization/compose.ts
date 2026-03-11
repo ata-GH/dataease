@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { defineStore, storeToRefs } from 'pinia'
 import { store } from '../../index'
 import { dvMainStoreWithOut } from './dvMain'

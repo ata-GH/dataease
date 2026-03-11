@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import dvInfoSvg from '@/assets/svg/dv-info.svg'
 import icon_down_outlined1 from '@/assets/svg/icon_down_outlined-1.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
@@ -219,6 +221,12 @@ onMounted(() => {
   useEmitt({
     name: 'clear-remove',
     callback: clearRemove
+  })
+  useEmitt({
+    name: 'v-query-update-chart-data',
+    callback: (val) => {
+      updateChartData(view.value)
+    }
   })
 })
 
@@ -1539,16 +1547,22 @@ const initOpenHandler = newWindow => {
   }
 }
 const addDsWindow = () => {
-  if (!dvInfo.value.id) {
-    ElMessage.warning(t('visualization.save_page_tips'))
-    return
-  }
-  const path =
-    embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded-form' : '/dataset-form'
-  let routeData = router.resolve(path)
-  const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
-  const newWindow = window.open(routeData.href, openType)
-  initOpenHandler(newWindow)
+  // if (!dvInfo.value.id) {
+  //   ElMessage.warning(t('visualization.save_page_tips'))
+  //   return
+  // }
+  // const path =
+  //   embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded-form' : '/dataset-form'
+  // let routeData = router.resolve(path)
+  // const openType = wsCache.get('open-backend') === '1' ? '_self' : '_blank'
+  // const newWindow = window.open(routeData.href, openType)
+  // initOpenHandler(newWindow)
+  router.push({
+    path: '/dataset-form',
+    query: {
+      from: 'dashboard'
+    }
+  })
 }
 const editDs = () => {
   const path =
@@ -2110,9 +2124,6 @@ const deleteChartFieldItem = id => {
                 <div
                   class="padding-lr field-height first right-dimension"
                   :class="{ dark: themes === 'dark', 'user-select': isDragging }"
-                  :style="{
-                    height: fieldDHeight + 'px'
-                  }"
                 >
                   <div style="margin-top: 12px" class="label-top">
                     {{ t('chart.dimension') }}
@@ -2491,7 +2502,6 @@ const deleteChartFieldItem = id => {
                 </el-popover>
               </div>
             </el-row>
-
             <el-row :style="elRowStyle">
               <div class="chart-select-box">
                 <chart-type
@@ -2669,7 +2679,6 @@ const deleteChartFieldItem = id => {
                     </el-footer>
                   </el-container>
                 </el-tab-pane> -->
-
                 <el-tab-pane
                   name="style"
                   :label="t('chart.chart_style')"
@@ -2770,25 +2779,25 @@ const deleteChartFieldItem = id => {
                   </el-container>
                 </el-tab-pane>
 
-                <el-tab-pane
+                <!-- <el-tab-pane
                   name="query"
                   label="查询条件"
                   class="padding-tab"
                   style="width: 100%"
                 >
-                  <el-scrollbar v-if="view.type === 'VQuery' && curComponent">
+                  <el-scrollbar v-if="curComponent">
                     <div class="query-style-tab">
                       <div style="padding-top: 1px">
-                        <!-- <VQueryChartStyle
+                        <VQueryChartStyle
                           :element="curComponent"
                           :common-background-pop="curComponent?.commonBackground"
                           :chart="view"
                           :themes="themes"
-                        /> -->
+                        />
                       </div>
                     </div>
                   </el-scrollbar>
-                </el-tab-pane>
+                </el-tab-pane> -->
               </el-tabs>
             </el-row>
           </div>
@@ -3771,7 +3780,7 @@ const deleteChartFieldItem = id => {
         <el-row class="padding-lr drag-data">
           <div class="form-draggable-title">
             <span>
-              {{ t('chart.result_filter') }}
+              数据限制
             </span>
             <el-tooltip
               :effect="toolTip"
@@ -3807,18 +3816,19 @@ const deleteChartFieldItem = id => {
               /></Icon>
             </el-icon>
 
-            <span>{{ $t('chart.filter') }}</span>
+            <span>数据限制</span>
           </div>
           <el-button
             v-else
             class="tree-btn_secondary"
+            size="small"
             secondary
             @click="openTreeFilter"
           >
             <template #icon>
               <Icon><iconFilter class="svg-icon svg-background" /></Icon>
             </template>
-            <span>{{ $t('chart.filter') }}</span>
+            <span>数据限制</span>
           </el-button>
         </el-row>
 
@@ -4142,6 +4152,7 @@ const deleteChartFieldItem = id => {
     border-top: 1px solid @side-outline-border-color-light !important;
   }
   :deep(.dataset-main) {
+    border-left: none;
     border-right: 1px solid @side-outline-border-color-light !important;
   }
   :deep(input) {
@@ -4153,6 +4164,10 @@ const deleteChartFieldItem = id => {
   }
   :deep(.item-span-style) {
     color: @canvas-main-font-color-light!important;
+    margin-left: 0;
+    .item-name {
+      transform: scale(0.8);
+    }
   }
 
   :deep(.editor-title) {
@@ -4289,7 +4304,9 @@ const deleteChartFieldItem = id => {
 span {
   font-size: 12px;
 }
-
+.chart-select-box {
+  border-top: solid 1px rgba(31, 35, 41, 0.15);
+}
 .de-chart-editor {
   height: 100%;
   overflow-y: hidden;
@@ -4589,7 +4606,7 @@ span {
   .drag-block-style {
     padding: 2px 0 0 0;
     width: 100%;
-    min-height: 35px;
+    min-height: 28px;
     border-radius: 4px;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -5271,9 +5288,9 @@ span {
   top: 0;
   left: 420px;
   width: calc(100vw - 420px);
-  height: 180px;
+  height: 88px;
   z-index: 10;
-  padding: 5px 10px;
+  padding: 0 10px;
   overflow-x: hidden;
   overflow-y: auto;
   border-bottom: solid 1px @side-outline-border-color-light !important;
@@ -5341,15 +5358,17 @@ span {
       display: inline-block;
       margin-left: 5px;
       .item-axis {
-        padding: 0px 25px;
+        padding: 0px 20px;
         margin: 0;
         position: relative;
+        height: 20px;
+        line-height: 20px;
         i.remove-icon {
-          top: 6px;
+          top: 2px;
           right: 4px;
         }
         i.arrow_down-icon {
-          top: 5px!important;
+          top: 2px!important;
         }
       }
     }
@@ -5394,11 +5413,12 @@ span {
 
     .drag-block-style {
       margin-top: 0;
+      min-height: 28px;
     }
 
     .tree-btn {
       width: 100%;
-      margin-top: 8px;
+      // margin-top: 8px;
       background: #fff;
       height: 28px;
       border-radius: 4px;

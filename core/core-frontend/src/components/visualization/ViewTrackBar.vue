@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div>
     <el-dropdown
@@ -29,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { reactive, ref, toRefs } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()

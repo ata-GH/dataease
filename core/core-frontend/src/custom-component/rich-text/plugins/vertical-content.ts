@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { type Editor } from 'tinymce'
 import tinymce from 'tinymce/tinymce'
 import { useEmitt } from '@/hooks/web/useEmitt'

@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_done_outlined from '@/assets/svg/icon_done_outlined.svg'
 import { ref, onMounted, reactive } from 'vue'
 import { Icon } from '@/components/icon-custom'

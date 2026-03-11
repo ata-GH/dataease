@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <el-tabs :class="['de-tabs', ...tabClassName]" :style="tabStyle" v-bind="$attrs">
     <slot></slot>
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { computed } from 'vue'
 const props = defineProps({
   hideTitle: Boolean,

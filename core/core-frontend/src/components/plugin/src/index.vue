@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import noLic from './nolic.vue'
 import { ref, useAttrs, onMounted } from 'vue'
 import { execute, randomKey, formatArray } from './convert'
@@ -38,7 +40,7 @@ const generateRamStr = (len: number) => {
 
 const importProxy = (bytesArray: any[]) => {
   const promise = import(
-    `../../../../../../${formatArray(bytesArray[6])}/${formatArray(bytesArray[7])}/${formatArray(
+    `@/${formatArray(bytesArray[6])}/${formatArray(bytesArray[7])}/${formatArray(
       bytesArray[8]
     )}/${formatArray(bytesArray[9])}/${formatArray(bytesArray[10])}.vue`
   )

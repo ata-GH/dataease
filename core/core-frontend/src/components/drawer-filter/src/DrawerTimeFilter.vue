@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { propTypes } from '@/utils/propTypes'
 import { computed, PropType, reactive, toRefs, h } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

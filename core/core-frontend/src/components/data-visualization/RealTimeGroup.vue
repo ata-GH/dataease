@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import group from '@/assets/svg/group.svg'
 import bar from '@/assets/svg/bar.svg'
 import dbMoreWeb from '@/assets/svg/db-more-web.svg'

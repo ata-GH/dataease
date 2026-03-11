@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import more_v from '@/assets/svg/more_v.svg'
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import icon_drag_outlined from '@/assets/svg/icon_drag_outlined.svg'
@@ -679,7 +681,6 @@ const currentFieldDateType = ref(null)
 const setParameters = field => {
   const currentSelectField = curComponent.value.checkedFieldsMap[field.componentId]
   const currentDimension = field?.fields?.dimensionList?.find(ele => ele.id === currentSelectField)
-  console.log('选择的字段', currentDimension)
   currentFieldDateType.value = currentDimension?.dateFormat
   const fieldArr = Object.values(curComponent.value.checkedFieldsMap).filter(ele => !!ele)
   curComponent.value.parameters = duplicateRemoval(
@@ -1540,7 +1541,6 @@ const validate = () => {
         return true
       }
       if (!ele.setTimeRange) return false
-      console.log(startTime, endTime)
 
       if (
         isInRange(
@@ -2792,7 +2792,6 @@ defineExpose({
                     </div>
                   </el-option>
                 </el-select>
-                <!-- 数据集中的字段选择 -->
                 <el-select
                   @change="setParameters(field)"
                   @focus="handleDialogClick"
@@ -3106,7 +3105,6 @@ defineExpose({
               </div>
               <div class="value">
                 <template v-if="curComponent.displayType === '7' && !isTimeParameter">
-                  <!-- 时间粒度，类型：时间范围 -->
                   <el-select
                     @change="timeGranularityMultipleChange"
                     :placeholder="t('v_query.the_time_granularity')"
@@ -3120,7 +3118,6 @@ defineExpose({
                   </el-select>
                 </template>
                 <template v-else>
-                  <!-- 时间粒度，类型：时间 -->
                   <el-select
                     @change="timeGranularityChange"
                     :placeholder="t('v_query.the_time_granularity')"

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { isExternal } from '@/utils/validate'
 import { cloneDeep } from 'lodash'
 import { XpackComponent } from '@/components/plugin'

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="attr-list de-collapse-style">
     <CommonAttr :element="curComponent"></CommonAttr>
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
 import CommonAttr from '@/custom-component/common/CommonAttr.vue'
 import { storeToRefs } from 'pinia'

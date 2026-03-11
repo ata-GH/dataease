@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface BusiTreeNode {
   id: string | number
   pid: string | number

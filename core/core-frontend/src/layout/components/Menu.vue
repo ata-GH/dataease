@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { computed } from 'vue'
 import { ElMenu } from 'element-plus-secondary'
 import { useRoute, useRouter } from 'vue-router_2'

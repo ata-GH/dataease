@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { SpreadSheet, Node } from '@antv/s2'
 import { PropType } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'

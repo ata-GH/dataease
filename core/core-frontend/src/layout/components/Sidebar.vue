@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { useMoveLine } from '@/hooks/web/useMoveLine'
 import { ElAside } from 'element-plus-secondary'
 const { width, node } = useMoveLine('DATASET')

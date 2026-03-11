@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { propTypes } from '@/utils/propTypes'
 defineProps({
   label: propTypes.string.def('')

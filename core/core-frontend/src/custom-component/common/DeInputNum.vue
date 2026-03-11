@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
+/* eslint-disable */
 import { toRefs, PropType } from 'vue'
 
 const props = defineProps({

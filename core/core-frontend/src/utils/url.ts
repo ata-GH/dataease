@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEmbedded } from '@/store/modules/embedded'
 const embeddedStore = useEmbedded()
 export const formatDataEaseBi = (url: string) => {

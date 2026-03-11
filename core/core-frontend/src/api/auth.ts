@@ -1,3 +1,4 @@
+/* eslint-disable */
 import request from '@/config/axios'
 import qs from 'qs'
 
@@ -8,6 +9,14 @@ export const queryRoleApi = data => request.post({ url: '/role/byCurOrg', data }
 export const fetchOperatorListApi = (params = { numberPerPage: 999999, currentPage: 1 }) =>
   request.get({ url: '/sdar/rest/auth/operator/list', params })
 
+export const fetchGroupListApi = (
+  params = { state: 1, numberPerPage: 999999, currentPage: 1 }
+) => request.get({ url: '/sdar/rest/auth/group/list', params })
+
+// 获取目录
+export const fetchSourceTreeApi = ( params = { objType: 19}) => request.get({ url: '/sdar/rest/directory/listDirectoryWithOutLeaf', params })
+
+// BI登录
 export const sdarLoginApi = (data) => {
   return request.post({
     url: '/sdar/rest/login',
@@ -19,10 +28,6 @@ export const sdarLoginApi = (data) => {
 // 判断权限接口
 export const checkViewPermissionApi = (data) =>
   request.get({ url: `/sdar/rest/dashboard/checkViewPermission/${data.dashboardId}` })
-
-export const fetchGroupListApi = (
-  params = { state: 1, numberPerPage: 999999, currentPage: 1 }
-) => request.get({ url: '/sdar/rest/auth/group/list', params })
 
 export const resourceTreeApi = (flag: string) => request.get({ url: '/auth/busiResource/' + flag })
 

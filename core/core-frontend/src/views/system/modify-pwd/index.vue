@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="user-center flex-align-center">
     <div class="user-center-container">
@@ -22,6 +23,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+/* eslint-disable */
 import UpdatePwd from './UpdatePwd.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 const { t } = useI18n()

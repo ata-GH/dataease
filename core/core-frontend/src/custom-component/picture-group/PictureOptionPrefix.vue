@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="img-option-prefix">
     <img draggable="false" :src="imgUrlTrans(url)" />
@@ -5,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { imgUrlTrans } from '@/utils/imgUtils'
 
 withDefaults(

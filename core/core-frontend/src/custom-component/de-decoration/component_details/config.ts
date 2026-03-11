@@ -1,3 +1,4 @@
+/* eslint-disable */
 import DeBoard1 from '@/custom-component/de-decoration/component_details/DeBoard1.vue'
 import DeBoard2 from '@/custom-component/de-decoration/component_details/DeBoard2.vue'
 import DeBoard3 from '@/custom-component/de-decoration/component_details/DeBoard3.vue'

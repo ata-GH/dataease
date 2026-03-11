@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import icon_pc_outlined from '@/assets/svg/icon_pc_outlined.svg'
 import { ref, onMounted, unref, onBeforeUnmount, computed } from 'vue'
@@ -194,6 +196,7 @@ const hanedleMessage = event => {
 const saveCanvasWithCheckFromMobile = () => {
   snapshotStore.resetStyleChangeTimes()
   canvasSave(() => {
+    // ElMessage.success(t('visualization.save_success'))
     const targetViewIds = []
     findAllViewsId(componentData.value, targetViewIds)
     updatePublishStatus({

@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="bar-main">
     <el-checkbox v-model="checked" @change="checkChange" />
@@ -5,6 +6,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable */
 import { ref, onMounted } from 'vue'
 import { useViewSelectorStoreWithOut } from '@/store/modules/data-visualization/viewSelector'
 const viewSelectorStore = useViewSelectorStoreWithOut()

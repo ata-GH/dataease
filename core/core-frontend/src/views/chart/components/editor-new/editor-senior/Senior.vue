@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -338,7 +340,7 @@ const removeJumpSenior = () => {
             jsname="L2NvbXBvbmVudC90aHJlc2hvbGQtd2FybmluZy9TZW5pb3JIYW5kbGVy"
           />
 
-          <collapse-switch-item
+          <!-- <collapse-switch-item
             v-if="showProperties('linkage')"
             :themes="themes"
             name="linkage"
@@ -439,7 +441,7 @@ const removeJumpSenior = () => {
                 </button>
               </span>
             </div>
-          </collapse-switch-item>
+          </collapse-switch-item> -->
           <collapse-switch-item
             :effect="themes"
             :title="t('visualization.bubble_dynamic_effect')"
@@ -476,9 +478,9 @@ const removeJumpSenior = () => {
       {{ t('chart.chart_no_senior') }}
     </div>
     <!--跳转设置-->
-    <link-jump-set ref="linkJumpRef" />
+    <!-- <link-jump-set ref="linkJumpRef" /> -->
     <!--联动设置-->
-    <linkage-set ref="linkageRef" />
+    <!-- <linkage-set ref="linkageRef" /> -->
   </el-row>
 </template>
 

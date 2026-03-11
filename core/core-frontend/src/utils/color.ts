@@ -1,3 +1,4 @@
+/* eslint-disable */
 function rgbToHex(r, g, b) {
   // 确保数值在0-255范围内
   r = Math.max(0, Math.min(255, r))

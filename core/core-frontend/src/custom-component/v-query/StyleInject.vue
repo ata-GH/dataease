@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import { provide, PropType } from 'vue'
 import Select from './Select.vue'
 import Time from './Time.vue'

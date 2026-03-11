@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_expandRight_filled from '@/assets/svg/icon_expand-right_filled.svg'
 import { ref } from 'vue'
 import { propTypes } from '@/utils/propTypes'

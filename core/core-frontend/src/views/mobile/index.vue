@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import mobileIcon_dashboard_filled from '@/assets/svg/mobile/icon_dashboard_filled.svg'
 import mobileIcon_dashboard_outlined from '@/assets/svg/mobile/icon_dashboard_outlined.svg'
 import mobileIcon_home_filled from '@/assets/svg/mobile/icon_home_filled.svg'

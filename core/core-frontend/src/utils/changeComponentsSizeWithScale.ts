@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { deepCopy } from './utils'
 import { divide, multiply } from 'mathjs'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'

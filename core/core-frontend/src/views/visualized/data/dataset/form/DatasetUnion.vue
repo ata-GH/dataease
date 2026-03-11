@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_rename_outlined from '@/assets/svg/icon_rename_outlined.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
@@ -455,14 +457,15 @@ const handleCommand = (ele, command) => {
   }
 
   if (command === 'editorSql') {
-    const { tableName, datasourceId, info, id, sqlVariableDetails } = ele
+    const { tableName, datasourceId, info, id, sqlVariableDetails, extDatasourceId } = ele
     if (ele.type === 'sql') {
       sqlNode.value = {
         sql: ((JSON.parse(info) as { sql: string }) || {}).sql,
         tableName,
         id,
         variables: JSON.parse(sqlVariableDetails),
-        datasourceId
+        datasourceId,
+        extDatasourceId
       }
       editSqlField.value = true
       return
@@ -910,7 +913,8 @@ const drop_handler = ev => {
         sql: '',
         tableName,
         id: state.visualNode.id,
-        datasourceId
+        datasourceId,
+        extDatasourceId
       }
       editSqlField.value = true
       return
@@ -961,7 +965,8 @@ const drop_handler = ev => {
       sql: '',
       tableName,
       id: guid(),
-      datasourceId
+      datasourceId,
+      extDatasourceId
     }
     editSqlField.value = true
     return

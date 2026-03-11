@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div class="icon-option">
     <div
@@ -17,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { iconBoardMap } from '@/components/icon-group/board-list'
 import { toRefs } from 'vue'
 

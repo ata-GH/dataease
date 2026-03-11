@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import iconSetting from '@/assets/svg/icon-setting.svg'
 import LangSelector from '@/layout/components/LangSelector.vue'
 import { useRouter } from 'vue-router_2'

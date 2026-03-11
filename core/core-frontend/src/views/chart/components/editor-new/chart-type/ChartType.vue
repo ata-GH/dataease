@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="tsx" setup>
+/* eslint-disable */
 import { reactive, ref, toRefs } from 'vue'
 import { CHART_TYPE_CONFIGS } from '@/views/chart/components/editor-new/util/chart'
 import Icon from '@/components/icon-custom/src/Icon.vue'

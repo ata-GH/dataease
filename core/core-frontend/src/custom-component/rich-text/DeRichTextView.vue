@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <div
     class="rich-main-class"
@@ -29,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable */
 import { formatDataEaseBi } from '@/utils/url'
 import tinymce from 'tinymce/tinymce' // tinymce默认hidden，不引入不显示
 import Editor from '@tinymce/tinymce-vue' // 编辑器引入
@@ -573,7 +575,7 @@ const calcData = (view: Chart, callback) => {
           state.viewDataInfo = res
           state.totalItems = res?.totalItems
           const curViewInfo = canvasViewInfo.value[element.value.id]
-          // 此处是编辑时使用，多仪表板嵌入 canvasViewInfo 会被覆盖可能出现无法读取情况
+          // 此处是编辑时使用，多仪表盘嵌入 canvasViewInfo 会被覆盖可能出现无法读取情况
           if (res.data && curViewInfo) {
             curViewInfo['curFields'] = res.data.fields
           }

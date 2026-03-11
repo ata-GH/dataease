@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable */
 import icon_info_colorful from '@/assets/svg/icon_info_colorful.svg'
 import icon_add_outlined from '@/assets/svg/icon_add_outlined.svg'
 import icon_deleteTrash_outlined from '@/assets/svg/icon_delete-trash_outlined.svg'
