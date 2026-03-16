@@ -665,7 +665,7 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 90px; overflow: hidden;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 135px; overflow: hidden;">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"

@@ -5288,7 +5288,7 @@ span {
   top: 0;
   left: 420px;
   width: calc(100vw - 420px);
-  height: 88px;
+  height: 135px;
   z-index: 10;
   padding: 0 10px;
   overflow-x: hidden;

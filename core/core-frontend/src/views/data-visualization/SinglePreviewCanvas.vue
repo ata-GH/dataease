@@ -397,15 +397,15 @@ defineExpose({
   }
   .edit-preview-VQuery {
     width: 100%!important;
-    height: 200px!important;
+    height: 150px!important;
     .add-btn {
       display: none;
     }
   }
   .edit-preview-UserView {
-    top: 200px!important;
+    top: 150px!important;
     width: 100%!important;
-    height: calc(100% - 200px)!important;
+    height: calc(100% - 150px)!important;
   }
 }
 </style>
