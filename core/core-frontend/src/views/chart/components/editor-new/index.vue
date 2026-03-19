@@ -127,11 +127,16 @@ const props = defineProps({
     default: 'dark'
   }
 })
+const emit = defineEmits<{
+  (e: 'rightTopAreaHeightChange', height: number): void
+}>()
 
 const editCalcField = ref(false)
 const isCalcFieldAdd = ref(true)
 const calcEdit = ref()
 const route = useRoute()
+const rightTopAreaRef = ref<HTMLElement>()
+const rightTopAreaCollapsed = ref(false)
 
 const onComponentNameChange = () => {
   snapshotStore.recordSnapshotCache('onComponentNameChange')
@@ -185,11 +190,28 @@ const rightTopAreaStyle = computed(() => {
   const datasetWidth = canvasCollapse.value.datasetAreaCollapse ? 35 : 179
   const chartWidth = canvasCollapse.value.chartAreaCollapse ? 35 : 240
   const leftPx = datasetWidth + chartWidth
+  const collapseStyle = rightTopAreaCollapsed.value
+    ? {
+        height: '90px',
+        overflowY: 'auto'
+      }
+    : {}
   return {
     left: `${leftPx}px`,
-    width: `calc(100vw - ${leftPx}px)`
+    width: `calc(100vw - ${leftPx}px)`,
+    ...collapseStyle
   }
 })
+const toggleRightTopAreaCollapse = () => {
+  rightTopAreaCollapsed.value = !rightTopAreaCollapsed.value
+  emitRightTopAreaHeight()
+}
+const emitRightTopAreaHeight = () => {
+  nextTick(() => {
+    emit('rightTopAreaHeightChange', rightTopAreaRef.value?.offsetHeight || 0)
+  })
+}
+let rightTopAreaResizeObserver: ResizeObserver | null = null
 
 const templateStatusShow = computed(() => {
   return (
@@ -215,6 +237,9 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
   cacheId = ''
+  rightTopAreaResizeObserver?.disconnect()
+  rightTopAreaResizeObserver = null
+  emit('rightTopAreaHeightChange', 0)
 })
 
 onMounted(() => {
@@ -228,6 +253,14 @@ onMounted(() => {
       updateChartData(view.value)
     }
   })
+  emitRightTopAreaHeight()
+  if (!rightTopAreaRef.value) {
+    return
+  }
+  rightTopAreaResizeObserver = new ResizeObserver(() => {
+    emitRightTopAreaHeight()
+  })
+  rightTopAreaResizeObserver.observe(rightTopAreaRef.value)
 })
 
 const appStore = useAppStoreWithOut()
@@ -2804,7 +2837,7 @@ const deleteChartFieldItem = id => {
         </div>
       </el-row>
     </template>
-    <div class="right-top-area" :style="rightTopAreaStyle">
+    <div ref="rightTopAreaRef" class="right-top-area" :style="rightTopAreaStyle">
       <template v-if="view.plugin?.isPlugin">
         <plugin-component
           :jsname="view.plugin.staticMap['editor-data']"
@@ -3848,6 +3881,14 @@ const deleteChartFieldItem = id => {
           </el-form-item>
         </el-row>
       </template>
+      <div class="right-top-toggle-btn" @click.stop="toggleRightTopAreaCollapse">
+        <Icon>
+          <icon_down_outlined1
+            class="svg-icon right-top-toggle-icon"
+            :class="{ 'is-expanded': !rightTopAreaCollapsed }"
+          />
+        </Icon>
+      </div>
     </div>
     <chart-template-info v-if="templateStatusShow" :themes="themes"></chart-template-info>
     <!--显示名修改-->
@@ -5288,7 +5329,6 @@ span {
   top: 0;
   left: 420px;
   width: calc(100vw - 420px);
-  height: 135px;
   z-index: 10;
   padding: 0 10px;
   overflow-x: hidden;
@@ -5499,6 +5539,37 @@ span {
     align-items: center;
     height: 100%;
     justify-content: space-between;
+  }
+}
+
+.right-top-toggle-btn {
+  position: sticky;
+  bottom: 1px;
+  left: calc(100% - 25px);
+  z-index: 11;
+  height: 13px;
+  width: 28px;
+  margin-top: -13px;
+  padding: 0;
+  border: 1px solid rgba(31, 35, 41, 0.15);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  background: #fff;
+  color: #646a73;
+  line-height: 12px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.right-top-toggle-icon {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+  transform: scale(0.5);
+  &.is-expanded {
+    transform: rotate(180deg) scale(0.5);
   }
 }
 </style>

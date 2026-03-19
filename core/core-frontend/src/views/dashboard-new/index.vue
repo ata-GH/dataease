@@ -93,6 +93,7 @@ const mobileConfig = ref(false)
 const loadFinish = ref(false)
 const newWindowFromDiv = ref(false)
 const showAreaRef = ref(null)
+const viewEditorTopHeight = ref(135)
 let p = null
 
 // 共享状态
@@ -170,6 +171,15 @@ const viewEditorShow = computed(() => {
       !hiddenListStatus.value
   )
 })
+const centerMainStyle = computed(() => {
+  return {
+    paddingTop: `${viewEditorTopHeight.value}px`,
+    overflow: 'hidden'
+  }
+})
+const onRightTopAreaHeightChange = (height: number) => {
+  viewEditorTopHeight.value = Math.max(0, Math.ceil(height || 0))
+}
 const checkPer = async resourceId => {
   if (!window.DataEaseBi || !resourceId) {
     return true
@@ -641,6 +651,7 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
           :themes="'light'"
           :view="canvasViewInfo[curComponent ? curComponent.id : 'default']"
           :dataset-tree="state.datasetTree"
+          @right-top-area-height-change="onRightTopAreaHeightChange"
         ></view-editor>
       </div>
       <dv-sidebar
@@ -665,7 +676,7 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
         <DashboardHiddenComponent @cancel-hidden="cancelHidden"></DashboardHiddenComponent>
       </dv-sidebar>
       <!-- 中间画布 -->
-      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" style="padding-top: 135px; overflow: hidden;">
+      <main v-show="viewEditorShow" class="center" :class="{ 'de-screen-full': fullscreenFlag }" :style="centerMainStyle">
         <!-- <de-canvas
           style="display: none;"
           v-if="dataInitState"

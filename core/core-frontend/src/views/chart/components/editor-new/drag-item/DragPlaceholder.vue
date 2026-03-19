@@ -25,7 +25,7 @@ const props = defineProps({
   <div>
     <div
       v-if="!props.dragList || props.dragList.length === 0"
-      :style="'margin-top:' + props.marginTop"
+      :style="'margin-top: 0'"
       class="drag-placeholder-style"
     >
       <span
