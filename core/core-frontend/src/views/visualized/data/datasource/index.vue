@@ -1515,23 +1515,23 @@ const handleCloseIframe = () => {
           <BaseInfoContent v-slot="slotProps" :name="t('datasource.base_info')">
             <template v-if="slotProps.active">
               <el-row :gutter="24">
-                <el-col :span="12">
+                <el-col :span="8">
                   <BaseInfoItem :label="t('data_source.data_source_name')">{{
                     nodeInfo.name
                   }}</BaseInfoItem>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="8">
                   <BaseInfoItem :label="t('datasource.type')">{{
                     typeMap[nodeInfo.type]
                   }}</BaseInfoItem>
                 </el-col>
-              </el-row>
-              <el-row :gutter="24">
-                <el-col v-if="nodeInfo.type === 'Excel'" :span="12">
+                <el-col v-if="nodeInfo.type === 'Excel'" :span="8">
                   <BaseInfoItem :label="t('data_source.document')">
                     <ExcelInfoBase :name="nodeInfo.fileName" :size="nodeInfo.size"></ExcelInfoBase>
                   </BaseInfoItem>
                 </el-col>
+              </el-row>
+              <el-row :gutter="24">
                 <el-col v-if="nodeInfo.type === 'ExcelRemote'" :span="12">
                   <BaseInfoItem :label="t('datasource.remote_excel_url')">
                     {{ nodeInfo.configuration.url }}

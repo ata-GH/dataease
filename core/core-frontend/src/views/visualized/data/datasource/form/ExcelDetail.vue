@@ -190,7 +190,11 @@ const handleExcelDel = () => {
   state.excelData = []
   activeTab.value = ''
   tabList.value = []
+  param.value.name = ''
   Object.assign(sheetObj, cloneDeep(defaultSheetObj))
+  nextTick(() => {
+    excelForm.value.resetFields()
+  })
 }
 
 const uploadSuccess = response => {
