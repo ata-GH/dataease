@@ -504,7 +504,7 @@ export const DEFAULT_TABLE_CELL: ChartTableCellAttr = {
 export const DEFAULT_TITLE_STYLE: ChartTextStyle = {
   show: true,
   fontSize: 16,
-  color: '#ffffff',
+  color: '#000000',
   hPosition: 'left',
   vPosition: 'top',
   isItalic: false,

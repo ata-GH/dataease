@@ -23,7 +23,7 @@ import { cloneDeep, defaultsDeep } from 'lodash-es'
 import { ElButton, ElIcon } from 'element-plus-secondary'
 import Icon from '@/components/icon-custom/src/Icon.vue'
 const dvMainStore = dvMainStoreWithOut()
-const { batchOptStatus, mobileInPc } = storeToRefs(dvMainStore)
+const { batchOptStatus, mobileInPc, dvInfo } = storeToRefs(dvMainStore)
 
 const { t } = useI18n()
 
@@ -59,6 +59,14 @@ const state = reactive({
 })
 
 const { chart } = toRefs(props)
+const syncTitleWithMain = () => {
+  const mainTitle = dvInfo.value?.name
+  if (!mainTitle || chart.value?.title === mainTitle) {
+    return
+  }
+  chart.value.title = mainTitle
+  changeTitleStyle('title')
+}
 
 const fontSizeList = computed(() => {
   const arr = []
@@ -116,6 +124,7 @@ const saveEditRemark = () => {
 
 onMounted(() => {
   init()
+  syncTitleWithMain()
 })
 
 watch(
@@ -124,6 +133,21 @@ watch(
     init()
   },
   { deep: true }
+)
+
+watch(
+  () => dvInfo.value?.name,
+  () => {
+    syncTitleWithMain()
+  },
+  { immediate: true }
+)
+
+watch(
+  () => chart.value?.id,
+  () => {
+    syncTitleWithMain()
+  }
 )
 </script>
 
@@ -145,6 +169,7 @@ watch(
         <el-input
           :effect="themes"
           v-model="chart.title"
+          disabled
           size="small"
           maxlength="100"
           :placeholder="t('chart.title')"
