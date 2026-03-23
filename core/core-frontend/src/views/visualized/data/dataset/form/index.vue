@@ -241,10 +241,6 @@ const fieldOptions = [
         label: 'yyyy/MM/dd'
       },
       {
-        value: 'yyyyMMdd HH:mm:ss',
-        label: 'yyyyMMdd HH:mm:ss'
-      },
-      {
         value: 'yyyy-MM-dd HH:mm:ss',
         label: 'yyyy-MM-dd HH:mm:ss'
       },
@@ -366,7 +362,7 @@ const pushDataset = () => {
       path: '/loading'
     })
   }
-  
+
   // const routeName = embeddedStore.getToken && appStore.getIsIframe ? 'dataset-embedded' : 'dataset'
   // if (!!history.state.back && !appStore.getIsIframe) {
   //   history.back()

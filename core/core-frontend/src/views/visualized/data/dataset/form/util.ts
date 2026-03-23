@@ -118,7 +118,6 @@ const timeTypes = [
   'yyyyMMdd',
   'yyyy-MM-dd',
   'yyyy/MM/dd',
-  'yyyyMMdd HH:mm:ss',
   'yyyy-MM-dd HH:mm:ss',
   'yyyy/MM/dd HH:mm:ss',
   'custom'

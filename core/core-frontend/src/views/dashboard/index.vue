@@ -102,6 +102,10 @@ const initDataset = () => {
   })
 }
 const eventCheck = e => {
+  const isPreviewTrigger = typeof e?.url === 'string' && e.url.includes('/preview')
+  if (isPreviewTrigger) {
+    return
+  }
   if (e.key === 'panel-weight' && !compareStorage(e.oldValue, e.newValue)) {
     const resourceId = embeddedStore.resourceId || router.currentRoute.value.query.resourceId
     const opt = embeddedStore.opt || router.currentRoute.value.query.opt
