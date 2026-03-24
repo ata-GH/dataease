@@ -45,9 +45,9 @@ export const DEFAULT_COLOR_CASE: DeepPartial<ChartAttr> = {
     tableHeaderBgColor: '#1E90FF',
     tableHeaderCornerBgColor: '#1E90FF',
     tableHeaderColBgColor: '#1E90FF',
-    tableHeaderFontColor: '#000000',
-    tableHeaderCornerFontColor: '#000000',
-    tableHeaderColFontColor: '#000000'
+    tableHeaderFontColor: '#FFFFFF',
+    tableHeaderCornerFontColor: '#FFFFFF',
+    tableHeaderColFontColor: '#FFFFFF'
   },
   tableCell: {
     tableItemBgColor: '#FFFFFF',
@@ -97,9 +97,9 @@ export const DEFAULT_COLOR_CASE_LIGHT: DeepPartial<ChartAttr> = {
     tableHeaderBgColor: '#1E90FF',
     tableHeaderCornerBgColor: '#1E90FF',
     tableHeaderColBgColor: '#1E90FF',
-    tableHeaderFontColor: '#000000',
-    tableHeaderCornerFontColor: '#000000',
-    tableHeaderColFontColor: '#000000'
+    tableHeaderFontColor: '#FFFFFF',
+    tableHeaderCornerFontColor: '#FFFFFF',
+    tableHeaderColFontColor: '#FFFFFF'
   },
   tableCell: {
     tableItemBgColor: '#FFFFFF',
@@ -457,12 +457,12 @@ export const DEFAULT_TABLE_HEADER: ChartTableHeaderAttr = {
   tableHeaderBgColor: '#1E90FF',
   tableHeaderCornerBgColor: '#1E90FF',
   tableHeaderColBgColor: '#1E90FF',
-  tableHeaderFontColor: '#000000',
-  tableHeaderCornerFontColor: '#000000',
-  tableHeaderColFontColor: '#000000',
-  tableTitleFontSize: 12,
-  tableTitleCornerFontSize: 12,
-  tableTitleColFontSize: 12,
+  tableHeaderFontColor: '#FFFFFF',
+  tableHeaderCornerFontColor: '#FFFFFF',
+  tableHeaderColFontColor: '#FFFFFF',
+  tableTitleFontSize: 14,
+  tableTitleCornerFontSize: 14,
+  tableTitleColFontSize: 14,
   tableTitleHeight: 36,
   tableHeaderSort: false,
   showColTooltip: false,
@@ -487,7 +487,7 @@ export const DEFAULT_TABLE_CELL: ChartTableCellAttr = {
   tableFontColor: '#000000',
   tableItemAlign: 'right',
   tableItemBgColor: '#FFFFFF',
-  tableItemFontSize: 12,
+  tableItemFontSize: 14,
   tableItemHeight: 36,
   enableTableCrossBG: false,
   tableItemSubBgColor: '#EEEEEE',
