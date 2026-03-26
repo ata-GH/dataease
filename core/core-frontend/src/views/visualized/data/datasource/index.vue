@@ -129,6 +129,7 @@ const recordState = reactive({
 })
 const isDataEaseBi = computed(() => appStore.getIsDataEaseBi)
 const isIframe = computed(() => appStore.getIsIframe)
+const showDatasourceActionButtons = computed(() => route.query.type !== 'view')
 const embedded = useEmbedded()
 const createDataset = (tableName?: string) => {
   if (isDataEaseBi.value) {
@@ -1325,7 +1326,7 @@ const handleCloseIframe = () => {
                 :creator="infoList.creator"
               ></dataset-detail>
             </el-popover>
-            <div class="right-btn flex-align-center">
+            <div v-if="showDatasourceActionButtons" class="right-btn flex-align-center">
               <el-button secondary @click="createDataset(null)" v-permission="['dataset']">
                 <template #icon>
                   <Icon name="icon_dataset_outlined"

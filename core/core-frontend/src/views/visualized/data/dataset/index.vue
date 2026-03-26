@@ -820,9 +820,15 @@ const handleCloseIframe = () => {
 }
 
 const addWatermark = () => {
+  function getProjectIdNameByUrl(url = window.top.location.href) {
+    const match = url.match(/#\/([^/]+\/[^/]+\/[^/]+)/)
+    if (!match) return null
+    const key = `${match[1]}/projectIdName`
+    return localStorage.getItem(key)
+  }
   const name = localStorage.getItem('userName') || '未获取到用户'
   const phone = localStorage.getItem('securityPhone') || '未获取到手机号'
-  const project = localStorage.getItem('lastProjectIdName') || '未获取到项目名称'
+  const project = getProjectIdNameByUrl() || '未获取到项目名称'
   const waterMarkData = {
     name,
     phone,
