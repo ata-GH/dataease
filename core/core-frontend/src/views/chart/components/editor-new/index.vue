@@ -4207,7 +4207,7 @@ const deleteChartFieldItem = id => {
     color: @canvas-main-font-color-light!important;
     margin-left: 0;
     .item-name {
-      transform: scale(0.8);
+      transform: scale(0.9);
     }
   }
 
@@ -5404,11 +5404,14 @@ span {
         height: 20px;
         line-height: 20px;
         i.remove-icon {
-          top: 2px;
+          top: 3px;
           right: 4px;
+          font-size: 12px;
+          transform: scale(0.9);
         }
         i.arrow_down-icon {
           top: 2px!important;
+          font-size: 12px;
         }
       }
     }
