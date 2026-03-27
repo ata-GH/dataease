@@ -1326,7 +1326,7 @@ const handleCloseIframe = () => {
                 :creator="infoList.creator"
               ></dataset-detail>
             </el-popover>
-            <div v-if="showDatasourceActionButtons" class="right-btn flex-align-center">
+            <div class="right-btn flex-align-center">
               <el-button secondary @click="createDataset(null)" v-permission="['dataset']">
                 <template #icon>
                   <Icon name="icon_dataset_outlined"
@@ -1335,65 +1335,67 @@ const handleCloseIframe = () => {
                 </template>
                 {{ t('data_set.a_new_dataset') }}
               </el-button>
-              <el-button
-                v-if="nodeInfo.type !== 'Excel' && nodeInfo.weight >= 7"
-                secondary
-                @click="validateDS"
-              >
-                {{ t('datasource.validate') }}</el-button>
-              <template v-if="nodeInfo.type === 'Excel'">
-                <el-upload
-                  v-if="nodeInfo.weight >= 7"
-                  action=""
-                  :multiple="false"
-                  ref="uploadAgain"
-                  :show-file-list="false"
-                  accept=".xls,.xlsx,.csv"
-                  :on-change="onChange"
-                  :http-request="() => uploadExcel(0)"
-                  name="file"
+              <template v-if="showDatasourceActionButtons">
+                <el-button
+                  v-if="nodeInfo.type !== 'Excel' && nodeInfo.weight >= 7"
+                  secondary
+                  @click="validateDS"
                 >
-                  <template #trigger>
-                    <el-button v-loading="replaceLoading" class="replace-excel" type="primary">
-                      <template #icon>
-                        <Icon name="icon_edit_outlined"
-                          ><icon_edit_outlined class="svg-icon"
-                        /></Icon>
-                      </template>
-                      {{ t('data_source.replace_data') }}
-                    </el-button>
-                  </template>
-                </el-upload>
+                  {{ t('datasource.validate') }}</el-button>
+                <template v-if="nodeInfo.type === 'Excel'">
+                  <el-upload
+                    v-if="nodeInfo.weight >= 7"
+                    action=""
+                    :multiple="false"
+                    ref="uploadAgain"
+                    :show-file-list="false"
+                    accept=".xls,.xlsx,.csv"
+                    :on-change="onChange"
+                    :http-request="() => uploadExcel(0)"
+                    name="file"
+                  >
+                    <template #trigger>
+                      <el-button v-loading="replaceLoading" class="replace-excel" type="primary">
+                        <template #icon>
+                          <Icon name="icon_edit_outlined"
+                            ><icon_edit_outlined class="svg-icon"
+                          /></Icon>
+                        </template>
+                        {{ t('data_source.replace_data') }}
+                      </el-button>
+                    </template>
+                  </el-upload>
 
-                <el-upload
-                  v-if="nodeInfo.weight >= 7"
-                  action=""
-                  :multiple="false"
-                  ref="uploadAgain"
-                  :show-file-list="false"
-                  accept=".xls,.xlsx,.csv"
-                  :on-change="onChange"
-                  :http-request="() => uploadExcel(1)"
-                  name="file"
-                >
-                  <template #trigger>
-                    <el-button v-loading="addLoading" type="primary">
-                      <template #icon>
-                        <Icon name="icon_new-item_outlined"
-                          ><icon_newItem_outlined class="svg-icon"
-                        /></Icon>
-                      </template>
-                      {{ t('data_source.append_data') }}
-                    </el-button>
-                  </template>
-                </el-upload>
-              </template>
-              <el-button v-else-if="nodeInfo.weight >= 7" @click="editDatasource()" type="primary">
-                <template #icon>
-                  <Icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></Icon>
+                  <el-upload
+                    v-if="nodeInfo.weight >= 7"
+                    action=""
+                    :multiple="false"
+                    ref="uploadAgain"
+                    :show-file-list="false"
+                    accept=".xls,.xlsx,.csv"
+                    :on-change="onChange"
+                    :http-request="() => uploadExcel(1)"
+                    name="file"
+                  >
+                    <template #trigger>
+                      <el-button v-loading="addLoading" type="primary">
+                        <template #icon>
+                          <Icon name="icon_new-item_outlined"
+                            ><icon_newItem_outlined class="svg-icon"
+                          /></Icon>
+                        </template>
+                        {{ t('data_source.append_data') }}
+                      </el-button>
+                    </template>
+                  </el-upload>
                 </template>
-                {{ t('chart.edit') }}
-              </el-button>
+                <el-button v-else-if="nodeInfo.weight >= 7" @click="editDatasource()" type="primary">
+                  <template #icon>
+                    <Icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></Icon>
+                  </template>
+                  {{ t('chart.edit') }}
+                </el-button>
+              </template>
             </div>
           </div>
           <div class="tab-border">
