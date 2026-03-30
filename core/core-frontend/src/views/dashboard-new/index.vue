@@ -610,6 +610,23 @@ window.addEventListener('message', (event: MessageEvent<any>) => {
     <DbToolbar @recoverToPublished="doRecoverToPublished" />
     <div style="position: relative; height: 0;">
       <div class="button-area">
+        <el-tooltip
+          placement="bottom"
+          effect="light"
+          raw-content
+        >
+          <el-link
+            type="primary"
+            href="https://spms.migu.cn:8090/pages/viewpage.action?pageId=505226283"
+            target="_blank"
+            style="margin-right: 12px"
+          >
+            视频教程
+          </el-link>
+          <template #content>
+            <p style="line-height: 20px">观看此教程需Confluence权限，<br>若无权限<el-link type="primary" href="https://spms.migu.cn/spms/static/permissionplus/index.html#/permission/01/create/10066/6962" target="_blank" style="font-size: 12px; vertical-align: top;">点此提交申请</el-link>。</p>
+          </template>
+        </el-tooltip>
         <!-- <el-button size="small" class="arco-btn fullscreen-btn">全屏</el-button> -->
         <el-button ref="buttonAreaRef" class="arco-btn data-view-btn" @click="updateChartData(canvasViewInfo[curComponent ? curComponent.id : 'default'])">更新图表数据</el-button>
       </div>

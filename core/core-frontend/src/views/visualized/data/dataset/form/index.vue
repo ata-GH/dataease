@@ -1914,6 +1914,23 @@ onMounted(() => {
         </template>
       </span>
       <span class="operate">
+        <el-tooltip
+          placement="bottom"
+          effect="light"
+          raw-content
+        >
+          <el-link
+            type="primary"
+            href="https://spms.migu.cn:8090/pages/viewpage.action?pageId=505226283"
+            target="_blank"
+            style="margin-right: 12px"
+          >
+            视频教程
+          </el-link>
+          <template #content>
+            <p style="line-height: 20px">观看此教程需Confluence权限，<br>若无权限<el-link type="primary" href="https://spms.migu.cn/spms/static/permissionplus/index.html#/permission/01/create/10066/6962" target="_blank" style="font-size: 12px; vertical-align: top;">点此提交申请</el-link>。</p>
+          </template>
+        </el-tooltip>
         <el-button :disabled="showInput" type="primary" @click="datasetSaveAndBack">{{
           t('data_set.save_and_return')
         }}</el-button>
