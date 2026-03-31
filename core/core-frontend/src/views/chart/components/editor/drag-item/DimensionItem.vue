@@ -21,6 +21,7 @@ const { t } = useI18n()
 
 const tagType = ref('success')
 const showDateExt = ref(false)
+const defaultDateStyle = ref('')
 
 const props = defineProps({
   param: {
@@ -68,6 +69,7 @@ const emit = defineEmits([
 ])
 
 const { item } = toRefs(props)
+const isDefaultMonthStyle = computed(() => defaultDateStyle.value === 'y_M')
 const toolTip = computed(() => {
   return props.themes || 'dark'
 })
@@ -224,8 +226,16 @@ const showHideIcon = computed(() => {
 })
 
 onMounted(() => {
+  defaultDateStyle.value = props.item?.dateStyle
   getItemTagType()
 })
+
+watch(
+  () => props.item,
+  currentItem => {
+    defaultDateStyle.value = currentItem?.dateStyle
+  }
+)
 </script>
 
 <template>
@@ -490,14 +500,14 @@ onMounted(() => {
                   <el-dropdown-item
                     class="menu-item-padding"
                     v-if="showDateExt"
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('y_W')"
                   >
                     <span
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'y_W' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.y_W') }}
@@ -510,13 +520,13 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('y_M_d')">
                     <span
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'y_M_d' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.y_M_d') }}
@@ -532,7 +542,7 @@ onMounted(() => {
                     v-if="
                       !(chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type))
                     "
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('H_m_s')"
                     divided
                   >
@@ -540,7 +550,7 @@ onMounted(() => {
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'H_m_s' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.H_m_s') }}
@@ -553,7 +563,7 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('y_M_d_H')"
                     :divided="
                       chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type)
@@ -563,7 +573,7 @@ onMounted(() => {
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'y_M_d_H' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.y_M_d_H') }}
@@ -576,7 +586,7 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('y_M_d_H_m')"
                     :divided="
                       chart.type.includes('bar-range') && ['quota', 'quotaExt'].includes(type)
@@ -586,7 +596,7 @@ onMounted(() => {
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'y_M_d_H_m' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.y_M_d_H_m') }}
@@ -599,14 +609,14 @@ onMounted(() => {
                   </el-dropdown-item>
                   <el-dropdown-item
                     class="menu-item-padding"
-                    :disabled="item.dateStyle === 'y_M'"
+                    :disabled="isDefaultMonthStyle"
                     :command="beforeDateStyle('y_M_d_H_m_s')"
                   >
                     <span
                       class="sub-menu-content"
                       :class="{
                         'content-active': 'y_M_d_H_m_s' === item.dateStyle,
-                        'content-disabled': item.dateStyle === 'y_M'
+                        'content-disabled': isDefaultMonthStyle
                       }"
                     >
                       {{ t('chart.y_M_d_H_m_s') }}
