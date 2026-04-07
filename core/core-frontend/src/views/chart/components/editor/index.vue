@@ -283,35 +283,37 @@ watch(
   },
   { deep: true, immediate: true }
 )
-const getFields = (id, chartId, type) => {
+const refreshFields = async (id, chartId, type) => {
   if (id && chartId) {
     fieldLoading.value = true
-    getFieldByDQ(id, chartId, { type: type })
-      .then(res => {
-        state.dimension = (res.dimensionList as unknown as Field[]) || []
-        state.quota = (res.quotaList as unknown as Field[]) || []
-        state.dimensionData = JSON.parse(JSON.stringify(state.dimension))
-        state.quotaData = JSON.parse(JSON.stringify(state.quota))
-
-        fieldLoading.value = false
-        emitter.emit('dataset-change')
-      })
-      .catch(() => {
-        state.dimension = []
-        state.quota = []
-        state.dimensionData = []
-        state.quotaData = []
-
-        fieldLoading.value = false
-      })
-  } else {
-    state.dimension = []
-    state.quota = []
-    state.dimensionData = []
-    state.quotaData = []
-
-    fieldLoading.value = false
+    try {
+      const res = await getFieldByDQ(id, chartId, { type: type })
+      state.dimension = (res.dimensionList as unknown as Field[]) || []
+      state.quota = (res.quotaList as unknown as Field[]) || []
+      state.dimensionData = JSON.parse(JSON.stringify(state.dimension))
+      state.quotaData = JSON.parse(JSON.stringify(state.quota))
+      emitter.emit('dataset-change')
+      return true
+    } catch {
+      state.dimension = []
+      state.quota = []
+      state.dimensionData = []
+      state.quotaData = []
+      return false
+    } finally {
+      fieldLoading.value = false
+    }
   }
+  state.dimension = []
+  state.quota = []
+  state.dimensionData = []
+  state.quotaData = []
+  fieldLoading.value = false
+  return false
+}
+
+const getFields = (id, chartId, type) => {
+  void refreshFields(id, chartId, type)
 }
 
 const chartStyleShow = computed(() => {
@@ -1942,11 +1944,54 @@ const dragOver = (ev: MouseEvent) => {
   ev.preventDefault()
 }
 
-const drop = (ev: MouseEvent, type = 'xAxis') => {
+const copyFieldAndGetNewField = async (id, groupType?: string) => {
+  if (!id || id === '-1' || !view.value.id || !view.value.tableId) {
+    return null
+  }
+  const currentIds = new Set([...state.dimension, ...state.quota].map(item => String(item.id)))
+  await copyChartField(id, view.value.id)
+  const refreshed = await refreshFields(view.value.tableId, view.value.id, view.value.type)
+  if (!refreshed) {
+    return null
+  }
+  let sourcePool = [...state.dimension, ...state.quota]
+  if (groupType === 'd') {
+    sourcePool = state.dimension
+  } else if (groupType === 'q') {
+    sourcePool = state.quota
+  }
+  return sourcePool.find(item => !currentIds.has(String(item.id))) || null
+}
+
+const drop = async (ev: MouseEvent, type = 'xAxis') => {
   ev.preventDefault()
+  const axisSpec = chartViewInstance.value?.axisConfig[type as AxisType]
+  const targetAxis = view.value[type] || []
+  if (axisSpec?.limit === 1 && targetAxis.length >= 1) {
+    return
+  }
   const arr = activeDimension.value.length ? activeDimension.value : activeQuota.value
   for (let i = 0; i < arr.length; i++) {
-    const obj = cloneDeep(arr[i])
+    let obj = cloneDeep(arr[i])
+    const hasDuplicate = !!targetAxis.find(item => item.id === obj.id)
+    const isSingleQuotaAxis = obj?.groupType === 'q' && axisSpec?.limit === 1
+    const shouldCopyForDuplicate =
+      !isSingleQuotaAxis &&
+      (type === 'drillFields' || (axisSpec && axisSpec.limit !== 1 && !axisSpec.duplicate))
+    if (
+      hasDuplicate &&
+      obj?.id &&
+      obj.id !== '-1' &&
+      shouldCopyForDuplicate
+    ) {
+      try {
+        const copiedField = await copyFieldAndGetNewField(obj.id, obj.groupType)
+        if (copiedField) {
+          obj = cloneDeep(copiedField)
+        }
+      } catch {
+      }
+    }
     state.moveId = obj.id as unknown as number
     view.value[type] ??= []
     view.value[type].push(obj)
@@ -1962,22 +2007,30 @@ const drop = (ev: MouseEvent, type = 'xAxis') => {
 
 const fieldLoading = ref(false)
 
-const copyChartFieldItem = id => {
+const copyChartFieldItem = async id => {
   fieldLoading.value = true
-  copyChartField(id, view.value.id)
-    .then(() => {
-      getFields(view.value.tableId, view.value.id, view.value.type)
-    })
-    .catch(() => {
-      fieldLoading.value = false
-    })
+  const sourceField = [...state.dimension, ...state.quota].find(item => String(item.id) === String(id))
+  try {
+    const copiedField = await copyFieldAndGetNewField(id, sourceField?.groupType)
+    if (copiedField) {
+      if (copiedField.groupType === 'd') {
+        activeQuota.value = []
+        activeDimension.value = [cloneDeep(copiedField)]
+      } else if (copiedField.groupType === 'q') {
+        activeDimension.value = []
+        activeQuota.value = [cloneDeep(copiedField)]
+      }
+    }
+  } catch {
+    fieldLoading.value = false
+  }
 }
 
 const deleteChartFieldItem = id => {
   fieldLoading.value = true
   deleteChartField(id)
     .then(() => {
-      getFields(view.value.tableId, view.value.id, view.value.type)
+      void refreshFields(view.value.tableId, view.value.id, view.value.type)
     })
     .catch(() => {
       fieldLoading.value = false
