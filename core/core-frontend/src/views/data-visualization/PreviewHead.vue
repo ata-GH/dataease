@@ -9,6 +9,7 @@ import icon_pc_fullscreen from '@/assets/svg/icon_pc_fullscreen.svg'
 import icon_pc_outlined from '@/assets/svg/icon_pc_outlined.svg'
 import icon_download_outlined from '@/assets/svg/icon_download_outlined.svg'
 import icon_replace_outlined from '@/assets/svg/icon_replace_outlined.svg'
+import icon_copy_outlined from '@/assets/svg/icon_copy_outlined.svg'
 import icon_edit_outlined from '@/assets/svg/icon_edit_outlined.svg'
 import icon_left_outlined from '@/assets/svg/icon_left_outlined.svg'
 import { dvMainStoreWithOut } from '@/store/modules/data-visualization/dvMain'
@@ -17,7 +18,13 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import DvDetailInfo from '@/views/common/DvDetailInfo.vue'
 import { useEmbedded } from '@/store/modules/embedded'
-import { storeApi, storeStatusApi, biFavoriteApi, biFavoriteCancelApi } from '@/api/visualization/dataVisualization'
+import {
+  storeApi,
+  storeStatusApi,
+  biFavoriteApi,
+  biFavoriteCancelApi,
+  copyResource
+} from '@/api/visualization/dataVisualization'
 import { ref, watch, computed, nextTick } from 'vue'
 import ShareVisualHead from '@/views/share/share/ShareVisualHead.vue'
 import { XpackComponent } from '@/components/plugin'
@@ -91,6 +98,29 @@ const dvEdit = () => {
   const baseUrl = dvInfo.value.type === 'dataV' ? '#/dvCanvas?dvId=' : '#/dashboard?resourceId='
   const newWindow = window.open(baseUrl + dvInfo.value.id, openType)
   initOpenHandler(newWindow)
+}
+
+const copy = () => {
+  const type = dvInfo.value.type === 'dataV' ? 'dataV' : 'dashboard'
+  copyResource({
+    nodeType: 'leaf',
+    name: `${dvInfo.value.name}-copy`,
+    type,
+    id: dvInfo.value.id,
+    pid: dvInfo.value.pid || '0'
+  }).then(res => {
+    const path = type === 'dataV' ? '/dvCanvas' : '/dashboard'
+    const query = {
+      opt: 'copy',
+      pid: String(dvInfo.value.pid || '0')
+    }
+    if (type === 'dataV') {
+      query['dvId'] = String(res.data)
+    } else {
+      query['resourceId'] = String(res.data)
+    }
+    router.push({ path, query })
+  })
 }
 
 const executeStore = () => {
@@ -309,6 +339,17 @@ const handleCloseIframe = () => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+      <el-button
+        :disabled="dvInfo.status === 0"
+        class="custom-icon"
+        size="small"
+        @click="copy()"
+      >
+        <template #icon>
+          <Icon name="icon_copy_outlined"><icon_copy_outlined class="svg-icon" /></Icon>
+        </template>
+        另存为
+      </el-button>
     </div>
   </div>
   <XpackComponent ref="openHandler" jsname="L2NvbXBvbmVudC9lbWJlZGRlZC1pZnJhbWUvT3BlbkhhbmRsZXI=" />
