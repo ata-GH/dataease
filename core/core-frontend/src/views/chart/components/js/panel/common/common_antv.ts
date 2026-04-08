@@ -54,9 +54,9 @@ const { t: tI18n } = useI18n()
 
 export function getPadding(chart: Chart): number[] {
   if (chart.drill) {
-    return [0, 10, 22, 10]
+    return [10, 10, 22, 10]
   } else {
-    return [0, 10, 10, 10]
+    return [10, 10, 10, 10]
   }
 }
 // color,label,tooltip,axis,legend,background
