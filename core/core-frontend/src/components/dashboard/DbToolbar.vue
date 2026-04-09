@@ -97,6 +97,12 @@ const userStore = useUserStoreWithOut()
 const isIframe = computed(() => appStore.getIsIframe)
 const desktop = wsCache.get('app.desktop')
 const emits = defineEmits(['recoverToPublished'])
+const canSaveDirectly = computed(() => {
+  return (
+    styleChangeTimes.value > 0 ||
+    (dvInfo.value?.dataState === 'prepare' && dvInfo.value?.optType === 'copy')
+  )
+})
 
 defineProps({
   createType: {
@@ -806,7 +812,7 @@ const handleCloseIframe = () => {
         <template v-if="editMode === 'edit' || editMode === 'preview'">
           <el-button
             v-if="editMode === 'edit' || editMode === 'preview'"
-            :disabled="styleChangeTimes < 1"
+            :disabled="!canSaveDirectly"
             @click="saveCanvasWithCheck()"
             style="float: right; margin-right: 12px"
             type="primary"

@@ -123,6 +123,31 @@ const copy = () => {
   })
 }
 
+const edit = () => {
+  if (isDataEaseBi.value || isIframe.value) {
+    embeddedStore.clearState()
+    if (dvInfo.value.type === 'dataV') {
+      embeddedStore.setDvId(dvInfo.value.id)
+    } else {
+      embeddedStore.setResourceId(dvInfo.value.id)
+    }
+    useEmitt().emitter.emit(
+      'changeCurrentComponent',
+      dvInfo.value.type === 'dataV' ? 'VisualizationEditor' : 'DashboardEditor'
+    )
+    return
+  }
+  const type = dvInfo.value.type === 'dataV' ? 'dataV' : 'dashboard'
+  const path = type === 'dataV' ? '/dvCanvas' : '/dashboard'
+  const query = {}
+  if (type === 'dataV') {
+    query['dvId'] = String(dvInfo.value.id)
+  } else {
+    query['resourceId'] = String(dvInfo.value.id)
+  }
+  router.push({ path, query })
+}
+
 const executeStore = () => {
   const param = {
     id: dvInfo.value.id,
@@ -349,6 +374,18 @@ const handleCloseIframe = () => {
           <Icon name="icon_copy_outlined"><icon_copy_outlined class="svg-icon" /></Icon>
         </template>
         另存为
+      </el-button>
+      <el-button
+        v-if="route.query.edit === 'true'"
+        class="custom-icon"
+        type="primary"
+        size="small"
+        @click="edit()"
+      >
+        <template #icon>
+          <icon name="icon_edit_outlined"><icon_edit_outlined class="svg-icon" /></icon>
+        </template>
+        编辑
       </el-button>
     </div>
   </div>
