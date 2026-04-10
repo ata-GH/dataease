@@ -865,6 +865,7 @@ const init = viewItem => {
   }
 }
 
+// [JUMP_TRACE_00] 跳转设置保存入口：校验配置并写回跳转映射
 const save = () => {
   // 字段检查
   let subCheckCountAll = 0
@@ -903,7 +904,7 @@ const save = () => {
     .then(() => {
       snapshotStore.recordSnapshotCache('updateJumpSet')
       ElMessage.success(t('common.save_success'))
-      // 刷新跳转信息
+      // [JUMP_TRACE_00A] 刷新全局跳转缓存（nowPanelJumpInfo）
       queryVisualizationJumpInfo(dvInfo.value.id).then(rsp => {
         dvMainStore.setNowPanelJumpInfo(rsp.data)
         cancel()
@@ -914,6 +915,7 @@ const save = () => {
       state.loading = false
     })
 }
+// [JUMP_TRACE_CFG] 左侧字段切换时加载当前字段对应的跳转配置
 const nodeClick = data => {
   state.linkJumpInfo = state.mapJumpInfoArray[data.sourceFieldId]
   if (!state.linkJumpInfo.windowSize) {

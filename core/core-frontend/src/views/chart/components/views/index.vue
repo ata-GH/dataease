@@ -419,6 +419,7 @@ const divEmbedded = type => {
   useEmitt().emitter.emit('changeCurrentComponent', type)
 }
 
+// [JUMP_TRACE_03] 统一执行跳转动作：当前页/新页/弹窗
 const windowsJump = (url, jumpType, size = 'middle') => {
   try {
     let newWindow
@@ -441,6 +442,7 @@ const windowsJump = (url, jumpType, size = 'middle') => {
   }
 }
 
+// [JUMP_TRACE_01] 图表点击后的跳转总入口：查配置 -> 组装参数 -> 生成链接 -> 执行跳转
 const jumpClick = param => {
   let dimension, jumpInfo, sourceInfo
   // 如果有名称name 获取和name匹配的dimension 否则倒序取最后一个能匹配的
@@ -479,6 +481,7 @@ const jumpClick = param => {
     if (isDataEaseBi.value) {
       embeddedBaseUrl = embeddedStore.baseUrl
     }
+    // [JUMP_TRACE_02] 透传点击点信息给目标页（Base64 + URL编码）
     const jumpInfoParam = `&jumpInfoParam=${encodeURIComponent(
       Base64.encode(JSON.stringify(param))
     )}`
@@ -513,6 +516,7 @@ const jumpClick = param => {
         }
         let attachParamsInfo
         if (Object.keys(filterOuterParams).length > 0) {
+          // [JUMP_TRACE_04] 携带查询条件：将源图表过滤值映射成目标外部参数
           filterOuterParams['outerParamsVersion'] = 'v2'
           attachParamsInfo =
             '&attachParams=' + encodeURIComponent(Base64.encode(JSON.stringify(filterOuterParams)))
@@ -534,6 +538,7 @@ const jumpClick = param => {
             ElMessage.warning(t('visualization.public_link_tips'))
           }
         } else {
+          // [JUMP_TRACE_05] 内部仪表盘跳转链接拼装
           let url = `${embeddedBaseUrl}#/preview?dvId=${jumpInfo.targetDvId}&fromLink=true&dvType=${jumpInfo.targetDvType}`
           if (attachParamsInfo) {
             url = url + attachParamsInfo + jumpInfoParam + editPreviewParams
@@ -555,6 +560,7 @@ const jumpClick = param => {
       }
     } else {
       const colList = [...param.dimensionList, ...param.quotaList]
+      // [JUMP_TRACE_06] 外链跳转：先替换占位符字段，再补齐协议头
       let url = setIdValueTrans('id', 'value', jumpInfo.content, colList)
       url = checkAddHttp(url)
 

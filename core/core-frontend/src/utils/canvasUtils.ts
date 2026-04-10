@@ -706,6 +706,7 @@ export async function canvasSaveWithParams(params, callBack) {
   })
 }
 
+// [JUMP_TRACE_UTIL_1] 外链地址补协议（未带 http/https 时自动补 http://）
 export function checkAddHttp(url) {
   if (!url) {
     return url
@@ -716,6 +717,7 @@ export function checkAddHttp(url) {
   }
 }
 
+// [JUMP_TRACE_UTIL_2] 外链模板变量替换：将 [字段标识] 替换为点击值
 export function setIdValueTrans(from, to, content, colList) {
   if (!content) {
     return content

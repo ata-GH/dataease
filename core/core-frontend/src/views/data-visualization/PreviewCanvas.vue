@@ -63,11 +63,13 @@ const props = defineProps({
   ticketArgs: propTypes.string.def(null)
 })
 
+// [JUMP_TRACE_07] 目标页加载入口：消费 jumpInfoParam / attachParams 并应用过滤
 const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
   const jumpInfoParam = embeddedStore.jumpInfoParam || router.currentRoute.value.query.jumpInfoParam
   let jumpParam
   // 获取外部跳转参数
   if (jumpInfoParam) {
+    // [JUMP_TRACE_08] 解析来源点击信息，并刷新目标页可用的跳转联动映射
     jumpParam = JSON.parse(Base64.decode(decodeURIComponent(jumpInfoParam)))
     const jumpRequestParam = {
       sourceDvId: jumpParam.sourceDvId,
@@ -103,6 +105,7 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
   // 外部参数（iframe 或者 iframe嵌入）
   const attachParamsEncode = router.currentRoute.value.query.attachParams
   if (attachParamsEncode || hasTicketArgs) {
+    // [JUMP_TRACE_09] 解析 URL 外部参数（attachParams）用于目标页过滤
     try {
       if (!!attachParamsEncode) {
         attachParam = JSON.parse(Base64.decode(decodeURIComponent(attachParamsEncode)))
@@ -155,10 +158,12 @@ const loadCanvasDataAsync = async (dvId, dvType, ignoreParams = false) => {
       state.curPreviewGap = curPreviewGap
       if (state.dvInfo.status) {
         if (jumpParam) {
+          // [JUMP_TRACE_10] 应用“跳转携带”的字段过滤
           dvMainStore.addViewTrackFilter(jumpParam)
         }
         if (!ignoreParams) {
           state.initState = false
+          // [JUMP_TRACE_11] 应用“外部参数携带”的过滤
           dvMainStore.addOuterParamsFilter(attachParam)
           state.initState = true
         }
