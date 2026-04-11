@@ -102,9 +102,10 @@ const dvEdit = () => {
 
 const copy = () => {
   const type = dvInfo.value.type === 'dataV' ? 'dataV' : 'dashboard'
+  const userName = localStorage.getItem('userName') || 'copy'
   copyResource({
     nodeType: 'leaf',
-    name: `${dvInfo.value.name}-copy`,
+    name: `${dvInfo.value.name}_${userName}`,
     type,
     id: dvInfo.value.id,
     pid: dvInfo.value.pid || '0'
