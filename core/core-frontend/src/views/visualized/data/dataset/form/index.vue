@@ -65,7 +65,9 @@ import {
   getPreviewData,
   getDatasetDetails,
   saveDatasetTree,
-  barInfoApi
+  barInfoApi,
+  getDimensionList,
+  getIndexList
 } from '@/api/dataset'
 import {
   isShowFinishPage
@@ -873,6 +875,444 @@ const quota = computed(() => {
 const dimensions = computed(() => {
   return allfields.value.filter(ele => ele.groupType === 'd')
 })
+
+type WarehouseDialogType = 'dimension' | 'quota'
+
+interface WarehouseRelationItem {
+  id: string
+  name: string
+  creator: string
+  status: string
+  projectSource: string
+  category?: string
+  enumValues?: string
+  hiveTableName?: string
+  measureType?: string
+  atomName?: string
+  driveName?: string
+}
+
+const warehouseRelationMockMap: Record<WarehouseDialogType, WarehouseRelationItem[]> = {
+  dimension: [
+    {
+      id: 'DIM_001',
+      name: '省份维度',
+      category: '地域',
+      enumValues: '四川、上海、北京……',
+      hiveTableName: 'table_area',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '测试项目'
+    },
+    {
+      id: 'DIM_002',
+      name: '城市维度',
+      category: '地域',
+      enumValues: '成都、上海、北京……',
+      hiveTableName: 'table_city',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '测试项目'
+    },
+    {
+      id: 'DIM_003',
+      name: '渠道维度',
+      category: '经营',
+      enumValues: '直营网、代理商、电商……',
+      hiveTableName: 'table_channel',
+      status: '草稿',
+      creator: 'zhangsan',
+      projectSource: '营销项目'
+    },
+    {
+      id: 'DIM_004',
+      name: '客户等级维度',
+      category: '客户',
+      enumValues: 'A、B、C、D',
+      hiveTableName: 'table_customer_level',
+      status: '启用',
+      creator: 'lisi',
+      projectSource: '客户画像'
+    },
+    {
+      id: 'DIM_005',
+      name: '品牌维度',
+      category: '商品',
+      enumValues: '品牌A、品牌B、品牌C',
+      hiveTableName: 'table_brand',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '商品中心'
+    },
+    {
+      id: 'DIM_006',
+      name: '门店维度',
+      category: '组织',
+      enumValues: '一店、二店、三店……',
+      hiveTableName: 'table_store',
+      status: '停用',
+      creator: 'wangwu',
+      projectSource: '门店经营'
+    },
+    {
+      id: 'DIM_007',
+      name: '产品线维度',
+      category: '商品',
+      enumValues: '终端、宽带、家庭云……',
+      hiveTableName: 'table_product_line',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '商品中心'
+    },
+    {
+      id: 'DIM_008',
+      name: '账期维度',
+      category: '财务',
+      enumValues: '202401、202402、202403……',
+      hiveTableName: 'table_billing_period',
+      status: '启用',
+      creator: 'finance',
+      projectSource: '财务项目'
+    },
+    {
+      id: 'DIM_009',
+      name: '套餐维度',
+      category: '商品',
+      enumValues: '基础版、标准版、旗舰版',
+      hiveTableName: 'table_package',
+      status: '草稿',
+      creator: 'product',
+      projectSource: '产品运营'
+    },
+    {
+      id: 'DIM_010',
+      name: '用户类型维度',
+      category: '客户',
+      enumValues: '个人、家庭、企业',
+      hiveTableName: 'table_user_type',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '客户画像'
+    },
+    {
+      id: 'DIM_011',
+      name: '是否活跃维度',
+      category: '行为',
+      enumValues: '是、否',
+      hiveTableName: 'table_active_flag',
+      status: '启用',
+      creator: 'operation',
+      projectSource: '运营项目'
+    },
+    {
+      id: 'DIM_012',
+      name: '终端品牌维度',
+      category: '设备',
+      enumValues: '华为、小米、苹果……',
+      hiveTableName: 'table_device_brand',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '终端中心'
+    }
+  ],
+  quota: [
+    {
+      id: 'MEA_001',
+      name: '销售额指标',
+      measureType: '收入类',
+      atomName: '订单金额',
+      driveName: '月累计销售额',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '测试项目'
+    },
+    {
+      id: 'MEA_002',
+      name: '订购用户数指标',
+      measureType: '用户类',
+      atomName: '订购用户数',
+      driveName: '月累计订购用户数',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '用户增长'
+    },
+    {
+      id: 'MEA_003',
+      name: '活跃用户数指标',
+      measureType: '用户类',
+      atomName: '活跃用户数',
+      driveName: '周活跃用户数',
+      status: '草稿',
+      creator: 'operation',
+      projectSource: '运营项目'
+    },
+    {
+      id: 'MEA_004',
+      name: 'ARPU指标',
+      measureType: '收入类',
+      atomName: '用户收入',
+      driveName: '月ARPU',
+      status: '启用',
+      creator: 'finance',
+      projectSource: '财务项目'
+    },
+    {
+      id: 'MEA_005',
+      name: '离网率指标',
+      measureType: '质量类',
+      atomName: '离网用户数',
+      driveName: '月离网率',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '经营分析'
+    },
+    {
+      id: 'MEA_006',
+      name: '新增用户数指标',
+      measureType: '用户类',
+      atomName: '新增用户数',
+      driveName: '日新增用户数',
+      status: '启用',
+      creator: 'zhangsan',
+      projectSource: '用户增长'
+    },
+    {
+      id: 'MEA_007',
+      name: '投诉工单量指标',
+      measureType: '服务类',
+      atomName: '投诉工单数',
+      driveName: '周投诉工单量',
+      status: '停用',
+      creator: 'service',
+      projectSource: '客服中心'
+    },
+    {
+      id: 'MEA_008',
+      name: '宽带装机量指标',
+      measureType: '安装类',
+      atomName: '装机单量',
+      driveName: '月宽带装机量',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '宽带项目'
+    },
+    {
+      id: 'MEA_009',
+      name: '流量消耗指标',
+      measureType: '使用类',
+      atomName: '总流量',
+      driveName: '月人均流量',
+      status: '启用',
+      creator: 'product',
+      projectSource: '产品运营'
+    },
+    {
+      id: 'MEA_010',
+      name: '套餐转化率指标',
+      measureType: '转化类',
+      atomName: '转化订单数',
+      driveName: '套餐转化率',
+      status: '草稿',
+      creator: 'marketing',
+      projectSource: '营销项目'
+    },
+    {
+      id: 'MEA_011',
+      name: '终端销量指标',
+      measureType: '销售类',
+      atomName: '销量',
+      driveName: '月终端销量',
+      status: '启用',
+      creator: 'admin',
+      projectSource: '终端中心'
+    },
+    {
+      id: 'MEA_012',
+      name: '回款金额指标',
+      measureType: '财务类',
+      atomName: '回款金额',
+      driveName: '月回款金额',
+      status: '启用',
+      creator: 'finance',
+      projectSource: '财务项目'
+    }
+  ]
+}
+
+const warehouseRelationDialog = reactive({
+  visible: false,
+  loading: false,
+  type: 'dimension' as WarehouseDialogType,
+  searchField: 'creator',
+  keyword: '',
+  currentPage: 1,
+  pageSize: 10
+})
+
+const warehouseRelationList = ref<WarehouseRelationItem[]>([])
+const warehouseRelationTargetField = shallowRef<any>(null)
+
+const warehouseDialogTitle = computed(() => {
+  return warehouseRelationDialog.type === 'dimension' ? '选择维度' : '选择指标'
+})
+
+const warehouseRelationSearchOptions = computed(() => {
+  if (warehouseRelationDialog.type === 'dimension') {
+    return [
+      { label: '按维度名称搜索', value: 'name' },
+      { label: '按维度分类搜索', value: 'category' },
+      { label: '按创建人搜索', value: 'creator' },
+    ]
+  }
+  return [
+    { label: '按指标名称搜索', value: 'name' },
+    { label: '按指标分类搜索', value: 'measureType' },
+    { label: '按创建人搜索', value: 'creator' },
+  ]
+})
+
+const warehouseRelationSearchPlaceholder = computed(() => {
+  const option = warehouseRelationSearchOptions.value.find(
+    ele => ele.value === warehouseRelationDialog.searchField
+  )
+  return option?.label || '请输入搜索内容'
+})
+
+const warehouseRelationPagedList = computed(() => {
+  const start = (warehouseRelationDialog.currentPage - 1) * warehouseRelationDialog.pageSize
+  const end = start + warehouseRelationDialog.pageSize
+  return warehouseRelationList.value.slice(start, end)
+})
+
+const getWarehouseRelationRowClassName = ({ row }) => {
+  if (row.id === warehouseRelationTargetField.value?.warehouseFieldId) {
+    return 'warehouse-relation-selected-row'
+  }
+  return ''
+}
+
+const toWarehouseRelationItem = (item, type: WarehouseDialogType): WarehouseRelationItem => {
+  const getValue = (keys: string[]) => {
+    const key = keys.find(it => item?.[it] !== undefined && item?.[it] !== null)
+    return key ? item[key] : ''
+  }
+
+  const isDimension = type === 'dimension'
+  return {
+    id: `${getValue(['id', 'dimensionId', 'measureId', 'warehouseId'])}`,
+    name: `${getValue(['name', 'dimensionName', 'measureName', 'indexName'])}`,
+    creator: `${getValue(['creator', 'createBy', 'createUser', 'operator'])}`,
+    status: `${getValue(['status', 'state'])}`,
+    projectSource: `${getValue(['projectSource', 'projectName', 'sourceProject'])}`,
+    category: isDimension ? `${getValue(['category', 'dimensionCategory'])}` : undefined,
+    enumValues: isDimension ? `${getValue(['enumValues', 'dimensionEnumValues'])}` : undefined,
+    hiveTableName: isDimension ? `${getValue(['hiveTableName', 'hiveName'])}` : undefined,
+    measureType: !isDimension ? `${getValue(['measureType', 'indexType', 'category'])}` : undefined,
+    atomName: !isDimension ? `${getValue(['atomName', 'atomMeasureName'])}` : undefined,
+    driveName: !isDimension ? `${getValue(['driveName', 'derivedMeasureName'])}` : undefined
+  }
+}
+
+const parseWarehouseApiList = (resData, type: WarehouseDialogType): WarehouseRelationItem[] => {
+  const payload = resData?.data ?? resData ?? {}
+  const rawList = Array.isArray(payload)
+    ? payload
+    : payload?.list ||
+      payload?.rows ||
+      payload?.records ||
+      payload?.items ||
+      payload?.content ||
+      payload?.data ||
+      []
+  if (!Array.isArray(rawList)) return []
+  return rawList.map(item => toWarehouseRelationItem(item, type)).filter(ele => !!ele.id || !!ele.name)
+}
+
+const loadWarehouseRelationData = async () => {
+  warehouseRelationDialog.loading = true
+  const { keyword, searchField, type } = warehouseRelationDialog
+  const text = keyword.trim().toLowerCase()
+  const source = warehouseRelationMockMap[type]
+  const fallbackList = source.filter(ele => {
+    if (!text) return true
+    const value = `${ele[searchField] || ''}`.toLowerCase()
+    return value.includes(text)
+  })
+  const requestData = {
+    currentPage: warehouseRelationDialog.currentPage,
+    numberPerPage: warehouseRelationDialog.pageSize,
+    searchField,
+    keyword,
+    [searchField]: keyword
+  }
+  try {
+    const resData =
+      type === 'dimension' ? await getDimensionList(requestData) : await getIndexList(requestData)
+    const apiList = parseWarehouseApiList(resData, type)
+    warehouseRelationList.value = apiList.length ? apiList : fallbackList
+  } catch (error) {
+    warehouseRelationList.value = fallbackList
+  } finally {
+    warehouseRelationDialog.loading = false
+  }
+}
+
+const openWarehouseRelationDialog = async (row, type: WarehouseDialogType) => {
+  warehouseRelationTargetField.value = row
+  warehouseRelationDialog.type = type
+  warehouseRelationDialog.searchField = 'name'
+  warehouseRelationDialog.keyword = row.name || ''
+  warehouseRelationDialog.currentPage = 1
+  warehouseRelationDialog.visible = true
+  await loadWarehouseRelationData()
+}
+
+const closeWarehouseRelationDialog = () => {
+  warehouseRelationDialog.visible = false
+  warehouseRelationTargetField.value = null
+}
+
+const searchWarehouseRelation = async () => {
+  warehouseRelationDialog.currentPage = 1
+  await loadWarehouseRelationData()
+}
+
+const resetWarehouseRelationSearch = async () => {
+  warehouseRelationDialog.searchField = 'name'
+  warehouseRelationDialog.keyword = ''
+  warehouseRelationDialog.currentPage = 1
+  await loadWarehouseRelationData()
+}
+
+const handleWarehouseRelationSizeChange = (size: number) => {
+  warehouseRelationDialog.pageSize = size
+  warehouseRelationDialog.currentPage = 1
+}
+
+const handleWarehouseRelationCurrentChange = (page: number) => {
+  warehouseRelationDialog.currentPage = page
+}
+
+const clearWarehouseRelation = row => {
+  row.warehouseFieldId = ''
+  row.warehouseFieldName = ''
+  row.warehouseFieldType = ''
+}
+
+const clearWarehouseRelationByAction = row => {
+  changeUpdate()
+  clearWarehouseRelation(row)
+}
+
+const selectWarehouseRelation = row => {
+  if (!warehouseRelationTargetField.value) return
+  changeUpdate()
+  warehouseRelationTargetField.value.name = row.name
+  warehouseRelationTargetField.value.warehouseFieldId = row.id
+  warehouseRelationTargetField.value.warehouseFieldName = row.name
+  warehouseRelationTargetField.value.warehouseFieldType = warehouseRelationDialog.type
+  closeWarehouseRelationDialog()
+}
 
 const dfsGetName = (list, name) => {
   list.forEach(ele => {
@@ -2289,8 +2729,37 @@ onMounted(() => {
                         <div class="column-style">
                           <el-input
                             v-model="scope.row.name"
+                            :disabled="!!scope.row.warehouseFieldId"
                             :placeholder="t('commons.input_content')"
                           />
+                          <el-tooltip effect="dark" content="关联维度" placement="top">
+                            <el-button
+                              v-if="scope.row.extField === 0"
+                              text
+                              class="warehouse-relation-trigger"
+                              @click.stop="openWarehouseRelationDialog(scope.row, 'dimension')"
+                            >
+                              <svg viewBox="0 0 16 16" aria-hidden="true">
+                                <path
+                                  d="M3.5 2.5h4.086c.398 0 .78.158 1.06.44l3.414 3.414a1.5 1.5 0 0 1 0 2.121l-3.586 3.586a1.5 1.5 0 0 1-2.121 0L2.94 8.646A1.5 1.5 0 0 1 2.5 7.586V3.5a1 1 0 0 1 1-1Z"
+                                />
+                                <circle cx="5.5" cy="5.5" r="1" />
+                              </svg>
+                            </el-button>
+                          </el-tooltip>
+                          <el-tooltip effect="dark" content="清空关联" placement="top">
+                            <el-button
+                              v-if="scope.row.extField === 0 && !!scope.row.warehouseFieldId"
+                              text
+                              class="warehouse-relation-clear-trigger"
+                              @click.stop="clearWarehouseRelationByAction(scope.row)"
+                            >
+                              <svg viewBox="0 0 16 16" aria-hidden="true">
+                                <circle cx="8" cy="8" r="5.5" />
+                                <path d="M6.2 6.2L9.8 9.8M9.8 6.2L6.2 9.8" />
+                              </svg>
+                            </el-button>
+                          </el-tooltip>
                         </div>
                       </template>
                     </el-table-column>
@@ -2493,8 +2962,37 @@ onMounted(() => {
                         <div class="column-style">
                           <el-input
                             v-model="scope.row.name"
+                            :disabled="!!scope.row.warehouseFieldId"
                             :placeholder="t('commons.input_content')"
                           />
+                          <el-tooltip effect="dark" content="关联指标" placement="top">
+                            <el-button
+                              v-if="scope.row.extField === 0"
+                              text
+                              class="warehouse-relation-trigger"
+                              @click.stop="openWarehouseRelationDialog(scope.row, 'quota')"
+                            >
+                              <svg viewBox="0 0 16 16" aria-hidden="true">
+                                <path
+                                  d="M3.5 2.5h4.086c.398 0 .78.158 1.06.44l3.414 3.414a1.5 1.5 0 0 1 0 2.121l-3.586 3.586a1.5 1.5 0 0 1-2.121 0L2.94 8.646A1.5 1.5 0 0 1 2.5 7.586V3.5a1 1 0 0 1 1-1Z"
+                                />
+                                <circle cx="5.5" cy="5.5" r="1" />
+                              </svg>
+                            </el-button>
+                          </el-tooltip>
+                          <el-tooltip effect="dark" content="清空关联" placement="top">
+                            <el-button
+                              v-if="scope.row.extField === 0 && !!scope.row.warehouseFieldId"
+                              text
+                              class="warehouse-relation-clear-trigger"
+                              @click.stop="clearWarehouseRelationByAction(scope.row)"
+                            >
+                              <svg viewBox="0 0 16 16" aria-hidden="true">
+                                <circle cx="8" cy="8" r="5.5" />
+                                <path d="M6.2 6.2L9.8 9.8M9.8 6.2L6.2 9.8" />
+                              </svg>
+                            </el-button>
+                          </el-tooltip>
                         </div>
                       </template>
                     </el-table-column>
@@ -2762,6 +3260,84 @@ onMounted(() => {
         <el-button type="primary" @click="confirmEditUnion">{{ t('dataset.confirm') }} </el-button>
       </template>
     </el-drawer>
+    <el-dialog
+      v-model="warehouseRelationDialog.visible"
+      class="warehouse-select-dialog"
+      :title="warehouseDialogTitle"
+      width="1280px"
+      @closed="closeWarehouseRelationDialog"
+    >
+      <div class="warehouse-select-toolbar">
+        <el-select v-model="warehouseRelationDialog.searchField" style="width: 180px">
+          <el-option
+            v-for="item in warehouseRelationSearchOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <el-input
+          v-model="warehouseRelationDialog.keyword"
+          :placeholder="warehouseRelationSearchPlaceholder"
+          clearable
+          @keyup.enter="searchWarehouseRelation"
+        >
+          <template #prefix>
+            <el-icon>
+              <Icon name="icon_search-outline_outlined"
+                ><icon_searchOutline_outlined class="svg-icon"
+              /></Icon>
+            </el-icon>
+          </template>
+        </el-input>
+        <el-button @click="resetWarehouseRelationSearch">{{ t('commons.reset') }}</el-button>
+      </div>
+      <el-table
+        :data="warehouseRelationPagedList"
+        :row-class-name="getWarehouseRelationRowClassName"
+        v-loading="warehouseRelationDialog.loading"
+        border
+        style="width: 100%"
+      >
+        <template v-if="warehouseRelationDialog.type === 'dimension'">
+          <el-table-column prop="name" label="维度名称" min-width="180" />
+          <el-table-column prop="category" label="维度分类" min-width="140" />
+          <el-table-column prop="enumValues" label="维度枚举值" min-width="220" show-overflow-tooltip />
+          <el-table-column prop="hiveTableName" label="维度HIVE表名" min-width="180" />
+        </template>
+        <template v-else>
+          <el-table-column prop="name" label="指标名称" min-width="180" />
+          <el-table-column prop="measureType" label="指标分类" min-width="140" />
+          <el-table-column prop="atomName" label="原子指标" min-width="160" />
+          <el-table-column prop="driveName" label="派生指标" min-width="180" />
+        </template>
+        <el-table-column prop="status" :label="t('datasource.status')" min-width="120" />
+        <el-table-column prop="creator" :label="t('visualization.creator')" min-width="120" />
+        <el-table-column prop="projectSource" label="项目来源" min-width="140" />
+        <el-table-column fixed="right" label="操作" width="88">
+          <template #default="scope">
+            <el-button text type="primary" @click="selectWarehouseRelation(scope.row)">
+              选择
+            </el-button>
+          </template>
+        </el-table-column>
+        <template #empty>
+          <empty-background :description="t('data_set.no_data')" img-type="noneWhite" />
+        </template>
+      </el-table>
+      <div class="warehouse-select-pagination">
+        <el-pagination
+          background
+          layout="prev, pager, next, sizes, total"
+          :current-page="warehouseRelationDialog.currentPage"
+          :page-size="warehouseRelationDialog.pageSize"
+          :page-sizes="[10, 20, 50]"
+          :total="warehouseRelationList.length"
+          @size-change="handleWarehouseRelationSizeChange"
+          @current-change="handleWarehouseRelationCurrentChange"
+        />
+      </div>
+    </el-dialog>
   </div>
   <creat-ds-group
     @finish="finish"
@@ -3045,7 +3621,6 @@ onMounted(() => {
     :close-on-click-modal="false"
     :append-to-body="true"
     :before-close="beforeClose"
-    :style="{ overflow: isFullscreen ? 'hidden' : 'inherit' }"
   >
     <div class="datasource-new">
       <div class="ds-editor" :class="editDs && 'edit-ds'">
@@ -3063,8 +3638,6 @@ onMounted(() => {
       </div>
     </div>
   </el-dialog>
-  <CreatDsGroup ref="creatDsFolder" />
-  <CreatDsGroupDataSource ref="creatDsFolderDataSource" @finishDs="complete" @handle-show-finish-page="handleShowFinishPage" />
   <XpackComponent
     jsname="L2NvbXBvbmVudC9lbWJlZGRlZC1pZnJhbWUvTmV3V2luZG93SGFuZGxlcg=="
     @loaded="XpackLoaded"
@@ -3554,6 +4127,46 @@ onMounted(() => {
 .column-style {
   display: flex;
   align-items: center;
+
+  .ed-input {
+    flex: 1;
+  }
+}
+
+.warehouse-relation-trigger {
+  margin-left: 8px;
+  padding: 0;
+  color: var(--ed-color-primary, #33bdfc);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+  }
+
+  circle {
+    fill: currentColor;
+    stroke: none;
+  }
+}
+
+.warehouse-relation-clear-trigger {
+  margin-left: 4px;
+  padding: 0;
+  color: var(--ed-color-primary, #33bdfc);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 }
 
 .select-svg-icon {
@@ -3741,6 +4354,31 @@ onMounted(() => {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
+  }
+}
+.warehouse-select-dialog {
+  .warehouse-relation-selected-row > td,
+  .warehouse-relation-selected-row .ed-table__cell,
+  .warehouse-relation-selected-row:hover > td,
+  .warehouse-relation-selected-row:hover .ed-table__cell {
+    background: #f0f9ff !important;
+  }
+
+  .warehouse-select-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .ed-input {
+      width: 320px;
+    }
+  }
+
+  .warehouse-select-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
   }
 }
 .datasource-new {

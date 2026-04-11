@@ -414,3 +414,17 @@ export const clearAllCopilot = async (): Promise<IResponse> => {
     return res?.data
   })
 }
+
+// 获取维度列表
+export const getDimensionList = parameter =>
+  request.post({
+    url: '/sdar/dimension/warehouse/list',
+    data: parameter
+  })
+
+// 获取指标列表
+export const getIndexList = parameter =>
+  request.post({
+    url: '/sdar/measure/warehouse/listWithAtomAndDrive',
+    data: parameter
+  })
